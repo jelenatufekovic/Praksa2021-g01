@@ -14,6 +14,7 @@ namespace Results.Service
         {
             builder.RegisterType<UserService>().As<IUserService>().InstancePerDependency();
             builder.RegisterType<ResultsService>().As<IResultsService>().InstancePerDependency();
+            builder.RegisterType<LeagueSeasonService>().As<ILeagueSeasonService>().InstancePerDependency();
             base.Load(builder);
         }
     }

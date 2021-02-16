@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LeagueSeasonService.cs" />
     <Compile Include="ServiceModule.cs" />
     <Compile Include="ResultsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -14,6 +14,7 @@ namespace Results.Repository
         {
             builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerDependency();
             builder.RegisterType<ResultsRepository>().As<IResultsRepository>().InstancePerDependency();
+            builder.RegisterType<LeagueSeasonRepository>().As<ILeagueSeasonRepository>().InstancePerDependency();
             base.Load(builder);
         }
     }
