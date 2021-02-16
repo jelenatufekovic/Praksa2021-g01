@@ -98,6 +98,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoachRepository.cs" />
+    <Compile Include="PersonRepository.cs" />
+    <Compile Include="PlayerRepository.cs" />
+    <Compile Include="RefereeRepository.cs" />
     <Compile Include="RepositoryModule.cs" />
     <Compile Include="ResultsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -108,7 +112,6 @@
       <Project>{83908ccb-aa07-4d7f-8f12-1db6d70d682d}</Project>
       <Name>Results.Common</Name>
     </ProjectReference>
-
     <ProjectReference Include="..\Results.Model.Common\Results.Model.Common.csproj">
       <Project>{1eca8439-cee4-4735-9859-aecd002ebba6}</Project>
       <Name>Results.Model.Common</Name>
@@ -117,7 +120,6 @@
       <Project>{be3b1c57-d6d4-41ec-bdde-ed9add335210}</Project>
       <Name>Results.Model</Name>
     </ProjectReference>
-
     <ProjectReference Include="..\Results.Repository.Common\Results.Repository.Common.csproj">
       <Project>{2ad74eb6-4272-4703-a962-c9246aac88dd}</Project>
       <Name>Results.Repository.Common</Name>

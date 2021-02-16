@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Results.Model.Common
 {
-    public interface IPerson
+    public interface IPerson : IModelBase
     {
+        string FirstName { get; set; }
+        string LastName { get; set; }
+        DateTime DateOfBirt { get; set; }
+        string Country { get; set; }
+
     }
 }
