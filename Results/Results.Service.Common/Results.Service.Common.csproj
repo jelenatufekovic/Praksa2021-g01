@@ -78,6 +78,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICoachService.cs" />
+    <Compile Include="IPersonService.cs" />
+    <Compile Include="IPlayerService.cs" />
+    <Compile Include="IRefereeService.cs" />
     <Compile Include="ILeagueSeasonService.cs" />
     <Compile Include="IResultsService.cs" />
     <Compile Include="IStandingsService.cs" />

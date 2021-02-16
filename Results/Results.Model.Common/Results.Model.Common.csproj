@@ -79,7 +79,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILeagueSeason.cs" />
+    <Compile Include="ICoach.cs" />
     <Compile Include="IModelBase.cs" />
+    <Compile Include="IPerson.cs" />
+    <Compile Include="IPlayer.cs" />
+    <Compile Include="IReferee.cs" />
     <Compile Include="IResultsModel.cs" />
     <Compile Include="IStandings.cs" />
     <Compile Include="IUser.cs" />

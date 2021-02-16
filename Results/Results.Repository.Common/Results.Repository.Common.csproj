@@ -78,6 +78,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICoachRepository.cs" />
+    <Compile Include="IPersonRepository.cs" />
+    <Compile Include="IPlayerRepository.cs" />
+    <Compile Include="IRefereeRepository.cs" />
     <Compile Include="ILeagueSeasonRepository.cs" />
     <Compile Include="IResultsRepository.cs" />
     <Compile Include="IStandingsRepository.cs" />

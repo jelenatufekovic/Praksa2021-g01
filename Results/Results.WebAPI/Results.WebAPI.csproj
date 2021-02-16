@@ -147,6 +147,7 @@
     <Compile Include="AutoMapper\LeagueSeasonProfile.cs" />
     <Compile Include="AutoMapper\StandingsProfile.cs" />
     <Compile Include="AutoMapper\UserProfile.cs" />
+    <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Controllers\LeagueSeasonController.cs" />
     <Compile Include="Controllers\StandingsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
