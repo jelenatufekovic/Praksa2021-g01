@@ -144,13 +144,16 @@
   <ItemGroup>
     <Compile Include="App_Start\ContainerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="AutoMapper\AutoMapperModule.cs" />
     <Compile Include="AutoMapper\UserProfile.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\User\UserRest.cs" />
+    <Compile Include="Models\RestModels\User\CreateUserRest.cs" />
+    <Compile Include="Models\RestModels\User\UpdateUserPasswordRest.cs" />
+    <Compile Include="Models\RestModels\User\UpdateUserRest.cs" />
+    <Compile Include="Models\RestModels\User\UserRestBase.cs" />
+    <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

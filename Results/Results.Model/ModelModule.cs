@@ -13,6 +13,7 @@ namespace Results.Model
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<ResultsModel>().As<IResultsModel>().InstancePerDependency();
+            builder.RegisterType<User>().As<IUser>().InstancePerDependency();
             base.Load(builder);
         }
     }
