@@ -79,11 +79,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IResultsService.cs" />
+    <Compile Include="IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Results.Model.Common\Results.Model.Common.csproj">
+      <Project>{1eca8439-cee4-4735-9859-aecd002ebba6}</Project>
+      <Name>Results.Model.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

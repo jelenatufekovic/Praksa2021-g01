@@ -12,6 +12,7 @@ namespace Results.Service
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<UserService>().As<IUserService>().InstancePerDependency();
             builder.RegisterType<ResultsService>().As<IResultsService>().InstancePerDependency();
             base.Load(builder);
         }

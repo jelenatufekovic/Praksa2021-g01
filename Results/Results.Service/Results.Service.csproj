@@ -81,8 +81,17 @@
     <Compile Include="ServiceModule.cs" />
     <Compile Include="ResultsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Results.Model.Common\Results.Model.Common.csproj">
+      <Project>{1eca8439-cee4-4735-9859-aecd002ebba6}</Project>
+      <Name>Results.Model.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Results.Repository.Common\Results.Repository.Common.csproj">
+      <Project>{2ad74eb6-4272-4703-a962-c9246aac88dd}</Project>
+      <Name>Results.Repository.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Results.Service.Common\Results.Service.Common.csproj">
       <Project>{a7522471-3401-49af-bea9-80c90df04fda}</Project>
       <Name>Results.Service.Common</Name>

@@ -12,6 +12,7 @@ namespace Results.Repository
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerDependency();
             builder.RegisterType<ResultsRepository>().As<IResultsRepository>().InstancePerDependency();
             base.Load(builder);
         }
