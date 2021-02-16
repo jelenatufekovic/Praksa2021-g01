@@ -83,6 +83,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Results.Common\Results.Common.csproj">
+      <Project>{83908ccb-aa07-4d7f-8f12-1db6d70d682d}</Project>
+      <Name>Results.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Results.Repository.Common\Results.Repository.Common.csproj">
       <Project>{2ad74eb6-4272-4703-a962-c9246aac88dd}</Project>
       <Name>Results.Repository.Common</Name>
