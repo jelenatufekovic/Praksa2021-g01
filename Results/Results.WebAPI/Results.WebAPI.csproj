@@ -62,6 +62,9 @@
       <HintPath>..\packages\Microsoft.Configuration.ConfigurationBuilders.Environment.2.0.0\lib\Net471\Microsoft.Configuration.ConfigurationBuilders.Environment.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
@@ -91,6 +94,24 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -123,10 +144,13 @@
   <ItemGroup>
     <Compile Include="App_Start\ContainerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="AutoMapper\AutoMapperModule.cs" />
+    <Compile Include="AutoMapper\UserProfile.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\User\UserRest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -140,20 +164,31 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Results.Common\Results.Common.csproj">
       <Project>{83908ccb-aa07-4d7f-8f12-1db6d70d682d}</Project>
       <Name>Results.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Results.Model.Common\Results.Model.Common.csproj">
+      <Project>{1eca8439-cee4-4735-9859-aecd002ebba6}</Project>
+      <Name>Results.Model.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Results.Model\Results.Model.csproj">
       <Project>{be3b1c57-d6d4-41ec-bdde-ed9add335210}</Project>
       <Name>Results.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Results.Repository.Common\Results.Repository.Common.csproj">
+      <Project>{2ad74eb6-4272-4703-a962-c9246aac88dd}</Project>
+      <Name>Results.Repository.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Results.Repository\Results.Repository.csproj">
       <Project>{8a833e4e-33d0-46e3-8fb4-cae8481b1114}</Project>
       <Name>Results.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Results.Service.Common\Results.Service.Common.csproj">
+      <Project>{a7522471-3401-49af-bea9-80c90df04fda}</Project>
+      <Name>Results.Service.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Results.Service\Results.Service.csproj">
       <Project>{7e586004-0699-45cd-822c-620c8d749cbf}</Project>

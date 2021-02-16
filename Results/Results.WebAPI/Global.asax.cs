@@ -1,3 +1,4 @@
+using Results.WebAPI.App_Start;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Results.WebAPI
     {
         protected void Application_Start()
         {
+            ContainerConfig.Configure();
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
     }
