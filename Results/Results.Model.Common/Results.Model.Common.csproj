@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILeagueSeasonModel.cs" />
     <Compile Include="IModelBase.cs" />
     <Compile Include="IResultsModel.cs" />
     <Compile Include="IUser.cs" />
