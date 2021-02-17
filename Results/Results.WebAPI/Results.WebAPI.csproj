@@ -151,6 +151,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\RestModels\LeagueSeason\CreateLeagueSeasonRest.cs" />
+    <Compile Include="Models\RestModels\LeagueSeason\LeagueSeasonIdProviderRest.cs" />
     <Compile Include="Models\RestModels\User\CreateUserRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserPasswordRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserRest.cs" />

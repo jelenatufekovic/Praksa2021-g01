@@ -14,10 +14,9 @@ namespace Results.Repository
 {
     public class LeagueSeasonRepository : ILeagueSeasonRepository
     {
-        public async Task<List<ILeagueSeasonModel>> GetLeagueSeasonByIdAsync()
+        public async Task<List<ILeagueSeasonModel>> GetAllLeagueSeasonIdAsync()
         {
-            using (SqlConnection connection = new SqlConnection(@"Server=tcp:kruninserver.database.windows.net,1433;Initial Catalog=kruninabaza;Persist Security Info=False;User ID=krux031;Password=Desetisesti13;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
-            //new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = "SELECT * FROM LeagueSeason WHERE IsDeleted = @IsDeleted;";
 
@@ -45,6 +44,40 @@ namespace Results.Repository
                             list.Add(model);
                         }
                         return list;
+                    }
+                }
+            }
+        }
+
+        public async Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeasonModel leagueSeasonModel)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            {
+                string query = @"DECLARE @LeagueSeasonVar table(Id uniqueidentifier);
+                            INSERT INTO LeagueSeason (LeagueID, SeasonID, Category, CreatedAt, UpdatedAt, IsDeleted, ByUser) 
+                            OUTPUT INSERTED.Id INTO @LeagueSeasonVar
+                            VALUES (@LeagueID, @SeasonID, @Category, @CreatedAt, @UpdatedAt, @IsDeleted, @ByUser); 
+                            SELECT Id FROM @LeagueSeasonVar;";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@LeagueID", leagueSeasonModel.LeagueID);
+                    command.Parameters.AddWithValue("@SeasonID", leagueSeasonModel.SeasonID);
+                    command.Parameters.AddWithValue("@Category", leagueSeasonModel.Category);
+                    command.Parameters.AddWithValue("@CreatedAt", leagueSeasonModel.CreatedAt);
+                    command.Parameters.AddWithValue("@UpdatedAt", leagueSeasonModel.UpdatedAt);
+                    command.Parameters.AddWithValue("@IsDeleted", leagueSeasonModel.IsDeleted);
+                    command.Parameters.AddWithValue("@ByUser", leagueSeasonModel.ByUser);
+
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader result = await command.ExecuteReaderAsync())
+                    {
+                        await result.ReadAsync();
+                        Guid guid = Guid.Parse(result["Id"].ToString());
+
+                        result.Close();
+                        return guid;
                     }
                 }
             }

@@ -9,6 +9,8 @@ namespace Results.Service.Common
 {
     public interface  ILeagueSeasonService
     {
-        Task<List<ILeagueSeasonModel>> GetLeagueSeasonByIdAsync();
+        Task<List<ILeagueSeasonModel>> GetAllLeagueSeasonIdAsync();
+        Task<ILeagueSeasonModel> GetLeagueSeasonByBothIdAsync(ILeagueSeasonModel leagueSeasonModel);
+        Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeasonModel leagueSeasonModel);
     }
 }
