@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Results.Model;
+using Results.Model.Common;
 using Results.WebAPI.Models.RestModels.User;
 using Results.WebAPI.Models.ViewModels;
 using System;
@@ -13,10 +14,10 @@ namespace Results.WebAPI.AutoMapper
     {
         public UserProfile()
         {
-            CreateMap<CreateUserRest, User>();
-            CreateMap<UpdateUserRest, User>();
-            CreateMap<UpdateUserPasswordRest, User>();
-            CreateMap<User, UserViewModel>();
+            CreateMap<CreateUserRest, IUser>();
+            CreateMap<UpdateUserRest, IUser>();
+            CreateMap<UpdateUserPasswordRest, IUser>();
+            CreateMap<IUser, UserViewModel>();
         }
     }
 }

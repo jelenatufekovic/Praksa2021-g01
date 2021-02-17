@@ -3,11 +3,8 @@ using Results.Model;
 using Results.Model.Common;
 using Results.Repository.Common;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Results.Repository
@@ -18,17 +15,14 @@ namespace Results.Repository
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"INSERT INTO Coach (Id, CoachType, ByUser, IsDeleted, CreatedAt, UpdatedAt)
-                                VALUES (@Id, @CoachType, @ByUser, @IsDeleted, @CreatedAt, @UpdatedAt)";
+                string query = @"INSERT INTO Coach (Id, CoachType, ByUser)
+                                VALUES (@Id, @CoachType, @ByUser)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", coach.Id);
                     command.Parameters.AddWithValue("@CoachType", coach.CoachType);
                     command.Parameters.AddWithValue("@ByUser", coach.UserId);
-                    command.Parameters.AddWithValue("@IsDeleted", coach.IsDeleted);
-                    command.Parameters.AddWithValue("@CreatedAt", coach.CreatedAt);
-                    command.Parameters.AddWithValue("@UpdatedAt", coach.UpdatedAt);
 
                     await connection.OpenAsync();
                     return (await command.ExecuteNonQueryAsync() > 0);
@@ -41,7 +35,7 @@ namespace Results.Repository
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = @"UPDATE Coach
-                        SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
+                        SET IsDeleted = @IsDeleted, ByUser = @ByUser
                         WHERE Id = @Id;";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -71,7 +65,7 @@ namespace Results.Repository
                                     Coach.ByUser AS ByUser,
                                     Coach.IsDeleted AS IsDeleted,
                                     Coach.CreatedAt AS CreatedAt,
-                                    Coach.UpdatedAt AS UpdatedAt,
+                                    Coach.UpdatedAt AS UpdatedAt
                                 FROM Coach 
                                 LEFT JOIN Person ON Coach.Id = Person.Id
                                 WHERE Coach.Id = @Id;";
@@ -109,16 +103,14 @@ namespace Results.Repository
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"
-                            UPDATE Coach 
-                            SET CoachType = @CoachType, UpdatedAt = @UpdatedAt, ByUser = @ByUser 
-                            WHERE Id = @Id;";
+                string query = @"UPDATE Coach 
+                                SET CoachType = @CoachType, ByUser = @ByUser 
+                                WHERE Id = @Id;";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", coach.Id);
                     command.Parameters.AddWithValue("@CoachType", coach.CoachType);
-                    command.Parameters.AddWithValue("@UpdatedAt", coach.CreatedAt);
                     command.Parameters.AddWithValue("@ByUser", coach.UserId);
 
                     await connection.OpenAsync();

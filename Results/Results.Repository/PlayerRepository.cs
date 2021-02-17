@@ -15,17 +15,13 @@ namespace Results.Repository
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"INSERT INTO Player (Id, PlayerValue, ByUser, IsDeleted, CreatedAt, UpdatedAt)
-                                VALUES (@Id, @PlayerValue, @ByUser, @IsDeleted, @CreatedAt, @UpdatedAt)";
+                string query = "INSERT INTO Player (Id, PlayerValue, ByUser) VALUES (@Id, @PlayerValue, @ByUser)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", player.Id);
                     command.Parameters.AddWithValue("@PlayerValue", player.PlayerValue);
                     command.Parameters.AddWithValue("@ByUser", player.UserId);
-                    command.Parameters.AddWithValue("@IsDeleted", player.IsDeleted);
-                    command.Parameters.AddWithValue("@CreatedAt", player.CreatedAt);
-                    command.Parameters.AddWithValue("@UpdatedAt", player.UpdatedAt);
 
                     await connection.OpenAsync();
                     return (await command.ExecuteNonQueryAsync() > 0);
@@ -38,14 +34,13 @@ namespace Results.Repository
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = @"UPDATE Player
-                        SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
+                        SET IsDeleted = @IsDeleted, ByUser = @ByUser
                         WHERE Id = @Id;";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
                     command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
-                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
                     command.Parameters.AddWithValue("@ByUser", userId);
 
                     await connection.OpenAsync();
@@ -108,14 +103,13 @@ namespace Results.Repository
             {
                 string query = @"
                             UPDATE Player 
-                            SET PlayerValue = @PlayerValue, UpdatedAt = @UpdatedAt, ByUser = @ByUser 
+                            SET PlayerValue = @PlayerValue, ByUser = @ByUser 
                             WHERE Id = @Id;";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", player.Id);
                     command.Parameters.AddWithValue("@PlayerValue", player.PlayerValue);
-                    command.Parameters.AddWithValue("@UpdatedAt", player.CreatedAt);
                     command.Parameters.AddWithValue("@ByUser", player.UserId);
 
                     await connection.OpenAsync();
