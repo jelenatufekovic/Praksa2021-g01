@@ -18,17 +18,13 @@ namespace Results.Repository
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"INSERT INTO Referee (Id, Rating, ByUser, IsDeleted, CreatedAt, UpdatedAt)
-                                VALUES (@Id, @Rating, @ByUser, @IsDeleted, @CreatedAt, @UpdatedAt)";
+                string query = @"INSERT INTO Referee (Id, Rating, ByUser) VALUES (@Id, @Rating, @ByUser)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", referee.Id);
                     command.Parameters.AddWithValue("@Rating", referee.Rating);
                     command.Parameters.AddWithValue("@ByUser", referee.UserId);
-                    command.Parameters.AddWithValue("@IsDeleted", referee.IsDeleted);
-                    command.Parameters.AddWithValue("@CreatedAt", referee.CreatedAt);
-                    command.Parameters.AddWithValue("@UpdatedAt", referee.UpdatedAt);
 
                     await connection.OpenAsync();
                     return (await command.ExecuteNonQueryAsync() > 0);
@@ -71,7 +67,7 @@ namespace Results.Repository
                                     Referee.ByUser AS ByUser,
                                     Referee.IsDeleted AS IsDeleted,
                                     Referee.CreatedAt AS CreatedAt,
-                                    Referee.UpdatedAt AS UpdatedAt,
+                                    Referee.UpdatedAt AS UpdatedAt
                                 FROM Referee 
                                 LEFT JOIN Person ON Referee.Id = Person.Id
                                 WHERE Referee.Id = @Id;";
@@ -111,14 +107,13 @@ namespace Results.Repository
             {
                 string query = @"
                             UPDATE Referee 
-                            SET Rating = @Rating, UpdatedAt = @UpdatedAt, ByUser = @ByUser 
+                            SET Rating = @Rating, ByUser = @ByUser 
                             WHERE Id = @Id;";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", referee.Id);
                     command.Parameters.AddWithValue("@Rating", referee.Rating);
-                    command.Parameters.AddWithValue("@UpdatedAt", referee.CreatedAt);
                     command.Parameters.AddWithValue("@ByUser", referee.UserId);
 
                     await connection.OpenAsync();

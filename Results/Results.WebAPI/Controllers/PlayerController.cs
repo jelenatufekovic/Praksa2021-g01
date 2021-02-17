@@ -2,8 +2,8 @@
 using Results.Model;
 using Results.Model.Common;
 using Results.Service.Common;
-using Results.WebAPI.Models.RestModels.Player;
-using Results.WebAPI.Models.ViewModels;
+using Results.WebAPI.Models.RestModels.Person;
+using Results.WebAPI.Models.ViewModels.Person;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,10 +43,9 @@ namespace Results.WebAPI.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> CreatePlayerAsync([FromBody] PlayerRest playerRest)
         {
-            IPlayer player = _mapper.Map<Player>(playerRest);
+            IPlayer player = _mapper.Map<IPlayer>(playerRest);
 
             Guid playerId = await _playerService.CreatePlayerAsync(player);
-
             player = await _playerService.GetPlayerByIdAsync(playerId);
 
             return CreatedAtRoute(nameof(GetPlayerByIdAsync), new { player.Id }, _mapper.Map<PlayerViewModel>(player));

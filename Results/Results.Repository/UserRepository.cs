@@ -24,9 +24,9 @@ namespace Results.Repository
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = @"DECLARE @AppUserVar table(Id uniqueidentifier);
-                            INSERT INTO AppUser (FirstName, LastName, Email, UserName, IsAdmin, IsDeleted, CreatedAt, UpdatedAt) 
+                                INSERT INTO AppUser (FirstName, LastName, Email, UserName, IsAdmin) 
                             OUTPUT INSERTED.Id INTO @AppUserVar
-                            VALUES (@FirstName, @LastName, @Email, @UserName, @IsAdmin, @IsDeleted, @CreatedAt, @UpdatedAt); 
+                                VALUES (@FirstName, @LastName, @Email, @UserName, @IsAdmin); 
                             SELECT Id FROM @AppUserVar;";
                 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -38,18 +38,12 @@ namespace Results.Repository
                     //command.Parameters.AddWithValue("@Salt", user.Salt);
                     //command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
                     command.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
-                    command.Parameters.AddWithValue("@IsDeleted", user.IsDeleted);
-                    command.Parameters.AddWithValue("@CreatedAt", user.CreatedAt);
-                    command.Parameters.AddWithValue("@UpdatedAt", user.UpdatedAt);
 
                     await connection.OpenAsync();
                     using (SqlDataReader result = await command.ExecuteReaderAsync())
                     {
                         await result.ReadAsync();
-                        Guid newId = Guid.Parse(result["Id"].ToString());
-
-                        result.Close();
-                        return newId;
+                        return Guid.Parse(result["Id"].ToString());
                     }
 
                 }
@@ -60,15 +54,12 @@ namespace Results.Repository
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"UPDATE AppUser
-                        SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt
-                        WHERE Id = @Id;";
+                string query = @"UPDATE AppUser SET IsDeleted = @IsDeleted WHERE Id = @Id;";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
                     command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
-                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
 
                     await connection.OpenAsync();
                     return (await command.ExecuteNonQueryAsync()) > 0;
@@ -190,8 +181,8 @@ namespace Results.Repository
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = @"UPDATE AppUser
-                        SET FirstName = @FirstName, LastName = @LastName, Email = @Email, IsAdmin = @IsAdmin, UpdatedAt = @UpdatedAt
-                        WHERE Id = @Id;";
+                                SET FirstName = @FirstName, LastName = @LastName, Email = @Email, IsAdmin = @IsAdmin
+                                WHERE Id = @Id;";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -200,7 +191,6 @@ namespace Results.Repository
                     command.Parameters.AddWithValue("@LastName", user.LastName);
                     command.Parameters.AddWithValue("@Email", user.Email);
                     command.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
-                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
 
                     await connection.OpenAsync();
                     return (await command.ExecuteNonQueryAsync()) > 0;

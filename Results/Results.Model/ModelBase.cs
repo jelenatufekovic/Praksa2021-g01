@@ -10,9 +10,9 @@ namespace Results.Model
     public class ModelBase : IModelBase
     {
         public Guid Id { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
-        public bool IsDeleted { get; set; } = false;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
         public Guid UserId { get; set; }
 
     }
