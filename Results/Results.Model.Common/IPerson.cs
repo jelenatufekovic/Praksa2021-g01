@@ -10,7 +10,7 @@ namespace Results.Model.Common
     {
         string FirstName { get; set; }
         string LastName { get; set; }
-        DateTime DateOfBirt { get; set; }
+        DateTime DateOfBirth { get; set; }
         string Country { get; set; }
 
     }

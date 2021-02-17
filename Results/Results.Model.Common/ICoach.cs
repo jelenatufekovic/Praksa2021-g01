@@ -8,7 +8,6 @@ namespace Results.Model.Common
 {
     public interface ICoach : IPerson
     {
-        Guid PersonId { get; set; }
         string CoachType { get; set; }
     }
 }

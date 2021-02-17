@@ -12,6 +12,6 @@ namespace Results.Model.Common
         DateTime CreatedAt { get; set; }
         DateTime UpdatedAt { get; set; }
         bool IsDeleted { get; set; }
-        Guid ByUser { get; set; }
+        Guid UserId { get; set; }
     }
 }

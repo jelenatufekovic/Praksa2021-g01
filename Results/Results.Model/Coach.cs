@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace Results.Model
 {
-    public class Coach : ModelBase, ICoach
+    public class Coach : Person, ICoach
     {
-        public Guid PersonId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirt { get; set; }
-        public string Country { get; set; }
         public string CoachType { get; set; }
     }
 }

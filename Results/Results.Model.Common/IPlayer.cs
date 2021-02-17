@@ -8,7 +8,6 @@ namespace Results.Model.Common
 {
     public interface IPlayer : IPerson
     {
-        Guid PersonId { get; set; }
-        int Value { get; set; }
+        int PlayerValue { get; set; }
     }
 }

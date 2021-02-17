@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace Results.Model
 {
-    public class Player : ModelBase, IPlayer
+    public class Player : Person, IPlayer
     {
-        public Guid PersonId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirt { get; set; }
-        public string Country { get; set; }
-        public int Value { get; set; }
+        public int PlayerValue { get; set; }
     }
 }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Results.Model.Common
 {
-    public interface IReferee
+    public interface IReferee : IPerson
     {
-        Guid PersonId { get; set; }
         int Rating { get; set; }
     }
 }

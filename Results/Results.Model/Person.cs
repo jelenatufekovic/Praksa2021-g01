@@ -11,7 +11,7 @@ namespace Results.Model
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime DateOfBirt { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string Country { get; set; }
     }
 }
