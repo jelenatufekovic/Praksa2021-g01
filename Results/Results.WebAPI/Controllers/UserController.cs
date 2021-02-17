@@ -29,7 +29,7 @@ namespace Results.WebAPI.Controllers
         {
 
             IUser user = await _userService.GetUserByIdAsync(id);
-
+            
             if (user == null)
             {
                 return NotFound();

@@ -15,6 +15,7 @@ namespace Results.Model
             base.Load(builder);
 
             builder.RegisterType<ResultsModel>().As<IResultsModel>().InstancePerDependency();
+            builder.RegisterType<ModelBase>().As<IModelBase>().InstancePerDependency();
             builder.RegisterType<User>().As<IUser>().InstancePerDependency();
             builder.RegisterType<Person>().As<IPerson>().InstancePerDependency();
             builder.RegisterType<Player>().As<IPlayer>().InstancePerDependency();

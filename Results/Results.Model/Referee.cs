@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace Results.Model
 {
-    public class Referee : ModelBase, IReferee
+    public class Referee : Person, IReferee
     {
-        public Guid PersonId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirt { get; set; }
-        public string Country { get; set; }
         public int Rating { get; set; }
     }
 }

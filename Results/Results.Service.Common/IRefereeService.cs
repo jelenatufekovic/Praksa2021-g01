@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Results.Model.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,9 @@ namespace Results.Service.Common
 {
     public interface IRefereeService
     {
+        Task<Guid> CreateRefereeAsync(IReferee referee);
+        Task<bool> DeleteRefereeAsync(Guid id, Guid userId);
+        Task<IReferee> GetRefereeByIdAsync(Guid id);
+        Task<bool> UpdateRefereeAsync(IReferee referee);
     }
 }

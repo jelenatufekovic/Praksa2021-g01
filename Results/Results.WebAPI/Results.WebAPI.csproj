@@ -144,9 +144,11 @@
   <ItemGroup>
     <Compile Include="App_Start\ContainerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="AutoMapper\PlayerProfile.cs" />
     <Compile Include="AutoMapper\LeagueSeasonProfile.cs" />
     <Compile Include="AutoMapper\StandingsProfile.cs" />
     <Compile Include="AutoMapper\UserProfile.cs" />
+    <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Controllers\LeagueSeasonController.cs" />
     <Compile Include="Controllers\StandingsController.cs" />
@@ -158,12 +160,15 @@
     <Compile Include="Models\RestModels\LeagueSeason\LeagueSeasonIdProviderRest.cs" />
     <Compile Include="Models\RestModels\Standing\CreateDeleteStandingsRest.cs" />
     <Compile Include="Models\RestModels\Standing\UpdateStandingsRest.cs" />
+    <Compile Include="Models\RestModels\Player\PlayerRest.cs" />
+    <Compile Include="Models\RestModels\Player\PersonRestBase.cs" />
     <Compile Include="Models\RestModels\User\CreateUserRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserPasswordRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserRest.cs" />
     <Compile Include="Models\RestModels\User\UserRestBase.cs" />
     <Compile Include="Models\ViewModels\LeagueSeasonViewModel.cs" />
     <Compile Include="Models\ViewModels\StandingsViewModel.cs" />
+    <Compile Include="Models\ViewModels\PlayerViewModel.cs" />
     <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
