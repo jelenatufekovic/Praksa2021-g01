@@ -39,7 +39,9 @@ namespace Results.WebAPI.Controllers
         public async Task<IHttpActionResult> CreateRefereeAsync([FromBody] RefereeRest refereeRest)
         {
             IReferee referee = _mapper.Map<IReferee>(refereeRest);
+
             Guid refereeId = await _refereeService.CreateRefereeAsync(referee);
+
             referee = await _refereeService.GetRefereeByIdAsync(referee.Id);
 
             return CreatedAtRoute(nameof(GetRefereeByIdAsync), new { referee.Id }, _mapper.Map<RefereeViewModel>(referee));
@@ -56,7 +58,7 @@ namespace Results.WebAPI.Controllers
                 return NotFound();
             }
 
-            if (!(await _refereeService.DeleteRefereeAsync(id, referee.UserId)))
+            if (!(await _refereeService.DeleteRefereeAsync(id, referee.ByUser)))
             {
                 return BadRequest();
             }

@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using Results.Common.Utils;
+using Results.Model.Common;
 using Results.Repository.Common;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,14 @@ namespace Results.Repository
             builder.RegisterType<PlayerRepository>().As<IPlayerRepository>().InstancePerDependency();
             builder.RegisterType<CoachRepository>().As<ICoachRepository>().InstancePerDependency();
             builder.RegisterType<RefereeRepository>().As<IRefereeRepository>().InstancePerDependency();
+
+            builder.RegisterType<RepositoryFactory>().As<IRepositoryFactory>().InstancePerDependency();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerDependency();
+
+            builder.RegisterType<FilterHelper<IPlayer, PlayerParameters>>().As<IFilterHelper<IPlayer, PlayerParameters>>().InstancePerDependency();
+            builder.RegisterType<SortHelper<PlayerParameters>>().As<ISortHelper<PlayerParameters>>().InstancePerDependency();
+            builder.RegisterType<PagingHelper>().As<IPagingHelper>().InstancePerDependency();
+
         }
     }
 }

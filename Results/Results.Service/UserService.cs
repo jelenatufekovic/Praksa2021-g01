@@ -1,51 +1,68 @@
 ﻿using Results.Model.Common;
+using Results.Repository;
 using Results.Repository.Common;
 using Results.Service.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Results.Service
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IRepositoryFactory repositoryFactory)
         {
-            _userRepository = userRepository;
+            _repositoryFactory = repositoryFactory;
         }
 
         public async Task<Guid> CreateUserAsync(IUser user)
         {
-            return await _userRepository.CreateUserAsync(user);
+            IUserRepository userRepository = _repositoryFactory.GetRepository<UserRepository>();
+
+            return await userRepository.CreateUserAsync(user);
         }
 
         public async Task<bool> DeleteUserAsync(Guid id)
         {
-            return await _userRepository.DeleteUserAsync(id);
+            IUserRepository userRepository = _repositoryFactory.GetRepository<UserRepository>();
+
+            return await userRepository.DeleteUserAsync(id);
         }
 
         public async Task<IUser> GetUserByIdAsync(Guid id)
         {
-            return await _userRepository.GetUserByIdAsync(id);
+            IUserRepository userRepository = _repositoryFactory.GetRepository<UserRepository>();
+
+            return await userRepository.GetUserByIdAsync(id);
         }
 
         public async Task<IUser> GetUserByEmailAsync(string email)
         {
-            return await _userRepository.GetUserByEmailAsync(email);
+            IUserRepository userRepository = _repositoryFactory.GetRepository<UserRepository>();
+
+            return await userRepository.GetUserByEmailAsync(email);
         }
 
         public async Task<IUser> GetUserByUserNameAsync(string usnerName)
         {
-            return await _userRepository.GetUserByUserNameAsync(usnerName);
+            IUserRepository userRepository = _repositoryFactory.GetRepository<UserRepository>();
+
+            return await userRepository.GetUserByUserNameAsync(usnerName);
+        }
+
+        public async Task<bool> RestoreUserAsync(string email)
+        {
+            IUserRepository userRepository = _repositoryFactory.GetRepository<UserRepository>();
+
+            return await userRepository.RestoreUserAsync(email);
         }
 
         public async Task<bool> UpdateUserAsync(IUser user)
         {
-            return await _userRepository.UpdateUserAsync(user);
+            IUserRepository userRepository = _repositoryFactory.GetRepository<UserRepository>();
+
+            return await userRepository.UpdateUserAsync(user);
         }
     }
 }

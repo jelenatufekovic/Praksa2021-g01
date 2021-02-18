@@ -16,7 +16,6 @@ namespace Results.Service
 
             builder.RegisterType<ResultsService>().As<IResultsService>().InstancePerDependency();
             builder.RegisterType<UserService>().As<IUserService>().InstancePerDependency();
-            builder.RegisterType<PersonService>().As<IPersonService>().InstancePerDependency();
             builder.RegisterType<PlayerService>().As<IPlayerService>().InstancePerDependency();
             builder.RegisterType<CoachService>().As<ICoachService>().InstancePerDependency();
             builder.RegisterType<RefereeService>().As<IRefereeService>().InstancePerDependency();

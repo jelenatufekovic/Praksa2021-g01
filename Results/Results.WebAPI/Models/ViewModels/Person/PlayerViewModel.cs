@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Results.WebAPI.Models.ViewModels.Person
 {
-    public class PlayerViewModel
+    public class PlayerViewModel : PersonViewModelBase
     {
         public int PlayerValue { get; set; }
     }
