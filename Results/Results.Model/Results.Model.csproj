@@ -83,6 +83,7 @@
     <Compile Include="ModelModule.cs" />
     <Compile Include="ResultsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StandingsModel.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

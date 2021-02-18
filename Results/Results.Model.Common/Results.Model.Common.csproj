@@ -81,6 +81,7 @@
     <Compile Include="ILeagueSeasonModel.cs" />
     <Compile Include="IModelBase.cs" />
     <Compile Include="IResultsModel.cs" />
+    <Compile Include="IStandingsModel.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

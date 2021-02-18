@@ -15,6 +15,7 @@ namespace Results.Model
             builder.RegisterType<ResultsModel>().As<IResultsModel>().InstancePerDependency();
             builder.RegisterType<User>().As<IUser>().InstancePerDependency();
             builder.RegisterType<LeagueSeasonModel>().As<ILeagueSeasonModel>().InstancePerDependency();
+            builder.RegisterType<StandingsModel>().As<IStandingsModel>().InstancePerDependency();
             base.Load(builder);
         }
     }
