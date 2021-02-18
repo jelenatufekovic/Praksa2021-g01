@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
-using Results.Model;
 using Results.Model.Common;
 using Results.Service.Common;
 using Results.WebAPI.Models.RestModels.Person;
 using Results.WebAPI.Models.ViewModels.Person;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -46,8 +41,14 @@ namespace Results.WebAPI.Controllers
             IPlayer player = _mapper.Map<IPlayer>(playerRest);
 
             Guid playerId = await _playerService.CreatePlayerAsync(player);
+
             player = await _playerService.GetPlayerByIdAsync(playerId);
 
+            if (player == null)
+            {
+                return BadRequest();
+            }
+            
             return CreatedAtRoute(nameof(GetPlayerByIdAsync), new { player.Id }, _mapper.Map<PlayerViewModel>(player));
         }
 
@@ -83,7 +84,7 @@ namespace Results.WebAPI.Controllers
                 return NotFound();
             }
 
-            if (!(await _playerService.DeletePlayerAsync(id, player.UserId)))
+            if (!(await _playerService.DeletePlayerAsync(id, player.ByUser)))
             {
                 return BadRequest();
             }

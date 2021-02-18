@@ -1,4 +1,5 @@
 ﻿using Results.Model.Common;
+using Results.Repository;
 using Results.Repository.Common;
 using Results.Service.Common;
 using System;
@@ -8,33 +9,51 @@ namespace Results.Service
 {
     public class CoachService : ICoachService
     {
-        private readonly ICoachRepository _coachRepository;
-        private readonly IPersonService _personService;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public CoachService(ICoachRepository coachRepository, IPersonService personService)
+        public CoachService(IRepositoryFactory repositoryFactory)
         {
-            _coachRepository = coachRepository;
-            _personService = personService;
+            _repositoryFactory = repositoryFactory;
         }
 
         public async Task<Guid> CreateCoachAsync(ICoach coach)
         {
-            coach.Id = await _personService.CreatePersonAsync(coach);
-            await _coachRepository.CreateCoachAsync(coach);
-            return coach.Id;
+            using (IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
+            {
+                coach.Id = await unitOfWork.Person.CreatePersonAsync(coach);
+                await unitOfWork.Coach.CreateCoachAsync(coach);
+
+                unitOfWork.Commit();
+
+                return coach.Id;
+            }
         }
 
-        public async Task<bool> DeleteCoachAsync(Guid id, Guid userId) => await _coachRepository.DeleteCoachAsync(id, userId);
+        public async Task<bool> DeleteCoachAsync(Guid id, Guid userId)
+        {
+            ICoachRepository coachRepository = _repositoryFactory.GetRepository<CoachRepository>();
 
-        public async Task<ICoach> GetCoachByIdAsync(Guid id) => await _coachRepository.GetCoachByIdAsync(id);
+            return await coachRepository.DeleteCoachAsync(id, userId);
+        }
+
+        public async Task<ICoach> GetCoachByIdAsync(Guid id)
+        {
+            ICoachRepository coachRepository = _repositoryFactory.GetRepository<CoachRepository>();
+
+            return await coachRepository.GetCoachByIdAsync(id);
+        }
 
         public async Task<bool> UpdateCoachAsync(ICoach coach)
         {
-            if (!(await _personService.UpdatePersonAsync(coach)))
+            using (IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
             {
-                return false;
+                await unitOfWork.Person.UpdatePersonAsync(coach);
+                await unitOfWork.Coach.UpdateCoachAsync(coach);
+
+                unitOfWork.Commit();
+
+                return true;
             }
-            return await _coachRepository.UpdateCoachAsync(coach);
         }
     }
 }

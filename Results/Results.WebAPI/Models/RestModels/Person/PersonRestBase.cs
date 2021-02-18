@@ -12,6 +12,6 @@ namespace Results.WebAPI.Models.RestModels.Person
         public string LastName { get; set; }
         public string Country { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public Guid UserId { get; set; }
+        public Guid ByUser { get; set; }
     }
 }

@@ -14,50 +14,61 @@ namespace Results.Repository
 {
     public class RefereeRepository : IRefereeRepository
     {
-        public async Task<bool> CreateRefereeAsync(IReferee referee)
+        private SqlConnection _connection;
+        private SqlCommand _command;
+
+        public RefereeRepository(SqlConnection connection)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
-            {
-                string query = @"INSERT INTO Referee (Id, Rating, ByUser) VALUES (@Id, @Rating, @ByUser)";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", referee.Id);
-                    command.Parameters.AddWithValue("@Rating", referee.Rating);
-                    command.Parameters.AddWithValue("@ByUser", referee.UserId);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync() > 0);
-                }
-            }
+            _command = new SqlCommand(String.Empty, connection);
+            _connection = connection;
+            _connection.Open();
         }
 
-        public async Task<bool> DeleteRefereeAsync(Guid id, Guid userId)
+        public RefereeRepository(SqlTransaction transaction)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
+        }
+
+        public async Task<bool> CreateRefereeAsync(IReferee referee)
+        {
+            _command.CommandText = @"INSERT INTO Referee (Id, Rating, ByUser) VALUES (@Id, @Rating, @ByUser)";
+
+            _command.Parameters.AddWithValue("@Id", referee.Id);
+            _command.Parameters.AddWithValue("@Rating", referee.Rating);
+            _command.Parameters.AddWithValue("@ByUser", referee.ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"UPDATE Referee
-                        SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
-                        WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
-                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
-                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
-                    command.Parameters.AddWithValue("@ByUser", userId);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
+        }
+
+        public async Task<bool> DeleteRefereeAsync(Guid id, Guid ByUser)
+        {
+            _command.CommandText = "UPDATE Referee SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
+
+            _command.Parameters.AddWithValue("@Id", id);
+            _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
+            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+            _command.Parameters.AddWithValue("@ByUser", ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
+            {
+                _connection.Close();
+            }
+
+            return result;
         }
 
         public async Task<IReferee> GetRefereeByIdAsync(Guid id)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
-            {
-                string query = @"SELECT
+            _command.CommandText = @"SELECT
                                     Referee.Id AS Id,
                                     Person.FirstName AS FirstName,
                                     Person.LastName AS LastName,
@@ -72,54 +83,61 @@ namespace Results.Repository
                                 LEFT JOIN Person ON Referee.Id = Person.Id
                                 WHERE Referee.Id = @Id;";
 
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
+            _command.Parameters.AddWithValue("@Id", id);
 
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                if (await reader.ReadAsync())
+                {
+                    IReferee referee = new Referee()
                     {
-                        if (await reader.ReadAsync())
-                        {
-                            return new Referee()
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                FirstName = reader["FirstName"].ToString(),
-                                LastName = reader["LastName"].ToString(),
-                                Country = reader["Country"].ToString(),
-                                DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
-                                Rating = Int32.Parse(reader["Rating"].ToString()),
-                                UserId = Guid.Parse(reader["ByUser"].ToString()),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                            };
-                        }
-                        return null;
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Country = reader["Country"].ToString(),
+                        DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
+                        Rating = Int32.Parse(reader["Rating"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                    };
+                    reader.Close();
+
+                    if (_command.Transaction == null)
+                    {
+                        _connection.Close();
                     }
+
+                    return referee;
                 }
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return null;
             }
         }
 
         public async Task<bool> UpdateRefereeAsync(IReferee referee)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            _command.CommandText = "UPDATE Referee SET Rating = @Rating, @UpdatedAt = UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
+
+            _command.Parameters.AddWithValue("@Id", referee.Id);
+            _command.Parameters.AddWithValue("@Rating", referee.Rating);
+            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+            _command.Parameters.AddWithValue("@ByUser", referee.ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"
-                            UPDATE Referee 
-                            SET Rating = @Rating, ByUser = @ByUser 
-                            WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", referee.Id);
-                    command.Parameters.AddWithValue("@Rating", referee.Rating);
-                    command.Parameters.AddWithValue("@ByUser", referee.UserId);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
         }
     }
 }

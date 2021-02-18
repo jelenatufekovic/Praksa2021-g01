@@ -11,51 +11,63 @@ namespace Results.Repository
 {
     public class CoachRepository : ICoachRepository
     {
-        public async Task<bool> CreateCoachAsync(ICoach coach)
+        private SqlConnection _connection;
+        private SqlCommand _command;
+
+        public CoachRepository(SqlConnection connection)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
-            {
-                string query = @"INSERT INTO Coach (Id, CoachType, ByUser)
-                                VALUES (@Id, @CoachType, @ByUser)";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", coach.Id);
-                    command.Parameters.AddWithValue("@CoachType", coach.CoachType);
-                    command.Parameters.AddWithValue("@ByUser", coach.UserId);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync() > 0);
-                }
-            }
+            _command = new SqlCommand(String.Empty, connection);
+            _connection = connection;
+            _connection.Open();
         }
 
-        public async Task<bool> DeleteCoachAsync(Guid id, Guid userId)
+        public CoachRepository(SqlTransaction transaction)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
+        }
+
+        public async Task<bool> CreateCoachAsync(ICoach coach)
+        {
+            _command.CommandText = "INSERT INTO Coach (Id, CoachType, ByUser) VALUES (@Id, @CoachType, @ByUser)";
+
+            _command.Parameters.AddWithValue("@Id", coach.Id);
+            _command.Parameters.AddWithValue("@CoachType", coach.CoachType);
+            _command.Parameters.AddWithValue("@ByUser", coach.ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"UPDATE Coach
-                        SET IsDeleted = @IsDeleted, ByUser = @ByUser
-                        WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
-                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
-                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
-                    command.Parameters.AddWithValue("@ByUser", userId);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
+        }
+
+        public async Task<bool> DeleteCoachAsync(Guid id, Guid ByUser)
+        {
+            _command.CommandText = "UPDATE Coach SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
+
+            _command.Parameters.AddWithValue("@Id", id);
+            _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
+            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+            _command.Parameters.AddWithValue("@ByUser", ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
+            {
+                _connection.Close();
+            }
+
+            return result;
         }
 
         public async Task<ICoach> GetCoachByIdAsync(Guid id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"SELECT
+                _command.CommandText = @"SELECT
                                     Coach.Id AS Id,
                                     Person.FirstName AS FirstName,
                                     Person.LastName AS LastName,
@@ -70,53 +82,61 @@ namespace Results.Repository
                                 LEFT JOIN Person ON Coach.Id = Person.Id
                                 WHERE Coach.Id = @Id;";
 
-                using (SqlCommand command = new SqlCommand(query, connection))
+                _command.Parameters.AddWithValue("@Id", id);
+                using (SqlDataReader reader = await _command.ExecuteReaderAsync())
                 {
-                    command.Parameters.AddWithValue("@Id", id);
-
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    if (await reader.ReadAsync())
                     {
-                        if (await reader.ReadAsync())
+                        ICoach coach = new Coach()
                         {
-                            return new Coach()
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                FirstName = reader["FirstName"].ToString(),
-                                LastName = reader["LastName"].ToString(),
-                                Country = reader["Country"].ToString(),
-                                DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
-                                CoachType = reader["CoachType"].ToString(),
-                                UserId = Guid.Parse(reader["ByUser"].ToString()),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                            };
+                            Id = Guid.Parse(reader["Id"].ToString()),
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            Country = reader["Country"].ToString(),
+                            DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
+                            CoachType = reader["CoachType"].ToString(),
+                            ByUser = Guid.Parse(reader["ByUser"].ToString()),
+                            IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                            CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                            UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                        };
+                        reader.Close();
+
+                        if (_command.Transaction == null)
+                        {
+                            _connection.Close();
                         }
-                        return null;
+
+                        return coach;
                     }
+
+                    if (_command.Transaction == null)
+                    {
+                        _connection.Close();
+                    }
+
+                    return null;
                 }
             }
         }
 
         public async Task<bool> UpdateCoachAsync(ICoach coach)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            _command.CommandText = "UPDATE Coach SET CoachType = @CoachType, @UpdatedAt = UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
+
+            _command.Parameters.AddWithValue("@Id", coach.Id);
+            _command.Parameters.AddWithValue("@CoachType", coach.CoachType);
+            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+            _command.Parameters.AddWithValue("@ByUser", coach.ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"UPDATE Coach 
-                                SET CoachType = @CoachType, ByUser = @ByUser 
-                                WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", coach.Id);
-                    command.Parameters.AddWithValue("@CoachType", coach.CoachType);
-                    command.Parameters.AddWithValue("@ByUser", coach.UserId);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
         }
     }
 }

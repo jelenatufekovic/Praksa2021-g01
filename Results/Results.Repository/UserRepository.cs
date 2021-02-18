@@ -15,187 +15,237 @@ namespace Results.Repository
 {
     public class UserRepository : IUserRepository
     {
-        public UserRepository()
+        private SqlConnection _connection;
+        private SqlCommand _command;
+
+        public UserRepository(SqlConnection connection)
         {
+            _command = new SqlCommand(String.Empty, connection);
+            _connection = connection;
+            _connection.Open();
+        }
+
+        public UserRepository(SqlTransaction transaction)
+        {
+            _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
         }
 
         public async Task<Guid> CreateUserAsync(IUser user)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
-            {
-                string query = @"DECLARE @AppUserVar table(Id uniqueidentifier);
+            _command.CommandText = @"DECLARE @AppUserVar table(Id uniqueidentifier);
                                 INSERT INTO AppUser (FirstName, LastName, Email, UserName, IsAdmin) 
-                            OUTPUT INSERTED.Id INTO @AppUserVar
+                                    OUTPUT INSERTED.Id INTO @AppUserVar
                                 VALUES (@FirstName, @LastName, @Email, @UserName, @IsAdmin); 
-                            SELECT Id FROM @AppUserVar;";
-                
-                using (SqlCommand command = new SqlCommand(query, connection))
+                                    SELECT Id FROM @AppUserVar;";
+
+            _command.Parameters.AddWithValue("@FirstName", user.FirstName);
+            _command.Parameters.AddWithValue("@LastName", user.LastName);
+            _command.Parameters.AddWithValue("@Email", user.Email);
+            _command.Parameters.AddWithValue("@UserName", user.UserName);
+            //_command.Parameters.AddWithValue("@Salt", user.Salt);
+            //_command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+            _command.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
+
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                await reader.ReadAsync();
+                Guid result = Guid.Parse(reader["Id"].ToString());
+
+                if (_command.Transaction == null)
                 {
-                    command.Parameters.AddWithValue("@FirstName", user.FirstName);
-                    command.Parameters.AddWithValue("@LastName", user.LastName);
-                    command.Parameters.AddWithValue("@Email", user.Email);
-                    command.Parameters.AddWithValue("@UserName", user.UserName);
-                    //command.Parameters.AddWithValue("@Salt", user.Salt);
-                    //command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-                    command.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
-
-                    await connection.OpenAsync();
-                    using (SqlDataReader result = await command.ExecuteReaderAsync())
-                    {
-                        await result.ReadAsync();
-                        return Guid.Parse(result["Id"].ToString());
-                    }
-
+                    _connection.Close();
                 }
+
+                return result;
             }
         }
 
         public async Task<bool> DeleteUserAsync(Guid id)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            _command.CommandText = @"UPDATE AppUser SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt WHERE Id = @Id;";
+
+            _command.Parameters.AddWithValue("@Id", id);
+            _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
+            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"UPDATE AppUser SET IsDeleted = @IsDeleted WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
-                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
         }
 
         public async Task<IUser> GetUserByIdAsync(Guid id)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
-            {
-                string query = "SELECT * FROM AppUser WHERE Id = @Id AND IsDeleted = @IsDeleted;";
+            _command.CommandText = "SELECT * FROM AppUser WHERE Id = @Id AND IsDeleted = @IsDeleted;";
 
-                using (SqlCommand command = new SqlCommand(query, connection))
+            _command.Parameters.AddWithValue("@Id", id);
+            _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
+
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                if (await reader.ReadAsync())
                 {
-                    command.Parameters.AddWithValue("@Id", id);
-                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
-                    
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    IUser user = new User()
                     {
-                        if (await reader.ReadAsync())
-                        {
-                            return new User()
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                FirstName = reader["FirstName"].ToString(),
-                                LastName = reader["LastName"].ToString(),
-                                UserName = reader["UserName"].ToString(),
-                                Email = reader["Email"].ToString(),
-                                PasswordHash = reader["PasswordHash"].ToString(),
-                                Salt = reader["Salt"].ToString(),
-                                IsAdmin = bool.Parse(reader["IsAdmin"].ToString()),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                            };
-                        }
-                        return null;
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        UserName = reader["UserName"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        PasswordHash = reader["PasswordHash"].ToString(),
+                        Salt = reader["Salt"].ToString(),
+                        IsAdmin = bool.Parse(reader["IsAdmin"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                    };
+                    reader.Close();
+
+                    if (_command.Transaction == null)
+                    {
+                        _connection.Close();
                     }
+
+                    return user;
                 }
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return null;
             }
         }
 
         public async Task<IUser> GetUserByEmailAsync(string email)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
-            {
-                string query = "SELECT * FROM AppUser WHERE Email = @Email";
+            _command.CommandText = "SELECT * FROM AppUser WHERE Email = @Email";
 
-                using (SqlCommand command = new SqlCommand(query, connection))
+            _command.Parameters.AddWithValue("@Email", email);
+
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                if (await reader.ReadAsync())
                 {
-                    command.Parameters.AddWithValue("@Email", email);
-                    
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    IUser user = new User()
                     {
-                        if (await reader.ReadAsync())
-                        {
-                            return new User()
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                FirstName = reader["FirstName"].ToString(),
-                                LastName = reader["LastName"].ToString(),
-                                UserName = reader["UserName"].ToString(),
-                                Email = reader["Email"].ToString(),
-                                PasswordHash = reader["PasswordHash"].ToString(),
-                                Salt = reader["Salt"].ToString(),
-                                IsAdmin = bool.Parse(reader["IsAdmin"].ToString()),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                            };
-                        }
-                        return null;
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        UserName = reader["UserName"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        PasswordHash = reader["PasswordHash"].ToString(),
+                        Salt = reader["Salt"].ToString(),
+                        IsAdmin = bool.Parse(reader["IsAdmin"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                    };
+                    reader.Close();
+
+                    if (_command.Transaction == null)
+                    {
+                        _connection.Close();
                     }
+
+                    return user;
                 }
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return null;
             }
         }
 
         public async Task<IUser> GetUserByUserNameAsync(string userName)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            _command.CommandText = "SELECT * FROM AppUser WHERE UserName = @UserName;";
+
+            _command.Parameters.AddWithValue("@UserName", userName);
+
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
             {
-                string query = "SELECT * FROM AppUser WHERE UserName = @UserName;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                if (await reader.ReadAsync())
                 {
-                    command.Parameters.AddWithValue("@UserName", userName);
-
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    IUser user = new User()
                     {
-                        if (await reader.ReadAsync())
-                        {
-                            return new User()
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                FirstName = reader["FirstName"].ToString(),
-                                LastName = reader["LastName"].ToString(),
-                                UserName = reader["UserName"].ToString(),
-                                Email = reader["Email"].ToString(),
-                                PasswordHash = reader["PasswordHash"].ToString(),
-                                Salt = reader["Salt"].ToString(),
-                                IsAdmin = bool.Parse(reader["IsAdmin"].ToString()),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                            };
-                        }
-                        return null;
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        UserName = reader["UserName"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        PasswordHash = reader["PasswordHash"].ToString(),
+                        Salt = reader["Salt"].ToString(),
+                        IsAdmin = bool.Parse(reader["IsAdmin"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                    };
+                    reader.Close();
+
+                    if (_command.Transaction == null)
+                    {
+                        _connection.Close();
                     }
+
+                    return user;
                 }
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return null;
             }
+        }
+
+        public async Task<bool> RestoreUserAsync(string email)
+        {
+            _command.CommandText = "UPDATE AppUser SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt WHERE Email = @Email;";
+
+            _command.Parameters.AddWithValue("@Email", email);
+            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
+            {
+                _connection.Close();
+            }
+
+            return result;
         }
 
         public async Task<bool> UpdateUserAsync(IUser user)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            _command.CommandText = "UPDATE AppUser SET FirstName = @FirstName, LastName = @LastName, Email = @Email, IsAdmin = @IsAdmin, UpdatedAt = @UpdatedAt WHERE Id = @Id;";
+
+            _command.Parameters.AddWithValue("@Id", user.Id);
+            _command.Parameters.AddWithValue("@FirstName", user.FirstName);
+            _command.Parameters.AddWithValue("@LastName", user.LastName);
+            _command.Parameters.AddWithValue("@Email", user.Email);
+            _command.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
+            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"UPDATE AppUser
-                                SET FirstName = @FirstName, LastName = @LastName, Email = @Email, IsAdmin = @IsAdmin
-                                WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", user.Id);
-                    command.Parameters.AddWithValue("@FirstName", user.FirstName);
-                    command.Parameters.AddWithValue("@LastName", user.LastName);
-                    command.Parameters.AddWithValue("@Email", user.Email);
-                    command.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
         }
+
+        
     }
 }

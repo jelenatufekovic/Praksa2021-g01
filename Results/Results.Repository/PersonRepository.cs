@@ -14,30 +14,46 @@ namespace Results.Repository
 {
     public class PersonRepository : IPersonRepository
     {
+        private SqlConnection _connection;
+        private SqlCommand _command;
+
+        public PersonRepository(SqlConnection connection)
+        {
+            _command = new SqlCommand(String.Empty, connection);
+            _connection = connection;
+            _connection.Open();
+        }
+
+        public PersonRepository(SqlTransaction transaction)
+        {
+            _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
+        }
+
         public async Task<Guid> CreatePersonAsync(IPerson person)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+
+            _command.CommandText = @"DECLARE @PersonVar table(Id uniqueidentifier);
+                                INSERT INTO Person (FirstName, LastName, Country, DateOfBirth) 
+                            OUTPUT INSERTED.Id INTO @PersonVar
+                                VALUES (@FirstName, @LastName, @Country, @DateOfBirth);
+                            SELECT Id FROM @PersonVar;";
+            
+            _command.Parameters.AddWithValue("@FirstName", person.FirstName);
+            _command.Parameters.AddWithValue("@LastName", person.LastName);
+            _command.Parameters.AddWithValue("@Country", person.Country);
+            _command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
+
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
             {
-                string query = @"DECLARE @PersonVar table(Id uniqueidentifier);
-                                    INSERT INTO Person (FirstName, LastName, Country, DateOfBirth) 
-                                OUTPUT INSERTED.Id INTO @PersonVar
-                                    VALUES (@FirstName, @LastName, @Country, @DateOfBirth);
-                                SELECT Id FROM @PersonVar;";
+                await reader.ReadAsync();
+                Guid result = Guid.Parse(reader["Id"].ToString());
 
-                using (SqlCommand command = new SqlCommand(query, connection))
+                if (_command.Transaction == null)
                 {
-                    command.Parameters.AddWithValue("@FirstName", person.FirstName);
-                    command.Parameters.AddWithValue("@LastName", person.LastName);
-                    command.Parameters.AddWithValue("@Country", person.Country);
-                    command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
-
-                    await connection.OpenAsync();
-                    using (SqlDataReader result = await command.ExecuteReaderAsync())
-                    {
-                        await result.ReadAsync();
-                        return Guid.Parse(result["Id"].ToString());
-                    }
+                    _connection.Close();
                 }
+
+                return result;
             }
         }
 
@@ -45,21 +61,24 @@ namespace Results.Repository
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"UPDATE Person
+                _command.CommandText = @"UPDATE Person
                         SET FirstName = @FirstName, LastName = @LastName, Country = @Country, DateOfBirth = @DateOfBirth
                         WHERE Id = @Id;";
 
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", person.Id);
-                    command.Parameters.AddWithValue("@FirstName", person.FirstName);
-                    command.Parameters.AddWithValue("@LastName", person.LastName);
-                    command.Parameters.AddWithValue("@Country", person.Country);
-                    command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
+                _command.Parameters.AddWithValue("@Id", person.Id);
+                _command.Parameters.AddWithValue("@FirstName", person.FirstName);
+                _command.Parameters.AddWithValue("@LastName", person.LastName);
+                _command.Parameters.AddWithValue("@Country", person.Country);
+                _command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
 
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
+                bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
                 }
+
+                return result;
             }
         }
     }

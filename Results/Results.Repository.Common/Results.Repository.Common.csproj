@@ -83,8 +83,10 @@
     <Compile Include="IPlayerRepository.cs" />
     <Compile Include="IRefereeRepository.cs" />
     <Compile Include="ILeagueSeasonRepository.cs" />
+    <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="IResultsRepository.cs" />
     <Compile Include="IStandingsRepository.cs" />
+    <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -93,6 +95,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Results.Common\Results.Common.csproj">
+      <Project>{83908ccb-aa07-4d7f-8f12-1db6d70d682d}</Project>
+      <Name>Results.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Results.Model.Common\Results.Model.Common.csproj">
       <Project>{1eca8439-cee4-4735-9859-aecd002ebba6}</Project>
       <Name>Results.Model.Common</Name>

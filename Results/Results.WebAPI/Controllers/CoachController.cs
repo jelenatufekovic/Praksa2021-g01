@@ -39,7 +39,9 @@ namespace Results.WebAPI.Controllers
         public async Task<IHttpActionResult> CreateCoachAsync([FromBody] CoachRest coachRest)
         {
             ICoach coach = _mapper.Map<ICoach>(coachRest);
+
             Guid coachId = await _coachService.CreateCoachAsync(coach);
+
             coach = await _coachService.GetCoachByIdAsync(coach.Id);
 
             return CreatedAtRoute(nameof(GetCoachByIdAsync), new { coach.Id }, _mapper.Map<CoachViewModel>(coach));
@@ -56,7 +58,7 @@ namespace Results.WebAPI.Controllers
                 return NotFound();
             }
 
-            if (!(await _coachService.DeleteCoachAsync(id, coach.UserId)))
+            if (!(await _coachService.DeleteCoachAsync(id, coach.ByUser)))
             {
                 return BadRequest();
             }

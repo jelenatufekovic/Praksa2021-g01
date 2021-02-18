@@ -1,4 +1,5 @@
 ﻿using Results.Model.Common;
+using Results.Repository;
 using Results.Repository.Common;
 using Results.Service.Common;
 using System;
@@ -8,33 +9,51 @@ namespace Results.Service
 {
     public class PlayerService : IPlayerService
     {
-        private readonly IPlayerRepository _playerRepository;
-        private readonly IPersonService _personService;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public PlayerService(IPlayerRepository playerRepository, IPersonService personService)
+        public PlayerService(IRepositoryFactory repositoryFactory)
         {
-            _playerRepository = playerRepository;
-            _personService = personService;
+            _repositoryFactory = repositoryFactory;
         }
 
         public async Task<Guid> CreatePlayerAsync(IPlayer player)
         {
-            player.Id = await _personService.CreatePersonAsync(player);
-            await _playerRepository.CreatePlayerAsync(player);
-            return player.Id;
+            using (IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
+            {
+                player.Id = await unitOfWork.Person.CreatePersonAsync(player);
+
+                await unitOfWork.Player.CreatePlayerAsync(player);
+                unitOfWork.Commit();
+
+                return player.Id;
+            }
         }
 
-        public async Task<bool> DeletePlayerAsync(Guid id, Guid userId) => await _playerRepository.DeletePlayerAsync(id, userId);
+        public async Task<IPlayer> GetPlayerByIdAsync(Guid id)
+        {
+            IPlayerRepository playerRepository = _repositoryFactory.GetRepository<PlayerRepository>();
 
-        public async Task<IPlayer> GetPlayerByIdAsync(Guid id) => await _playerRepository.GetPlayerByIdAsync(id);
+            return await playerRepository.GetPlayerByIdAsync(id);
+        }
+
+        public async Task<bool> DeletePlayerAsync(Guid id, Guid userId)
+        {
+            IPlayerRepository playerRepository = _repositoryFactory.GetRepository<PlayerRepository>();
+
+            return await playerRepository.DeletePlayerAsync(id, userId);
+        }
+
 
         public async Task<bool> UpdatePlayerAsync(IPlayer player)
         {
-            if (!(await _personService.UpdatePersonAsync(player)))
+            using (IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
             {
-                return false;
+                await unitOfWork.Person.UpdatePersonAsync(player);
+                await unitOfWork.Player.UpdatePlayerAsync(player);
+                unitOfWork.Commit();
+                
+                return true;
             }
-            return await _playerRepository.UpdatePlayerAsync(player);
         }
     }
 }
