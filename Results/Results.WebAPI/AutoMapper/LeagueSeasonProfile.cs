@@ -14,10 +14,10 @@ namespace Results.WebAPI.AutoMapper
     {
         public LeagueSeasonProfile()
         {
-            CreateMap<LeagueSeasonModel, LeagueSeasonViewModel>();
-            CreateMap<LeagueSeasonIdProviderRest, ILeagueSeasonModel>();
-            CreateMap<CreateLeagueSeasonRest, ILeagueSeasonModel>();
-            CreateMap<CreateLeagueSeasonRest, LeagueSeasonModel>();
+            CreateMap<LeagueSeason, LeagueSeasonViewModel>();
+            CreateMap<LeagueSeasonIdProviderRest, ILeagueSeason>();
+            CreateMap<CreateLeagueSeasonRest, ILeagueSeason>();
+            CreateMap<CreateLeagueSeasonRest, LeagueSeason>();
         }
     }
 }

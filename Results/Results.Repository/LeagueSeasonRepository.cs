@@ -14,7 +14,7 @@ namespace Results.Repository
 {
     public class LeagueSeasonRepository : ILeagueSeasonRepository
     {
-        public async Task<List<ILeagueSeasonModel>> GetAllLeagueSeasonIdAsync()
+        public async Task<List<ILeagueSeason>> GetAllLeagueSeasonIdAsync()
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
@@ -27,10 +27,10 @@ namespace Results.Repository
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        List<ILeagueSeasonModel> list = new List<ILeagueSeasonModel>();
+                        List<ILeagueSeason> list = new List<ILeagueSeason>();
                         while (await reader.ReadAsync())
                         {
-                            ILeagueSeasonModel model = new LeagueSeasonModel()
+                            ILeagueSeason model = new LeagueSeason()
                             {
                                 Id = Guid.Parse(reader["Id"].ToString()),
                                 LeagueID = Guid.Parse(reader["LeagueID"].ToString()),
@@ -39,7 +39,7 @@ namespace Results.Repository
                                 IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
                                 CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
                                 UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                                //ByUser = Guid.Parse(reader["ByUser"].ToString()),
+                                ByUser = Guid.Parse(reader["ByUser"].ToString()),
                             };
                             list.Add(model);
                         }
@@ -49,7 +49,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeasonModel leagueSeasonModel)
+        public async Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeason leagueSeasonModel)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {

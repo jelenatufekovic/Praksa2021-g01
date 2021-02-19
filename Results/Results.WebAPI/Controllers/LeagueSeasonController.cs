@@ -28,7 +28,7 @@ namespace Results.WebAPI.Controllers
         public async Task<IHttpActionResult> GetAllLeagueSeasonIdAsync()
         {
 
-            List<ILeagueSeasonModel> leagueSeason = await _leagueSeasonService.GetAllLeagueSeasonIdAsync();
+            List<ILeagueSeason> leagueSeason = await _leagueSeasonService.GetAllLeagueSeasonIdAsync();
             List<LeagueSeasonViewModel> view = new List<LeagueSeasonViewModel>();
 
             if (leagueSeason == null)
@@ -38,7 +38,7 @@ namespace Results.WebAPI.Controllers
             
             else
             {
-                foreach (LeagueSeasonModel result in leagueSeason)
+                foreach (LeagueSeason result in leagueSeason)
                 {
                     view.Add(_mapper.Map<LeagueSeasonViewModel>(result));
                 }
@@ -52,7 +52,7 @@ namespace Results.WebAPI.Controllers
         public async Task<IHttpActionResult> GetLeagueSeasonByBothIdAsync([FromUri] LeagueSeasonIdProviderRest provider)
         {
 
-            ILeagueSeasonModel leagueSeason = await _leagueSeasonService.GetLeagueSeasonByBothIdAsync(_mapper.Map<ILeagueSeasonModel>(provider));
+            ILeagueSeason leagueSeason = await _leagueSeasonService.GetLeagueSeasonByBothIdAsync(_mapper.Map<ILeagueSeason>(provider));
 
             if (leagueSeason == null)
             {
@@ -71,14 +71,14 @@ namespace Results.WebAPI.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> LeagueSeasonRegistrationAsync([FromBody] CreateLeagueSeasonRest newLeagueSeason)
         {
-            ILeagueSeasonModel leagueSeason = await _leagueSeasonService.GetLeagueSeasonByBothIdAsync(_mapper.Map<ILeagueSeasonModel>(newLeagueSeason));
+            ILeagueSeason leagueSeason = await _leagueSeasonService.GetLeagueSeasonByBothIdAsync(_mapper.Map<ILeagueSeason>(newLeagueSeason));
 
             if (leagueSeason != null)
             {
                 ModelState.AddModelError("League-Season Information", "Season for that league already exists");
             }
 
-            leagueSeason = _mapper.Map<LeagueSeasonModel>(newLeagueSeason);
+            leagueSeason = _mapper.Map<LeagueSeason>(newLeagueSeason);
             Guid leagueSeasonId = await _leagueSeasonService.LeagueSeasonRegistrationAsync(leagueSeason);
 
             return Ok(leagueSeasonId);

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Results.Model
 {
-    public class LeagueSeasonModel : ModelBase, ILeagueSeasonModel
+    public class LeagueSeason : ModelBase, ILeagueSeason
     {
         public Guid Id { get; set; }
         public Guid LeagueID { get; set; }

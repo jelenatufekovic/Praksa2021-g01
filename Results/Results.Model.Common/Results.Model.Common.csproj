@@ -78,9 +78,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ILeagueSeasonModel.cs" />
+    <Compile Include="ILeagueSeason.cs" />
     <Compile Include="IModelBase.cs" />
     <Compile Include="IResultsModel.cs" />
+    <Compile Include="IStandings.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

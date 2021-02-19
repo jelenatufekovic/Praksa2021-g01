@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="ILeagueSeasonRepository.cs" />
     <Compile Include="IResultsRepository.cs" />
+    <Compile Include="IStandingsRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
