@@ -10,7 +10,7 @@ namespace Results.Repository.Common
         Task<bool> CreatePlayerAsync(IPlayer player);
         Task<bool> DeletePlayerAsync(Guid id, Guid userId);
         Task<IPlayer> GetPlayerByIdAsync(Guid id);
-        //Task<PagedList<IPlayer>> GetPlayersByQuery(PlayerParameters parameters);
+        Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters);
         Task<bool> UpdatePlayerAsync(IPlayer player);
     }
 }

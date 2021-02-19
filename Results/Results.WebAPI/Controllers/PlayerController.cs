@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Results.Common.Utils;
 using Results.Model.Common;
 using Results.Service.Common;
 using Results.WebAPI.Models.RestModels.Person;
 using Results.WebAPI.Models.ViewModels.Person;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -33,6 +35,20 @@ namespace Results.WebAPI.Controllers
             }
 
             return Ok(_mapper.Map<PlayerViewModel>(player));
+        }
+
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetPlayersByQueryAsync([FromUri] PlayerParameters parameters)
+        {
+            PagedList<IPlayer> playerList = await _playerService.GetPlayersByQueryAsync(parameters);
+
+            if (playerList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<PagedList<IPlayer>, List<PlayerViewModel>>(playerList));
         }
 
         [HttpPost]

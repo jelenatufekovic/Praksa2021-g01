@@ -8,6 +8,6 @@ namespace Results.Common.Utils
 {
     public interface IFilterHelper<T, K>
     {
-        string ApplyFilters(T filterQueryParams, string dateParam);
+        string ApplyFilters(K filterQueryParams, string dateParam);
     }
 }

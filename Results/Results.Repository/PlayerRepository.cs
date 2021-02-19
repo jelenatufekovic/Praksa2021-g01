@@ -14,6 +14,8 @@ namespace Results.Repository
         private SqlConnection _connection;
         private SqlCommand _command;
 
+        
+
         public PlayerRepository(SqlConnection connection)
         {
             _command = new SqlCommand(String.Empty, connection);
@@ -63,25 +65,73 @@ namespace Results.Repository
             return result;
         }
 
-        //public async Task<PagedList<IPlayer>> GetPlayersByQuery(PlayerParameters parameters)
-        //{
-        //    string query = @"SELECT 
-        //                        totalCount COUNT(*) OVER(),
-        //                        Player.Id AS Id,
-        //                        Person.FirstName AS FirstName,
-        //                        Person.LastName AS LastName,
-        //                        Person.Country AS Country,
-        //                        Person.DateOfBirth AS DateOfBirth,
-        //                        Player.PlayerValue AS PlayerValue,
-        //                        Player.ByUser AS ByUser,
-        //                        Player.IsDeleted AS IsDeleted,
-        //                        Player.CreatedAt AS CreatedAt,
-        //                        Player.UpdatedAt AS UpdatedAt
-        //                    FROM Player 
-        //                    LEFT JOIN Person ON Player.Id = Person.Id";
-        //    query += 
+        public async Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters)
+        {
+            IQueryHelper<Player, PlayerParameters> _queryHelper = new QueryHelper<Player, PlayerParameters>();
 
-        //}
+            string query = @"WITH TempResult AS(
+                            SELECT 
+                                Player.Id AS Id,
+                                Person.FirstName AS FirstName,
+                                Person.LastName AS LastName,
+                                Person.Country AS Country,
+                                Person.DateOfBirth AS DateOfBirth,
+                                Player.PlayerValue AS PlayerValue,
+                                Player.ByUser AS ByUser,
+                                Player.IsDeleted AS IsDeleted,
+                                Player.CreatedAt AS CreatedAt,
+                                Player.UpdatedAt AS UpdatedAt
+                            FROM Player 
+                            LEFT JOIN Person ON Player.Id = Person.Id),
+                            TempCount AS (SELECT COUNT(*) AS TotalCount FROM TempResult)
+                            SELECT * FROM TempResult, TempCount ";
+            query += _queryHelper.Filter.ApplyFilters(parameters, nameof(IPlayer.DateOfBirth));
+            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
+            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
+
+            _command.CommandText = query;
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                await reader.ReadAsync();
+                int totalCount = Int32.Parse(reader["TotalCount"].ToString());
+                
+                PagedList<IPlayer> playerList = new PagedList<IPlayer>(totalCount, parameters.PageNumber, parameters.PageSize);
+
+                while (await reader.ReadAsync())
+                {
+                    IPlayer player = new Player()
+                    {
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Country = reader["Country"].ToString(),
+                        DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
+                        PlayerValue = Int32.Parse(reader["PlayerValue"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                    };
+                    playerList.Add(player);
+                }
+                reader.Close();
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return playerList;
+            }
+
+            if (_command.Transaction == null)
+            {
+                _connection.Close();
+            }
+
+            return null;
+
+        }
         public async Task<IPlayer> GetPlayerByIdAsync(Guid id)
         {
             _command.CommandText = @"SELECT

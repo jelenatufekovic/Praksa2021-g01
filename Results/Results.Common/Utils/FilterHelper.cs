@@ -8,19 +8,19 @@ namespace Results.Common.Utils
 {
     public class FilterHelper<T, K> : IFilterHelper<T, K>
     {
-        public string ApplyFilters(T filterQueryParams, string dateParam)
+        public string ApplyFilters(K filterQueryParams, string dateParam)
         {
-            var propertyInfos = typeof(T).GetProperties();
+            var propertyInfos = typeof(K).GetProperties();
 
             var filterQueryBuilder = new StringBuilder();
 
             foreach (var property in propertyInfos)
             {
-                if (property.Name.Equals("PageNumber") || property.Name.Equals("PageSize")) { continue; }
+                if (property.Name.Equals("PageNumber") || property.Name.Equals("PageSize") || property.Name.Equals("OrderBy")) { continue; }
 
                 var propertyValue = property.GetValue(filterQueryParams);
 
-                if (string.IsNullOrEmpty((string)propertyValue)) { continue; }
+                if (String.IsNullOrEmpty(propertyValue?.ToString())) { continue; }
 
                 if (property.Name.ToLower().Contains("min"))
                 {
@@ -33,7 +33,7 @@ namespace Results.Common.Utils
                     //filterQueryBuilder.Append($"{dateParam} <= {propertyValue} AND ");
                 }
 
-                filterQueryBuilder.Append($"{property.Name} == {propertyValue} AND ");
+                filterQueryBuilder.Append($"{property.Name} = '{propertyValue.ToString()}' AND ");
 
             }
 
@@ -44,8 +44,7 @@ namespace Results.Common.Utils
                 return String.Empty;
             }
 
-            filterQuery = String.Format($"WHERE {0}", filterQuery);
-            return filterQuery;
+            return String.Format($" WHERE {filterQuery} ");
         }
     }
 }

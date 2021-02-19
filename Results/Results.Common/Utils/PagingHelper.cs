@@ -12,8 +12,8 @@ namespace Results.Common.Utils
         {
             var orderQueryBuilder = new StringBuilder();
 
-            orderQueryBuilder.Append($"OFFSET {(pageNumber - 1) * pageSize} ROWS");
-            orderQueryBuilder.Append($"FETCH NEXT {pageSize} ROWS ONLY");
+            orderQueryBuilder.Append($" OFFSET {(pageNumber - 1) * pageSize} ROWS ");
+            orderQueryBuilder.Append($" FETCH NEXT {pageSize} ROWS ONLY;");
 
             return orderQueryBuilder.ToString();
         }

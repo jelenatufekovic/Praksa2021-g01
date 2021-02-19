@@ -38,9 +38,7 @@ namespace Results.Common.Utils
             {
                 return String.Empty;
             }
-            orderQuery = String.Format($"ORDER BY {0}", orderQuery);
-
-            return orderQuery;
+            return String.Format($" ORDER BY {orderQuery}");
         }
     }
 }
