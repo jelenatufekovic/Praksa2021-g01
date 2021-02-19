@@ -16,6 +16,7 @@ namespace Results.WebAPI.AutoMapper
         {
             CreateMap<IStandingsModel, StandingsViewModel>();
             CreateMap<CreateStandingsRest, IStandingsModel>();
+            CreateMap<UpdateStandingsRest, IStandingsModel>();
         }
     }
 }

@@ -10,7 +10,11 @@ namespace Results.Repository.Common
     public interface IStandingsRepository
     {
         Task<List<IStandingsModel>> GetTableByLeagueSeasonAsync(Guid guid);
-        Task<bool> CheckExistingClubForLeagueSeasonAsync(IStandingsModel standings);
+        Task<string> CheckExistingClubForLeagueSeasonAsync(IStandingsModel standings);
+        Task<bool> UpdateTableFromDelete(IStandingsModel standings);
         Task<bool> CreateTableByLeagueSeasonAsync(IStandingsModel standings);
+        Task<bool> UpdateTableForClubAsync(IStandingsModel standings);
+        Task<bool> DeleteTableByLeagueSeasonAsync(IStandingsModel standings);
+        Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandingsModel standings);
     }
 }

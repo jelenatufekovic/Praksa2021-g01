@@ -156,6 +156,7 @@
     <Compile Include="Models\RestModels\LeagueSeason\CreateLeagueSeasonRest.cs" />
     <Compile Include="Models\RestModels\LeagueSeason\LeagueSeasonIdProviderRest.cs" />
     <Compile Include="Models\RestModels\Standing\CreateStandingsRest.cs" />
+    <Compile Include="Models\RestModels\Standing\UpdateStandingsRest.cs" />
     <Compile Include="Models\RestModels\User\CreateUserRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserPasswordRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserRest.cs" />

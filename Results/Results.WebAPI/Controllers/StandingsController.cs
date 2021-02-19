@@ -43,24 +43,78 @@ namespace Results.WebAPI.Controllers
 
         [Route("Post")]
         [HttpPost]
-        public async Task<IHttpActionResult> CreateTableByLeagueSeasonAsync([FromUri] CreateStandingsRest createStandingRest) //kreirat iz body, takoder vidjet hoce li biti 0 po defaultu
+        public async Task<IHttpActionResult> CreateTableByLeagueSeasonAsync([FromBody] CreateStandingsRest createStandingRest)
         {
             IStandingsModel standings = _mapper.Map<IStandingsModel>(createStandingRest);
 
-            bool result = await _standingsService.CheckExistingClubForLeagueSeasonAsync(standings);
-            if (result)
+            string result = await _standingsService.CheckExistingClubForLeagueSeasonAsync(standings);
+            if (result == "Exist")
             {
                 return BadRequest("Standings for that club already exist for this League-Season");
             }
 
-            bool success = await _standingsService.CreateTableByLeagueSeasonAsync(standings);
-            if (success)
+            if (result == "Deleted")
             {
-                return Ok("Standing successfully created");
+                if(await _standingsService.UpdateTableFromDelete(standings)) return Ok("Standings for club successfully created");
+
+                return BadRequest("Something went wrong with reviveing standings for that club");
+            }
+
+            if (result == "NoExist")
+            {
+                bool success = await _standingsService.CreateTableByLeagueSeasonAsync(standings);
+                if (success)
+                {
+                    return Ok("Standings for club successfully created");
+                }
             }
 
             return BadRequest("Something went wrong");
-            
+        }
+
+        [Route("Put")]
+        [HttpPut]
+        public async Task<IHttpActionResult> UpdateTableForClubAsync([FromBody] UpdateStandingsRest updateStandingRest)
+        {
+            IStandingsModel standings = _mapper.Map<IStandingsModel>(updateStandingRest);
+
+            bool result = await _standingsService.UpdateTableForClubAsync(standings);
+            if (result)
+            {
+                return Ok("Standings for Club successfully updated");
+            }
+
+            return BadRequest("Something went wrong");
+        }
+
+        [Route("Delete/LeagueSeason")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteTableByLeagueSeasonAsync([FromBody] CreateStandingsRest createStandingRest)
+        {
+            IStandingsModel standings = _mapper.Map<IStandingsModel>(createStandingRest);
+
+            bool result = await _standingsService.DeleteTableByLeagueSeasonAsync(standings);
+            if (result)
+            {
+                return Ok("Standings for League-Season successfully deleted");
+            }
+
+            return BadRequest("Something went wrong");
+        }
+
+        [Route("Delete/ClubByLeagueSeason")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteClubTableByLeagueSeasonAsync([FromBody] CreateStandingsRest createStandingRest)
+        {
+            IStandingsModel standings = _mapper.Map<IStandingsModel>(createStandingRest);
+
+            bool result = await _standingsService.DeleteClubTableByLeagueSeasonAsync(standings);
+            if (result)
+            {
+                return Ok("Standings for club successfully deleted");
+            }
+
+            return BadRequest("Something went wrong");
         }
     }
 }

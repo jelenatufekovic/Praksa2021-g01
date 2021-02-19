@@ -17,8 +17,7 @@ namespace Results.Repository
     {
         public async Task<List<IStandingsModel>> GetTableByLeagueSeasonAsync(Guid guid)
         {
-            using (SqlConnection connection = new SqlConnection(@"Server=tcp:kruninserver.database.windows.net,1433;Initial Catalog=kruninabaza;Persist Security Info=False;User ID=krux031;Password=Desetisesti13;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
-            //new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = @"SELECT Club.Id as ClubID, Club.Name as Club, Played, Won, Draw, Lost, GoalsScored, GoalsConceded, Points 
                                 FROM Standing
@@ -49,7 +48,6 @@ namespace Results.Repository
                                 GoalsScored = Convert.ToInt32(reader["GoalsScored"].ToString()),
                                 GoalsConceded = Convert.ToInt32(reader["GoalsConceded"].ToString()),
                                 Points = Convert.ToInt32(reader["Points"].ToString()),
-                                //ByUser = Guid.Parse(reader["ByUser"].ToString()),
                             };
                             list.Add(model);
                         }
@@ -59,19 +57,16 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> CheckExistingClubForLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<string> CheckExistingClubForLeagueSeasonAsync(IStandingsModel standings)
         {
-            using (SqlConnection connection = new SqlConnection(@"Server=tcp:kruninserver.database.windows.net,1433;Initial Catalog=kruninabaza;Persist Security Info=False;User ID=krux031;Password=Desetisesti13;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
-            //new SqlConnection(ConnectionString.GetDefaultConnectionString())) PROMIJENI U STANDINGS QUERY
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"SELECT LeagueSeasonID, ClubID FROM Standing
+                string query = @"SELECT LeagueSeasonID, ClubID, IsDeleted FROM Standing
                                 WHERE LeagueSeasonID = @LeagueSeasonID
-                                AND ClubID = @ClubID
-                                AND IsDeleted = @IsDeleted";
+                                AND ClubID = @ClubID";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
                     command.Parameters.AddWithValue("@leagueSeasonID", standings.LeagueSeasonID);
                     command.Parameters.AddWithValue("@ClubID", standings.ClubID);
 
@@ -84,31 +79,54 @@ namespace Results.Repository
                             model =new StandingsModel
                             {
                                 ClubID = Guid.Parse(reader["ClubID"].ToString()),
-                                LeagueSeasonID = Guid.Parse(reader["LeagueSeasonID"].ToString())
+                                LeagueSeasonID = Guid.Parse(reader["LeagueSeasonID"].ToString()),
+                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString())
                             };
                         }
 
-                        if(model == null)
-                        {
-                            return false;
-                        }
-                        return true;
+                        if (model == null) return "NoExist";
+
+                        if (model.IsDeleted == true) return "Deleted";
+
+                        return "Exist";
                     }
+                }
+            }
+        }
+
+        public async Task<bool> UpdateTableFromDelete(IStandingsModel standings)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            {
+                string query = @"UPDATE Standing
+                                SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
+                                WHERE LeagueSeasonID = @LeagueSeasonID
+                                AND ClubID = @ClubID";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@LeagueSeasonID", standings.LeagueSeasonID);
+                    command.Parameters.AddWithValue("@ClubID", standings.ClubID);
+                    command.Parameters.AddWithValue("@UpdatedAt", standings.UpdatedAt = DateTime.Now);
+                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
+                    command.Parameters.AddWithValue("@ByUser", standings.ByUser);
+
+                    await connection.OpenAsync();
+                    return (await command.ExecuteNonQueryAsync()) > 0;
                 }
             }
         }
 
         public async Task<bool> CreateTableByLeagueSeasonAsync(IStandingsModel standings)
         {
-            using (SqlConnection connection = new SqlConnection(@"Server=tcp:kruninserver.database.windows.net,1433;Initial Catalog=kruninabaza;Persist Security Info=False;User ID=krux031;Password=Desetisesti13;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
-            //new SqlConnection(ConnectionString.GetDefaultConnectionString())) PROMIJENI U STANDINGS QUERY
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
             {
                 string query = @"INSERT INTO Standing(LeagueSeasonID, ClubID, Played, Won, Draw, Lost, GoalsScored, GoalsConceded, Points, CreatedAt, UpdatedAt, IsDeleted, ByUser)
                                 VALUES(@LeagueSeasonID, @ClubID, @Played, @Won, @Draw, @Lost, @GoalsScored, @GoalsConceded, @Points, @CreatedAt, @UpdatedAt, @IsDeleted, @ByUser)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@leagueSeasonID", standings.LeagueSeasonID);
+                    command.Parameters.AddWithValue("@LeagueSeasonID", standings.LeagueSeasonID);
                     command.Parameters.AddWithValue("@ClubID", standings.ClubID);
                     command.Parameters.AddWithValue("@Played", standings.Played = 0);
                     command.Parameters.AddWithValue("@Won", standings.Won = 0);
@@ -123,29 +141,79 @@ namespace Results.Repository
                     command.Parameters.AddWithValue("@ByUser", standings.ByUser);
 
                     await connection.OpenAsync();
-                    using (SqlDataAdapter adapter = new SqlDataAdapter())
-                    {
-                        adapter.InsertCommand = command;
+                    return (await command.ExecuteNonQueryAsync()) > 0;
+                }
+            }
+        }
 
-                        try
-                        {
-                            if(await adapter.InsertCommand.ExecuteNonQueryAsync() == 0)
-                            {
-                                return false;
-                            }
-                        }
+        public async Task<bool> UpdateTableForClubAsync(IStandingsModel standings)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
+            {
+                string query = @"UPDATE Standing
+                                SET LeagueSeasonID = @LeagueSeasonID, ClubID=@ClubID, Played=@Played, Won=@Won, Draw=@Draw, Lost=@Lost, GoalsScored=@GoalsScored, GoalsConceded=@GoalsConceded, Points=@Points, UpdatedAt=@UpdatedAt, IsDeleted=@IsDeleted, ByUser=@ByUser
+                                WHERE LeagueSeasonID = @LeagueSeasonID
+                                AND ClubID = @ClubID";
 
-                        catch (DbException)
-                        {
-                            return false;
-                        }
-                        finally
-                        {
-                            connection.Close();
-                        }
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@LeagueSeasonID", standings.LeagueSeasonID);
+                    command.Parameters.AddWithValue("@ClubID", standings.ClubID);
+                    command.Parameters.AddWithValue("@Played", (standings.Won + standings.Draw + standings.Lost));
+                    command.Parameters.AddWithValue("@Won", standings.Won);
+                    command.Parameters.AddWithValue("@Draw", standings.Draw);
+                    command.Parameters.AddWithValue("@Lost", standings.Lost);
+                    command.Parameters.AddWithValue("@GoalsScored", standings.GoalsScored);
+                    command.Parameters.AddWithValue("@GoalsConceded", standings.GoalsConceded);
+                    command.Parameters.AddWithValue("@Points", ((standings.Won*3)+standings.Draw));
+                    command.Parameters.AddWithValue("@UpdatedAt", standings.UpdatedAt = DateTime.Now);
+                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
+                    command.Parameters.AddWithValue("@ByUser", standings.ByUser);
 
-                        return true;
-                    }
+                    await connection.OpenAsync();
+                    return (await command.ExecuteNonQueryAsync()) > 0;
+                }
+            }
+        }
+
+        public async Task<bool> DeleteTableByLeagueSeasonAsync(IStandingsModel standings)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
+            {
+                string query = @"UPDATE Standing
+                                SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
+                                WHERE LeagueSeasonID = @LeagueSeasonID;";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@LeagueSeasonID", standings.LeagueSeasonID);
+                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
+                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+                    command.Parameters.AddWithValue("@ByUser", standings.ByUser);
+
+                    await connection.OpenAsync();
+                    return (await command.ExecuteNonQueryAsync()) > 0;
+                }
+            }
+        }
+
+        public async Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandingsModel standings)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            {
+                string query = @"UPDATE Standing
+                                SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
+                                WHERE LeagueSeasonID = @LeagueSeasonID
+                                AND ClubID = @ClubID";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@LeagueSeasonID", standings.LeagueSeasonID);
+                    command.Parameters.AddWithValue("@ClubID", standings.ClubID);
+                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
+                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+                    command.Parameters.AddWithValue("@ByUser", standings.ByUser);
+
+                    await connection.OpenAsync();
+                    return (await command.ExecuteNonQueryAsync()) > 0;
                 }
             }
         }
