@@ -102,6 +102,7 @@
     <Compile Include="PersonRepository.cs" />
     <Compile Include="PlayerRepository.cs" />
     <Compile Include="RefereeRepository.cs" />
+    <Compile Include="RepositoryBase.cs" />
     <Compile Include="RepositoryFactory.cs" />
     <Compile Include="RepositoryModule.cs" />
     <Compile Include="ResultsRepository.cs" />

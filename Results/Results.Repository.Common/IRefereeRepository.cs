@@ -1,4 +1,6 @@
-﻿using Results.Model.Common;
+﻿using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
+using Results.Model.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace Results.Repository.Common
         Task<bool> CreateRefereeAsync(IReferee referee);
         Task<bool> DeleteRefereeAsync(Guid id, Guid userId);
         Task<IReferee> GetRefereeByIdAsync(Guid id);
+        Task<PagedList<IReferee>> GetRefereeByQueryAsync(RefereeParameters parameters);
         Task<bool> UpdateRefereeAsync(IReferee referee);
     }
 }

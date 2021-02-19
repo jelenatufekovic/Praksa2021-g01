@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Results.Common.Utils
+namespace Results.Common.Utils.QueryParameters
 {
     public abstract class QueryParameters
     {
@@ -28,7 +28,7 @@ namespace Results.Common.Utils
             }
         }
 
-        public bool IsDeleted { get; set; }
+        public string IsDeleted { get; set; }
         public string ByUser { get; set; }
         public DateTime MinCreatedAt { get; set; }
         public DateTime MaxCreatedAt { get; set; } = DateTime.Now;

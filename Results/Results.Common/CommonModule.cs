@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using Results.Common.Utils;
+using Results.Common.Utils.QueryHelpers;
+using Results.Common.Utils.QueryParameters;
 using Results.Model;
 using Results.Model.Common;
 
@@ -11,12 +12,31 @@ namespace Results.Common
         {
             base.Load(builder);
 
-            builder.RegisterType<FilterHelper<IPlayer, PlayerParameters>>().As<IFilterHelper<IPlayer, PlayerParameters>>().InstancePerDependency();
-            builder.RegisterType<SortHelper<PlayerParameters>>().As<ISortHelper<PlayerParameters>>().InstancePerDependency();
             builder.RegisterType<PagingHelper>().As<IPagingHelper>().InstancePerDependency();
 
-            builder.RegisterType<QueryHelper<IPlayer, PlayerParameters>>().As<IQueryHelper<IPlayer, PlayerParameters>>().InstancePerDependency();
+            #region FilterHelpers
 
+            builder.RegisterType<FilterHelper<IPlayer, PlayerParameters>>().As<IFilterHelper<IPlayer, PlayerParameters>>().InstancePerDependency();
+            builder.RegisterType<FilterHelper<ICoach, CoachParameters>>().As<IFilterHelper<ICoach, CoachParameters>>().InstancePerDependency();
+            builder.RegisterType<FilterHelper<IReferee, RefereeParameters>>().As<IFilterHelper<IReferee, RefereeParameters>>().InstancePerDependency();
+
+            #endregion
+
+            #region SortHelpers
+
+            builder.RegisterType<SortHelper<PlayerParameters>>().As<ISortHelper<PlayerParameters>>().InstancePerDependency();
+            builder.RegisterType<SortHelper<CoachParameters>>().As<ISortHelper<CoachParameters>>().InstancePerDependency();
+            builder.RegisterType<SortHelper<RefereeParameters>>().As<ISortHelper<RefereeParameters>>().InstancePerDependency();
+
+            #endregion
+
+            #region QueryHelpers
+            
+            builder.RegisterType<QueryHelper<IPlayer, PlayerParameters>>().As<IQueryHelper<IPlayer, PlayerParameters>>().InstancePerDependency();
+            builder.RegisterType<QueryHelper<ICoach, CoachParameters>>().As<IQueryHelper<ICoach, CoachParameters>>().InstancePerDependency();
+            builder.RegisterType<QueryHelper<IReferee, RefereeParameters>>().As<IQueryHelper<IReferee, RefereeParameters>>().InstancePerDependency();
+            
+            #endregion
         }
     }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Results.Common.Utils
+namespace Results.Common.Utils.QueryHelpers
 {
     public interface IFilterHelper<T, K>
     {
-        string ApplyFilters(K filterQueryParams, string dateParam);
+        string ApplyFilters(K filterQueryParams);
     }
 }

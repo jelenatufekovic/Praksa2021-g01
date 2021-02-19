@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 using Results.Model.Common;
 using Results.Service.Common;
 using Results.WebAPI.Models.RestModels.Person;
 using Results.WebAPI.Models.ViewModels.Person;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -34,6 +37,25 @@ namespace Results.WebAPI.Controllers
 
             return Ok(_mapper.Map<CoachViewModel>(coach));
         }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetCoachByQueryAsync([FromUri] CoachParameters parameters)
+        {
+            if (!parameters.IsValid())
+            {
+                return BadRequest();
+            }
+
+            PagedList<ICoach> playerList = await _coachService.GetCoachByQueryAsync(parameters);
+
+            if (playerList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<PagedList<ICoach>, IEnumerable<CoachViewModel>>(playerList));
+        }
+
 
         [HttpPost]
         public async Task<IHttpActionResult> CreateCoachAsync([FromBody] CoachRest coachRest)

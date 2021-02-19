@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Results.Common.Utils
+namespace Results.Common.Utils.QueryHelpers
 {
     public class SortHelper<T> : ISortHelper<T>
     {

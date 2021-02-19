@@ -1,4 +1,6 @@
 ﻿using Results.Common.Utils;
+using Results.Common.Utils.QueryHelpers;
+using Results.Common.Utils.QueryParameters;
 using Results.Model;
 using Results.Model.Common;
 using Results.Repository.Common;
@@ -121,6 +123,62 @@ namespace Results.Repository
             }
         }
 
+        public async Task<PagedList<IReferee>> GetRefereeByQueryAsync(RefereeParameters parameters)
+        {
+            IQueryHelper<IReferee, RefereeParameters> _queryHelper = new QueryHelper<IReferee, RefereeParameters>();
+
+            int totalCount = await GetTableCount();
+
+            string query = @"SELECT 
+                                Referee.Id AS Id,
+                                Person.FirstName AS FirstName,
+                                Person.LastName AS LastName,
+                                Person.Country AS Country,
+                                Person.DateOfBirth AS DateOfBirth,
+                                Referee.Rating AS Rating,
+                                Referee.ByUser AS ByUser,
+                                Referee.IsDeleted AS IsDeleted,
+                                Referee.CreatedAt AS CreatedAt,
+                                Referee.UpdatedAt AS UpdatedAt
+                            FROM Referee 
+                            LEFT JOIN Person ON Referee.Id = Person.Id ";
+            query += _queryHelper.Filter.ApplyFilters(parameters);
+            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
+            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
+
+            _command.CommandText = query;
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                PagedList<IReferee> refereeList = new PagedList<IReferee>(totalCount, parameters.PageNumber, parameters.PageSize);
+
+                while (await reader.ReadAsync())
+                {
+                    IReferee referee = new Referee()
+                    {
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Country = reader["Country"].ToString(),
+                        DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
+                        Rating = Int32.Parse(reader["Rating"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                    };
+                    refereeList.Add(referee);
+                }
+                reader.Close();
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return refereeList;
+            }
+        }
+
         public async Task<bool> UpdateRefereeAsync(IReferee referee)
         {
             _command.CommandText = "UPDATE Referee SET Rating = @Rating, @UpdatedAt = UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
@@ -138,6 +196,12 @@ namespace Results.Repository
             }
 
             return result;
+        }
+
+        private async Task<int> GetTableCount()
+        {
+            _command.CommandText = "SELECT COUNT(*) AS TotalCount FROM Referee;";
+            return (Int32)(await _command.ExecuteScalarAsync());
         }
     }
 }

@@ -25,11 +25,6 @@ namespace Results.Repository
 
             builder.RegisterType<RepositoryFactory>().As<IRepositoryFactory>().InstancePerDependency();
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerDependency();
-
-            builder.RegisterType<FilterHelper<IPlayer, PlayerParameters>>().As<IFilterHelper<IPlayer, PlayerParameters>>().InstancePerDependency();
-            builder.RegisterType<SortHelper<PlayerParameters>>().As<ISortHelper<PlayerParameters>>().InstancePerDependency();
-            builder.RegisterType<PagingHelper>().As<IPagingHelper>().InstancePerDependency();
-
         }
     }
 }

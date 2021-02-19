@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Results.Common.Utils
+namespace Results.Common.Utils.QueryHelpers
 {
     public class FilterHelper<T, K> : IFilterHelper<T, K>
     {
-        public string ApplyFilters(K filterQueryParams, string dateParam)
+        public string ApplyFilters(K filterQueryParams)
         {
             PropertyInfo[] propertyInfos = typeof(K).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             List<PropertyInfo> propertyInfosFromModel = typeof(T).GetInterfaces().SelectMany(i => i.GetProperties()).ToList();
