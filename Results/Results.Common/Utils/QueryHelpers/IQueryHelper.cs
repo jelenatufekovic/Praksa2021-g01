@@ -1,9 +1,9 @@
-﻿namespace Results.Common.Utils
+﻿namespace Results.Common.Utils.QueryHelpers
 {
     public interface IQueryHelper<T, K>
     {
-        ISortHelper<T> Sort { get; }
         IFilterHelper<T, K> Filter { get; }
+        ISortHelper<T> Sort { get; }
         IPagingHelper Paging { get; }
     }
 }

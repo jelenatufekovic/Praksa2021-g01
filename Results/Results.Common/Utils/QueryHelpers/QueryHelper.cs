@@ -1,4 +1,4 @@
-﻿namespace Results.Common.Utils
+﻿namespace Results.Common.Utils.QueryHelpers
 {
     public class QueryHelper<T, K> : IQueryHelper<T, K>
     {

@@ -1,4 +1,5 @@
 ﻿using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 using Results.Model.Common;
 using System;
 using System.Threading.Tasks;

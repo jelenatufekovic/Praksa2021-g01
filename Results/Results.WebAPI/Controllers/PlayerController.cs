@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 using Results.Model.Common;
 using Results.Service.Common;
 using Results.WebAPI.Models.RestModels.Person;
@@ -53,7 +54,7 @@ namespace Results.WebAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<PagedList<IPlayer>, List<PlayerViewModel>>(playerList));
+            return Ok(_mapper.Map<PagedList<IPlayer>, IEnumerable<PlayerViewModel>>(playerList));
         }
 
         [HttpPost]

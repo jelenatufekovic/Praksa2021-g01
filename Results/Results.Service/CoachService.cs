@@ -1,4 +1,6 @@
-﻿using Results.Model.Common;
+﻿using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
+using Results.Model.Common;
 using Results.Repository;
 using Results.Repository.Common;
 using Results.Service.Common;
@@ -41,6 +43,13 @@ namespace Results.Service
             ICoachRepository coachRepository = _repositoryFactory.GetRepository<CoachRepository>();
 
             return await coachRepository.GetCoachByIdAsync(id);
+        }
+
+        public async Task<PagedList<ICoach>> GetCoachByQueryAsync(CoachParameters parameters)
+        {
+            ICoachRepository coachRepository = _repositoryFactory.GetRepository<CoachRepository>();
+
+            return await coachRepository.GetCoachByQueryAsync(parameters);
         }
 
         public async Task<bool> UpdateCoachAsync(ICoach coach)

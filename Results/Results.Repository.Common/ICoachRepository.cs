@@ -1,4 +1,6 @@
-﻿using Results.Model.Common;
+﻿using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
+using Results.Model.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace Results.Repository.Common
         Task<bool> CreateCoachAsync(ICoach coach);
         Task<bool> DeleteCoachAsync(Guid id, Guid userId);
         Task<ICoach> GetCoachByIdAsync(Guid id);
+        Task<PagedList<ICoach>> GetCoachByQueryAsync(CoachParameters parameters);
         Task<bool> UpdateCoachAsync(ICoach coach);
     }
 }

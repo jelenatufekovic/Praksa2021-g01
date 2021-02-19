@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 using Results.Model.Common;
 using Results.Service.Common;
 using Results.WebAPI.Models.RestModels.Person;
 using Results.WebAPI.Models.ViewModels.Person;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -33,6 +36,24 @@ namespace Results.WebAPI.Controllers
             }
 
             return Ok(_mapper.Map<RefereeViewModel>(Referee));
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetRefereeByQueryAsync([FromUri] RefereeParameters parameters)
+        {
+            if (!parameters.IsValid())
+            {
+                return BadRequest();
+            }
+
+            PagedList<IReferee> playerList = await _refereeService.GetRefereeByQueryAsync(parameters);
+
+            if (playerList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<PagedList<IReferee>, IEnumerable<RefereeViewModel>>(playerList));
         }
 
         [HttpPost]

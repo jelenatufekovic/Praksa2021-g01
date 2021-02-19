@@ -1,4 +1,6 @@
-﻿using Results.Model.Common;
+﻿using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
+using Results.Model.Common;
 using Results.Repository;
 using Results.Repository.Common;
 using Results.Service.Common;
@@ -41,6 +43,13 @@ namespace Results.Service
             IRefereeRepository refereeRepository = _repositoryFactory.GetRepository<RefereeRepository>();
 
             return await refereeRepository.GetRefereeByIdAsync(id);
+        }
+
+        public async Task<PagedList<IReferee>> GetRefereeByQueryAsync(RefereeParameters parameters)
+        {
+            IRefereeRepository refereeRepository = _repositoryFactory.GetRepository<RefereeRepository>();
+
+            return await refereeRepository.GetRefereeByQueryAsync(parameters);
         }
 
         public async Task<bool> UpdateRefereeAsync(IReferee referee)

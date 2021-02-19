@@ -1,4 +1,6 @@
 ﻿using Results.Common.Utils;
+using Results.Common.Utils.QueryHelpers;
+using Results.Common.Utils.QueryParameters;
 using Results.Model;
 using Results.Model.Common;
 using Results.Repository.Common;
@@ -9,19 +11,19 @@ using System.Threading.Tasks;
 
 namespace Results.Repository
 {
-    public class PlayerRepository : IPlayerRepository
+    public class PlayerRepository : RepositoryBase, IPlayerRepository
     {
         private SqlConnection _connection;
         private SqlCommand _command;
 
-        public PlayerRepository(SqlConnection connection)
+        public PlayerRepository(SqlConnection connection) : base(connection)
         {
             _command = new SqlCommand(String.Empty, connection);
             _connection = connection;
             _connection.Open();
         }
 
-        public PlayerRepository(SqlTransaction transaction)
+        public PlayerRepository(SqlTransaction transaction) : base(transaction.Connection)
         {
             _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
         }
@@ -63,61 +65,6 @@ namespace Results.Repository
             return result;
         }
 
-        public async Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters)
-        {
-            IQueryHelper<IPlayer, PlayerParameters> _queryHelper = new QueryHelper<IPlayer, PlayerParameters>();
-            
-            int totalCount = await GetTableCount();
-
-            string query = @"SELECT 
-                                Player.Id AS Id,
-                                Person.FirstName AS FirstName,
-                                Person.LastName AS LastName,
-                                Person.Country AS Country,
-                                Person.DateOfBirth AS DateOfBirth,
-                                Player.PlayerValue AS PlayerValue,
-                                Player.ByUser AS ByUser,
-                                Player.IsDeleted AS IsDeleted,
-                                Player.CreatedAt AS CreatedAt,
-                                Player.UpdatedAt AS UpdatedAt
-                             FROM Player 
-                             LEFT JOIN Person ON Player.Id = Person.Id ";
-            query += _queryHelper.Filter.ApplyFilters(parameters, nameof(IPlayer.DateOfBirth));
-            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
-            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
-
-            _command.CommandText = query;
-            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
-            {
-                PagedList<IPlayer> playerList = new PagedList<IPlayer>(totalCount, parameters.PageNumber, parameters.PageSize);
-
-                while (await reader.ReadAsync())
-                {
-                    IPlayer player = new Player()
-                    {
-                        Id = Guid.Parse(reader["Id"].ToString()),
-                        FirstName = reader["FirstName"].ToString(),
-                        LastName = reader["LastName"].ToString(),
-                        Country = reader["Country"].ToString(),
-                        DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
-                        PlayerValue = Int32.Parse(reader["PlayerValue"].ToString()),
-                        ByUser = Guid.Parse(reader["ByUser"].ToString()),
-                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                    };
-                    playerList.Add(player);
-                }
-                reader.Close();
-
-                if (_command.Transaction == null)
-                {
-                    _connection.Close();
-                }
-
-                return playerList;
-            }
-        }
         public async Task<IPlayer> GetPlayerByIdAsync(Guid id)
         {
             _command.CommandText = @"SELECT
@@ -174,6 +121,63 @@ namespace Results.Repository
             }
         }
 
+        public async Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters)
+        {
+            //IQueryHelper<IPlayer, PlayerParameters> _queryHelper = new QueryHelper<IPlayer, PlayerParameters>();
+            IQueryHelper<IPlayer, PlayerParameters> _queryHelper = GetQueryHelper<IPlayer, PlayerParameters>();
+            
+            int totalCount = await GetTableCount<Player>();
+
+            string query = @"SELECT 
+                                Player.Id AS Id,
+                                Person.FirstName AS FirstName,
+                                Person.LastName AS LastName,
+                                Person.Country AS Country,
+                                Person.DateOfBirth AS DateOfBirth,
+                                Player.PlayerValue AS PlayerValue,
+                                Player.ByUser AS ByUser,
+                                Player.IsDeleted AS IsDeleted,
+                                Player.CreatedAt AS CreatedAt,
+                                Player.UpdatedAt AS UpdatedAt
+                             FROM Player 
+                             LEFT JOIN Person ON Player.Id = Person.Id ";
+            query += _queryHelper.Filter.ApplyFilters(parameters);
+            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
+            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
+
+            _command.CommandText = query;
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                PagedList<IPlayer> playerList = new PagedList<IPlayer>(totalCount, parameters.PageNumber, parameters.PageSize);
+
+                while (await reader.ReadAsync())
+                {
+                    IPlayer player = new Player()
+                    {
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        FirstName = reader["FirstName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Country = reader["Country"].ToString(),
+                        DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
+                        PlayerValue = Int32.Parse(reader["PlayerValue"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                    };
+                    playerList.Add(player);
+                }
+                reader.Close();
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return playerList;
+            }
+        }
+
         public async Task<bool> UpdatePlayerAsync(IPlayer player)
         {
             _command.CommandText = "UPDATE Player SET PlayerValue = @PlayerValue, ByUser = @ByUser WHERE Id = @Id;";
@@ -192,10 +196,10 @@ namespace Results.Repository
             return result;
         }
 
-        private async Task<int> GetTableCount()
-        {
-            _command.CommandText = "SELECT COUNT(*) AS TotalCount FROM Player;";
-            return (Int32)(await _command.ExecuteScalarAsync());
-        }
+        //private async Task<int> GetTableCount()
+        //{
+        //    _command.CommandText = "SELECT COUNT(*) AS TotalCount FROM Player;";
+        //    return (Int32)(await _command.ExecuteScalarAsync());
+        //}
     }
 }
