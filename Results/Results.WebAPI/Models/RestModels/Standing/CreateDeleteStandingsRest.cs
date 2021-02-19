@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Results.WebAPI.Models.RestModels.Standing
 {
-    public class CreateStandingsRest
+    public class CreateDeleteStandingsRest
     {
         public Guid LeagueSeasonID { get; set; }
         public Guid ClubID { get; set; }

@@ -9,7 +9,7 @@ namespace Results.Repository.Common
 {
     public interface ILeagueSeasonRepository
     {
-        Task<List<ILeagueSeasonModel>> GetAllLeagueSeasonIdAsync();
-        Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeasonModel leagueSeasonModel);
+        Task<List<ILeagueSeason>> GetAllLeagueSeasonIdAsync();
+        Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeason leagueSeasonModel);
     }
 }

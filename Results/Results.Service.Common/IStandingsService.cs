@@ -9,13 +9,13 @@ namespace Results.Service.Common
 {
     public interface IStandingsService
     {
-        Task<List<IStandingsModel>> GetTableByLeagueSeasonAsync(Guid guid);
-        Task<string> CheckExistingClubForLeagueSeasonAsync(IStandingsModel standings);
-        Task<bool> UpdateTableFromDelete(IStandingsModel standings);
-        Task<bool> CreateTableByLeagueSeasonAsync(IStandingsModel standings);
-        Task<bool> UpdateTableForClubAsync(IStandingsModel standings);
-        Task<bool> DeleteTableByLeagueSeasonAsync(IStandingsModel standings);
-        Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandingsModel standings);
+        Task<List<IStandings>> GetTableByLeagueSeasonAsync(Guid guid);
+        Task<string> CheckExistingClubForLeagueSeasonAsync(IStandings standings);
+        Task<bool> UpdateTableFromDelete(IStandings standings);
+        Task<bool> CreateTableByLeagueSeasonAsync(IStandings standings);
+        Task<bool> UpdateTableForClubAsync(IStandings standings);
+        Task<bool> DeleteTableByLeagueSeasonAsync(IStandings standings);
+        Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandings standings);
 
     }
 }

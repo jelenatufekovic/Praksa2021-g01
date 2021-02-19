@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Results.Model.Common
 {
-    public interface IStandingsModel : IModelBase
+    public interface IStandings : IModelBase
     {
         Guid LeagueSeasonID { get; set; }
         Guid ClubID { get; set; }

@@ -18,37 +18,37 @@ namespace Results.Service
             _standingsRepository = standingRepository;
         }
 
-        public async Task<List<IStandingsModel>> GetTableByLeagueSeasonAsync(Guid guid)
+        public async Task<List<IStandings>> GetTableByLeagueSeasonAsync(Guid guid)
         {
             return await _standingsRepository.GetTableByLeagueSeasonAsync(guid);
         }
 
-        public async Task<string> CheckExistingClubForLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<string> CheckExistingClubForLeagueSeasonAsync(IStandings standings)
         {
             return await _standingsRepository.CheckExistingClubForLeagueSeasonAsync(standings);
         }
 
-        public async Task<bool> UpdateTableFromDelete(IStandingsModel standings)
+        public async Task<bool> UpdateTableFromDelete(IStandings standings)
         {
             return await _standingsRepository.UpdateTableFromDelete(standings);
         }
 
-        public async Task<bool> CreateTableByLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<bool> CreateTableByLeagueSeasonAsync(IStandings standings)
         {
             return await _standingsRepository.CreateTableByLeagueSeasonAsync(standings);
         }
 
-        public async Task<bool> UpdateTableForClubAsync(IStandingsModel standings)
+        public async Task<bool> UpdateTableForClubAsync(IStandings standings)
         {
             return await _standingsRepository.UpdateTableForClubAsync(standings);
         }
 
-        public async Task<bool> DeleteTableByLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<bool> DeleteTableByLeagueSeasonAsync(IStandings standings)
         {
             return await _standingsRepository.DeleteTableByLeagueSeasonAsync(standings);
         }
 
-        public async Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandings standings)
         {
             return await _standingsRepository.DeleteClubTableByLeagueSeasonAsync(standings);
         }

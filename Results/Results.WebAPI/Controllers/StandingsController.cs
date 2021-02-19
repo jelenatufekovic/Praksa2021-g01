@@ -30,22 +30,22 @@ namespace Results.WebAPI.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetTableByLeagueSeasonAsync([FromUri] Guid guid)
         {
-            List<IStandingsModel> standings = await _standingsService.GetTableByLeagueSeasonAsync(guid);
+            List<IStandings> standings = await _standingsService.GetTableByLeagueSeasonAsync(guid);
 
             if (standings == null)
             {
                 return NotFound();
             }
 
-            List<StandingsViewModel> view = _mapper.Map<List<IStandingsModel>, List<StandingsViewModel>>(standings);
+            List<StandingsViewModel> view = _mapper.Map<List<IStandings>, List<StandingsViewModel>>(standings);
             return Ok(view);
         }
 
         [Route("Post")]
         [HttpPost]
-        public async Task<IHttpActionResult> CreateTableByLeagueSeasonAsync([FromBody] CreateStandingsRest createStandingRest)
+        public async Task<IHttpActionResult> CreateTableByLeagueSeasonAsync([FromBody] CreateDeleteStandingsRest createStandingRest)
         {
-            IStandingsModel standings = _mapper.Map<IStandingsModel>(createStandingRest);
+            IStandings standings = _mapper.Map<IStandings>(createStandingRest);
 
             string result = await _standingsService.CheckExistingClubForLeagueSeasonAsync(standings);
             if (result == "Exist")
@@ -76,7 +76,7 @@ namespace Results.WebAPI.Controllers
         [HttpPut]
         public async Task<IHttpActionResult> UpdateTableForClubAsync([FromBody] UpdateStandingsRest updateStandingRest)
         {
-            IStandingsModel standings = _mapper.Map<IStandingsModel>(updateStandingRest);
+            IStandings standings = _mapper.Map<IStandings>(updateStandingRest);
 
             bool result = await _standingsService.UpdateTableForClubAsync(standings);
             if (result)
@@ -89,9 +89,9 @@ namespace Results.WebAPI.Controllers
 
         [Route("Delete/LeagueSeason")]
         [HttpDelete]
-        public async Task<IHttpActionResult> DeleteTableByLeagueSeasonAsync([FromBody] CreateStandingsRest createStandingRest)
+        public async Task<IHttpActionResult> DeleteTableByLeagueSeasonAsync([FromBody] CreateDeleteStandingsRest deleteStandingRest)
         {
-            IStandingsModel standings = _mapper.Map<IStandingsModel>(createStandingRest);
+            IStandings standings = _mapper.Map<IStandings>(deleteStandingRest);
 
             bool result = await _standingsService.DeleteTableByLeagueSeasonAsync(standings);
             if (result)
@@ -104,9 +104,9 @@ namespace Results.WebAPI.Controllers
 
         [Route("Delete/ClubByLeagueSeason")]
         [HttpDelete]
-        public async Task<IHttpActionResult> DeleteClubTableByLeagueSeasonAsync([FromBody] CreateStandingsRest createStandingRest)
+        public async Task<IHttpActionResult> DeleteClubTableByLeagueSeasonAsync([FromBody] CreateDeleteStandingsRest deleteStandingRest)
         {
-            IStandingsModel standings = _mapper.Map<IStandingsModel>(createStandingRest);
+            IStandings standings = _mapper.Map<IStandings>(deleteStandingRest);
 
             bool result = await _standingsService.DeleteClubTableByLeagueSeasonAsync(standings);
             if (result)

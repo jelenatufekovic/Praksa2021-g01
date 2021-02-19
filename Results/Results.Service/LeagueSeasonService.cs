@@ -17,15 +17,15 @@ namespace Results.Service
         {
             _leagueSeasonRepository = leagueSeasonRepository;
         }
-        public async Task<List<ILeagueSeasonModel>> GetAllLeagueSeasonIdAsync()
+        public async Task<List<ILeagueSeason>> GetAllLeagueSeasonIdAsync()
         {
             return await _leagueSeasonRepository.GetAllLeagueSeasonIdAsync();
         }
 
-        public async Task<ILeagueSeasonModel> GetLeagueSeasonByBothIdAsync(ILeagueSeasonModel leagueSeasonModel)
+        public async Task<ILeagueSeason> GetLeagueSeasonByBothIdAsync(ILeagueSeason leagueSeasonModel)
         {
-            List<ILeagueSeasonModel> list = await _leagueSeasonRepository.GetAllLeagueSeasonIdAsync();
-            ILeagueSeasonModel model = null;
+            List<ILeagueSeason> list = await _leagueSeasonRepository.GetAllLeagueSeasonIdAsync();
+            ILeagueSeason model = null;
             try
             {
                 model = list.Where(x => x.LeagueID == leagueSeasonModel.LeagueID && x.SeasonID == leagueSeasonModel.SeasonID).FirstOrDefault();
@@ -39,7 +39,7 @@ namespace Results.Service
             return model;
         }
 
-        public async Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeasonModel leagueSeasonModel)
+        public async Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeason leagueSeasonModel)
         {
             return await _leagueSeasonRepository.LeagueSeasonRegistrationAsync(leagueSeasonModel);
         }

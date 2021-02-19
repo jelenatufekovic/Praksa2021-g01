@@ -15,7 +15,7 @@ namespace Results.Repository
 {
     public class StandingsRepository : IStandingsRepository
     {
-        public async Task<List<IStandingsModel>> GetTableByLeagueSeasonAsync(Guid guid)
+        public async Task<List<IStandings>> GetTableByLeagueSeasonAsync(Guid guid)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
@@ -34,10 +34,10 @@ namespace Results.Repository
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        List<IStandingsModel> list = new List<IStandingsModel>();
+                        List<IStandings> list = new List<IStandings>();
                         while (await reader.ReadAsync())
                         {
-                            IStandingsModel model = new StandingsModel()
+                            IStandings model = new Standings()
                             {
                                 ClubID = Guid.Parse(reader["ClubID"].ToString()),
                                 ClubName = reader["Club"].ToString(),
@@ -57,7 +57,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<string> CheckExistingClubForLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<string> CheckExistingClubForLeagueSeasonAsync(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
@@ -73,10 +73,10 @@ namespace Results.Repository
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        IStandingsModel model = null;
+                        IStandings model = null;
                         while (await reader.ReadAsync())
                         {
-                            model =new StandingsModel
+                            model =new Standings
                             {
                                 ClubID = Guid.Parse(reader["ClubID"].ToString()),
                                 LeagueSeasonID = Guid.Parse(reader["LeagueSeasonID"].ToString()),
@@ -94,7 +94,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> UpdateTableFromDelete(IStandingsModel standings)
+        public async Task<bool> UpdateTableFromDelete(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
@@ -117,7 +117,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> CreateTableByLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<bool> CreateTableByLeagueSeasonAsync(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
             {
@@ -146,7 +146,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> UpdateTableForClubAsync(IStandingsModel standings)
+        public async Task<bool> UpdateTableForClubAsync(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
             {
@@ -176,7 +176,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> DeleteTableByLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<bool> DeleteTableByLeagueSeasonAsync(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
             {
@@ -196,7 +196,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandingsModel standings)
+        public async Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
