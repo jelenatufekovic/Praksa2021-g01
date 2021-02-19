@@ -83,6 +83,7 @@
     <Compile Include="IPlayerRepository.cs" />
     <Compile Include="IRefereeRepository.cs" />
     <Compile Include="ILeagueSeasonRepository.cs" />
+    <Compile Include="IRepositoryBase.cs" />
     <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="IResultsRepository.cs" />
     <Compile Include="IStandingsRepository.cs" />
