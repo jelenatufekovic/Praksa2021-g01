@@ -144,9 +144,16 @@
   <ItemGroup>
     <Compile Include="App_Start\ContainerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="AutoMapper\CoachProfile.cs" />
+    <Compile Include="AutoMapper\PlayerProfile.cs" />
+    <Compile Include="AutoMapper\RefereeProfile.cs" />
     <Compile Include="AutoMapper\LeagueSeasonProfile.cs" />
     <Compile Include="AutoMapper\StandingsProfile.cs" />
     <Compile Include="AutoMapper\UserProfile.cs" />
+    <Compile Include="Controllers\CoachController.cs" />
+    <Compile Include="Controllers\PlayerController.cs" />
+    <Compile Include="Controllers\RefereeController.cs" />
+    <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Controllers\LeagueSeasonController.cs" />
     <Compile Include="Controllers\StandingsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -157,12 +164,23 @@
     <Compile Include="Models\RestModels\LeagueSeason\LeagueSeasonIdProviderRest.cs" />
     <Compile Include="Models\RestModels\Standing\CreateDeleteStandingsRest.cs" />
     <Compile Include="Models\RestModels\Standing\UpdateStandingsRest.cs" />
+    <Compile Include="Models\RestModels\Player\PlayerRest.cs" />
+    <Compile Include="Models\RestModels\Player\PersonRestBase.cs" />
+    <Compile Include="Models\RestModels\Person\CoachRest.cs" />
+    <Compile Include="Models\RestModels\Person\PersonRestBase.cs" />
+    <Compile Include="Models\RestModels\Person\PlayerRest.cs" />
+    <Compile Include="Models\RestModels\Person\RefereeRest.cs" />
     <Compile Include="Models\RestModels\User\CreateUserRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserPasswordRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserRest.cs" />
     <Compile Include="Models\RestModels\User\UserRestBase.cs" />
     <Compile Include="Models\ViewModels\LeagueSeasonViewModel.cs" />
     <Compile Include="Models\ViewModels\StandingsViewModel.cs" />
+    <Compile Include="Models\ViewModels\PlayerViewModel.cs" />
+    <Compile Include="Models\ViewModels\Person\CoachViewModel.cs" />
+    <Compile Include="Models\ViewModels\Person\PersonViewModelBase.cs" />
+    <Compile Include="Models\ViewModels\Person\PlayerViewModel.cs" />
+    <Compile Include="Models\ViewModels\Person\RefereeViewModel.cs" />
     <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
