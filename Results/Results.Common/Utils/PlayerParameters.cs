@@ -8,6 +8,10 @@ namespace Results.Common.Utils
 {
     public class PlayerParameters : PersonParameters
     {
-        public uint PlayerValue { get; set; }
+        //public int PlayerValue { get; set; }
+        public PlayerParameters()
+        {
+            OrderBy = "LastName";
+        }
     }
 }

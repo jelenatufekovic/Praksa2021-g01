@@ -1,15 +1,12 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
 using AutoMapper;
+using Results.Common;
 using Results.Model;
 using Results.Repository;
 using Results.Service;
-using Results.WebAPI.AutoMapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Web;
 using System.Web.Http;
 
 namespace Results.WebAPI.App_Start
@@ -21,9 +18,11 @@ namespace Results.WebAPI.App_Start
             var builder = new ContainerBuilder();
             
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+
             builder.RegisterModule<ModelModule>();
             builder.RegisterModule<RepositoryModule>();
             builder.RegisterModule<ServiceModule>();
+            builder.RegisterModule<CommonModule>();
 
             #region ConfigForAutomapper
             

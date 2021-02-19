@@ -1,4 +1,5 @@
-﻿using Results.Model.Common;
+﻿using Results.Common.Utils;
+using Results.Model.Common;
 using Results.Repository;
 using Results.Repository.Common;
 using Results.Service.Common;
@@ -34,6 +35,12 @@ namespace Results.Service
             IPlayerRepository playerRepository = _repositoryFactory.GetRepository<PlayerRepository>();
 
             return await playerRepository.GetPlayerByIdAsync(id);
+        }
+        public async Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters)
+        {
+            IPlayerRepository playerRepository = _repositoryFactory.GetRepository<PlayerRepository>();
+
+            return await playerRepository.GetPlayersByQueryAsync(parameters);
         }
 
         public async Task<bool> DeletePlayerAsync(Guid id, Guid userId)
