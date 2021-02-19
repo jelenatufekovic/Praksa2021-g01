@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,9 +11,12 @@ namespace Results.Common.Utils
     {
         public string ApplyFilters(K filterQueryParams, string dateParam)
         {
-            var propertyInfos = typeof(K).GetProperties();
+            PropertyInfo[] propertyInfos = typeof(K).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            List<PropertyInfo> propertyInfosFromModel = typeof(T).GetInterfaces().SelectMany(i => i.GetProperties()).ToList();
+            List<PropertyInfo> interfaceProperties = typeof(T).GetProperties().ToList();
+            propertyInfosFromModel.AddRange(interfaceProperties);
 
-            var filterQueryBuilder = new StringBuilder();
+            StringBuilder filterQueryBuilder = new StringBuilder();
 
             foreach (var property in propertyInfos)
             {
@@ -21,19 +25,35 @@ namespace Results.Common.Utils
                 var propertyValue = property.GetValue(filterQueryParams);
 
                 if (String.IsNullOrEmpty(propertyValue?.ToString())) { continue; }
+                if (propertyValue?.ToString() == "01-Jan-01 0:00:00") { continue; }
+                if (propertyValue?.ToString() == "-1") { continue; }
 
-                if (property.Name.ToLower().Contains("min"))
+                string propertyName = property.Name;
+
+                if (propertyName.ToLower().Contains("min"))
                 {
+                    PropertyInfo objectProperty = propertyInfosFromModel.FirstOrDefault(p =>
+                        p.Name.Equals(propertyName.Substring(3), StringComparison.InvariantCultureIgnoreCase));
+
+                    if (objectProperty != null)
+                    {
+                        filterQueryBuilder.Append($"{objectProperty.Name} >= '{propertyValue}' AND ");
+                    }
                     continue;
-                    //filterQueryBuilder.Append($"{dateParam} >= {propertyValue} AND ");
-                }
-                if (property.Name.ToLower().Contains("max"))
-                {
-                    continue;
-                    //filterQueryBuilder.Append($"{dateParam} <= {propertyValue} AND ");
                 }
 
-                filterQueryBuilder.Append($"{property.Name} = '{propertyValue.ToString()}' AND ");
+                if (propertyName.ToLower().Contains("max"))
+                {
+                    PropertyInfo objectProperty = propertyInfosFromModel.FirstOrDefault(p =>
+                        p.Name.Equals(propertyName.Substring(3), StringComparison.InvariantCultureIgnoreCase));
+                    if (objectProperty != null)
+                    {
+                        filterQueryBuilder.Append($"{objectProperty.Name} <= '{propertyValue}' AND ");
+                    }
+                    continue;
+                }
+
+                filterQueryBuilder.Append($"{property.Name} = '{propertyValue}' AND ");
 
             }
 
@@ -44,7 +64,7 @@ namespace Results.Common.Utils
                 return String.Empty;
             }
 
-            return String.Format($" WHERE {filterQuery} ");
+            return String.Format("WHERE {0} ", filterQuery);
         }
     }
 }

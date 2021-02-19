@@ -41,6 +41,11 @@ namespace Results.WebAPI.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetPlayersByQueryAsync([FromUri] PlayerParameters parameters)
         {
+            if (!parameters.IsValid())
+            {
+                return BadRequest();
+            }
+
             PagedList<IPlayer> playerList = await _playerService.GetPlayersByQueryAsync(parameters);
 
             if (playerList == null)

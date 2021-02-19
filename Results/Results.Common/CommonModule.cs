@@ -11,11 +11,11 @@ namespace Results.Common
         {
             base.Load(builder);
 
-            builder.RegisterType<FilterHelper<Player, PlayerParameters>>().As<IFilterHelper<Player, PlayerParameters>>().InstancePerDependency();
+            builder.RegisterType<FilterHelper<IPlayer, PlayerParameters>>().As<IFilterHelper<IPlayer, PlayerParameters>>().InstancePerDependency();
             builder.RegisterType<SortHelper<PlayerParameters>>().As<ISortHelper<PlayerParameters>>().InstancePerDependency();
             builder.RegisterType<PagingHelper>().As<IPagingHelper>().InstancePerDependency();
 
-            builder.RegisterType<QueryHelper<Player, PlayerParameters>>().As<IQueryHelper<Player, PlayerParameters>>().InstancePerDependency();
+            builder.RegisterType<QueryHelper<IPlayer, PlayerParameters>>().As<IQueryHelper<IPlayer, PlayerParameters>>().InstancePerDependency();
 
         }
     }
