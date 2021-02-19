@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Results.Common.Utils
 {
     public abstract class QueryParameters
     {
         const int maxPageSize = 100;
-        public int PageNumber { get; set; } = 1;
-        public bool IsDeleted { get; set; }
-        public string ByUser { get; set; }
-        public string OrderBy { get; set; }
-
         private int _pageSize = 10;
+
+        public int PageNumber { get; set; } = 1;
+        public string OrderBy { get; set; }
+        
         public int PageSize
         {
             get
@@ -27,6 +27,18 @@ namespace Results.Common.Utils
                 _pageSize = (value > maxPageSize) ? maxPageSize : value;
             }
         }
-        
+
+        public bool IsDeleted { get; set; }
+        public string ByUser { get; set; }
+        public DateTime MinCreatedAt { get; set; }
+        public DateTime MaxCreatedAt { get; set; } = DateTime.Now;
+        public DateTime MinUpdatedAt { get; set; }
+        public DateTime MaxUpdatedAt { get; set; } = DateTime.Now;
+
+        public virtual bool IsValid()
+        {
+            return (MinCreatedAt < MaxCreatedAt && MinUpdatedAt < MaxUpdatedAt);
+        }
+
     }
 }

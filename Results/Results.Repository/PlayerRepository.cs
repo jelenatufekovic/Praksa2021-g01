@@ -14,8 +14,6 @@ namespace Results.Repository
         private SqlConnection _connection;
         private SqlCommand _command;
 
-        
-
         public PlayerRepository(SqlConnection connection)
         {
             _command = new SqlCommand(String.Empty, connection);
@@ -67,10 +65,11 @@ namespace Results.Repository
 
         public async Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters)
         {
-            IQueryHelper<Player, PlayerParameters> _queryHelper = new QueryHelper<Player, PlayerParameters>();
+            IQueryHelper<IPlayer, PlayerParameters> _queryHelper = new QueryHelper<IPlayer, PlayerParameters>();
+            
+            int totalCount = await GetTableCount();
 
-            string query = @"WITH TempResult AS(
-                            SELECT 
+            string query = @"SELECT 
                                 Player.Id AS Id,
                                 Person.FirstName AS FirstName,
                                 Person.LastName AS LastName,
@@ -81,10 +80,8 @@ namespace Results.Repository
                                 Player.IsDeleted AS IsDeleted,
                                 Player.CreatedAt AS CreatedAt,
                                 Player.UpdatedAt AS UpdatedAt
-                            FROM Player 
-                            LEFT JOIN Person ON Player.Id = Person.Id),
-                            TempCount AS (SELECT COUNT(*) AS TotalCount FROM TempResult)
-                            SELECT * FROM TempResult, TempCount ";
+                             FROM Player 
+                             LEFT JOIN Person ON Player.Id = Person.Id ";
             query += _queryHelper.Filter.ApplyFilters(parameters, nameof(IPlayer.DateOfBirth));
             query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
             query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
@@ -92,9 +89,6 @@ namespace Results.Repository
             _command.CommandText = query;
             using (SqlDataReader reader = await _command.ExecuteReaderAsync())
             {
-                await reader.ReadAsync();
-                int totalCount = Int32.Parse(reader["TotalCount"].ToString());
-                
                 PagedList<IPlayer> playerList = new PagedList<IPlayer>(totalCount, parameters.PageNumber, parameters.PageSize);
 
                 while (await reader.ReadAsync())
@@ -123,14 +117,6 @@ namespace Results.Repository
 
                 return playerList;
             }
-
-            if (_command.Transaction == null)
-            {
-                _connection.Close();
-            }
-
-            return null;
-
         }
         public async Task<IPlayer> GetPlayerByIdAsync(Guid id)
         {
@@ -204,6 +190,12 @@ namespace Results.Repository
             }
 
             return result;
+        }
+
+        private async Task<int> GetTableCount()
+        {
+            _command.CommandText = "SELECT COUNT(*) AS TotalCount FROM Player;";
+            return (Int32)(await _command.ExecuteScalarAsync());
         }
     }
 }
