@@ -82,6 +82,7 @@
     <Compile Include="IPersonRepository.cs" />
     <Compile Include="IPlayerRepository.cs" />
     <Compile Include="IRefereeRepository.cs" />
+    <Compile Include="IRepositoryBase.cs" />
     <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="IResultsRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
