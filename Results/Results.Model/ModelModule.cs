@@ -21,9 +21,13 @@ namespace Results.Model
             builder.RegisterType<Player>().As<IPlayer>().InstancePerDependency();
             builder.RegisterType<Coach>().As<ICoach>().InstancePerDependency();
             builder.RegisterType<Referee>().As<IReferee>().InstancePerDependency();
+            builder.RegisterType<Person>().As<IPerson>().InstancePerDependency();
+            builder.RegisterType<Player>().As<IPlayer>().InstancePerDependency();
+            builder.RegisterType<Coach>().As<ICoach>().InstancePerDependency();
+            builder.RegisterType<Referee>().As<IReferee>().InstancePerDependency();
             builder.RegisterType<LeagueSeason>().As<ILeagueSeason>().InstancePerDependency();
             builder.RegisterType<Standings>().As<IStandings>().InstancePerDependency();
-            base.Load(builder);
+            
         }
     }
 }
