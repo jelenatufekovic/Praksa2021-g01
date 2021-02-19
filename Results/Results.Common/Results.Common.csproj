@@ -106,7 +106,6 @@
     <Compile Include="Utils\QueryHelpers\IFilterHelper.cs" />
     <Compile Include="Utils\QueryHelpers\IPagingHelper.cs" />
     <Compile Include="Utils\QueryHelpers\IQueryHelper.cs" />
-    <Compile Include="Utils\QueryHelpers\IRepositoryBase.cs" />
     <Compile Include="Utils\QueryHelpers\ISortHelper.cs" />
     <Compile Include="Utils\PagedList.cs" />
     <Compile Include="Utils\QueryHelpers\PagingHelper.cs" />

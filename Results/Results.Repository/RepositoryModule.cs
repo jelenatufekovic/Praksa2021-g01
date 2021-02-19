@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Results.Common.Utils;
+using Results.Common.Utils.QueryHelpers;
+using Results.Common.Utils.QueryParameters;
 using Results.Model.Common;
 using Results.Repository.Common;
 using System;
