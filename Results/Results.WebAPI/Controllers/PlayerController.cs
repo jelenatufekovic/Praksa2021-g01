@@ -12,6 +12,7 @@ using System.Web.Http;
 
 namespace Results.WebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [RoutePrefix("api/player")]
     public class PlayerController : ApiController
     {
@@ -38,7 +39,7 @@ namespace Results.WebAPI.Controllers
             return Ok(_mapper.Map<PlayerViewModel>(player));
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IHttpActionResult> GetPlayersByQueryAsync([FromUri] PlayerParameters parameters)
         {

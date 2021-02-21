@@ -21,5 +21,7 @@ namespace Results.Model.Common
         DateTime UpdatedAt { get; set; }
         bool IsDeleted { get; set; }
 
+        string FullName { get; }
+
     }
 }

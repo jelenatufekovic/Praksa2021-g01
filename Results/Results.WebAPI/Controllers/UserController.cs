@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Web.Http;
 
 
-namespace Results.WebAPI.Controllers
-{
+namespace Results.WebAPI.Controllers 
+{ 
+
+    [Authorize(Roles = "Admin")]
     [RoutePrefix("api/user")]
     public class UserController : ApiController
     {

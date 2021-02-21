@@ -29,6 +29,9 @@ namespace Results.Service
 
             base.Load(builder);
 
+
+            builder.RegisterType<TokenService>().As<ITokenService>().InstancePerDependency();
+            builder.RegisterType<UserManager>().As<IUserManager>().InstancePerDependency();
         }
     }
 }
