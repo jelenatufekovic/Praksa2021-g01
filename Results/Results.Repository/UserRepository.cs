@@ -33,17 +33,17 @@ namespace Results.Repository
         public async Task<Guid> CreateUserAsync(IUser user)
         {
             _command.CommandText = @"DECLARE @AppUserVar table(Id uniqueidentifier);
-                                INSERT INTO AppUser (FirstName, LastName, Email, UserName, IsAdmin) 
+                                INSERT INTO AppUser (FirstName, LastName, Email, UserName, Salt, PasswordHash, IsAdmin) 
                                     OUTPUT INSERTED.Id INTO @AppUserVar
-                                VALUES (@FirstName, @LastName, @Email, @UserName, @IsAdmin); 
+                                VALUES (@FirstName, @LastName, @Email, @UserName, @Salt, @PasswordHash, @IsAdmin);
                                     SELECT Id FROM @AppUserVar;";
 
             _command.Parameters.AddWithValue("@FirstName", user.FirstName);
             _command.Parameters.AddWithValue("@LastName", user.LastName);
             _command.Parameters.AddWithValue("@Email", user.Email);
             _command.Parameters.AddWithValue("@UserName", user.UserName);
-            //_command.Parameters.AddWithValue("@Salt", user.Salt);
-            //_command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+            _command.Parameters.AddWithValue("@Salt", user.Salt);
+            _command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
             _command.Parameters.AddWithValue("@IsAdmin", user.IsAdmin);
 
             using (SqlDataReader reader = await _command.ExecuteReaderAsync())

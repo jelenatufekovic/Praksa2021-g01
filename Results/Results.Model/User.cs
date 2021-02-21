@@ -23,5 +23,12 @@ namespace Results.Model
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public bool IsDeleted { get; set; } = false;
 
+        public string FullName
+        {
+            get
+            {
+                return String.Format("{0} {1}", FirstName, LastName);
+            }
+        }
     }
 }

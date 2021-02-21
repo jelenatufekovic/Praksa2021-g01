@@ -22,7 +22,9 @@ namespace Results.Service
             builder.RegisterType<ResultsService>().As<IResultsService>().InstancePerDependency();
             builder.RegisterType<LeagueSeasonService>().As<ILeagueSeasonService>().InstancePerDependency();
             builder.RegisterType<StandingsService>().As<IStandingsService>().InstancePerDependency();
-            
+
+            builder.RegisterType<TokenService>().As<ITokenService>().InstancePerDependency();
+            builder.RegisterType<UserManager>().As<IUserManager>().InstancePerDependency();
         }
     }
 }
