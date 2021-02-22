@@ -36,6 +36,12 @@ namespace Results.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
+            club = await _clubService.GetClubByStadiumIDAsync(newClub.StadiumID);
+            if(club != null)
+            {
+                return BadRequest("Club with that stadium already exists.");
+            }
+
             club = _mapper.Map<IClub>(newClub);
             bool result = await _clubService.CreateClubAsync(club);
             if (result)

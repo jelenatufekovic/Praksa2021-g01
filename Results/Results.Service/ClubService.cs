@@ -41,5 +41,10 @@ namespace Results.Service
         {
             return await _clubRepository.GetClubByNameAsync(name);
         }
+
+        public async Task<IClub> GetClubByStadiumIDAsync(Guid StadiumID)
+        {
+            return await _clubRepository.GetClubByStadiumIDAsync(StadiumID);
+        }
     }
 }

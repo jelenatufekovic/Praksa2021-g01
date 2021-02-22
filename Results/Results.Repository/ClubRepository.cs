@@ -183,5 +183,42 @@ namespace Results.Repository
                 }
             }
         }
+
+
+        public async Task<IClub> GetClubByStadiumIDAsync(Guid StadiumID)
+        {
+            using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
+            {
+                string query = @"SELECT * FROM Club WHERE StadiumID = @StadiumID";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StadiumID", StadiumID);
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return new Club()
+                            {
+                                Id = Guid.Parse(reader["Id"].ToString()),
+                                StadiumID = Guid.Parse(reader["StadiumID"].ToString()),
+                                Name = reader["Name"].ToString(),
+                                ClubAddress = reader["ClubAddress"].ToString(),
+                                ShortName = reader["ShortName"].ToString(),
+                                YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
+                                Description = reader["Description"].ToString(),
+                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                                ByUser = Guid.Parse(reader["ByUser"].ToString())
+                            };
+                        }
+                        return null;
+                    }
+                }
+            }
+        }
     }
 }

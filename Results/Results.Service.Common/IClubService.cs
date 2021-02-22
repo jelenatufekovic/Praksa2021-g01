@@ -15,5 +15,6 @@ namespace Results.Service.Common
         Task<List<IClub>> GetAllClubsAsync();
         Task<IClub> GetClubByIdAsync(Guid id);
         Task<IClub> GetClubByNameAsync(string name);
+        Task<IClub> GetClubByStadiumIDAsync(Guid StadiumID);
     }
 }
