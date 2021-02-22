@@ -26,7 +26,7 @@ namespace Results.WebAPI.Controllers
         }
         
         [Route("CreateStadium")]
-        [HttpGet]
+        [HttpPost]
         public async Task<IHttpActionResult> CreateStadium([FromBody]CreateStadiumRest newStadium)
         {
             IStadium stadium = await _stadiumService.GetStadiumByNameAsync(newStadium.Name);

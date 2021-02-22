@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IClubService.cs" />
     <Compile Include="ICoachService.cs" />
     <Compile Include="IPlayerService.cs" />
     <Compile Include="IRefereeService.cs" />

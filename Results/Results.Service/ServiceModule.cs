@@ -23,6 +23,7 @@ namespace Results.Service
             builder.RegisterType<LeagueSeasonService>().As<ILeagueSeasonService>().InstancePerDependency();
             builder.RegisterType<StandingsService>().As<IStandingsService>().InstancePerDependency();
             builder.RegisterType<StadiumService>().As<IStadiumService>().InstancePerDependency();
+            builder.RegisterType<ClubService>().As<IClubService>().InstancePerDependency();
 
         }
     }

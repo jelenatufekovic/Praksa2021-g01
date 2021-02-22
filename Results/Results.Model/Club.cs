@@ -7,12 +7,13 @@ using Results.Model.Common;
 
 namespace Results.Model
 {
-    public class Stadium : ModelBase, IStadium
+    public class Club : ModelBase, IClub
     {
+        public Guid StadiumID { get; set; }
         public string Name { get; set; }
-        public string StadiumAddress { get; set; }
-        public int Capacity { get; set; }
-        public DateTime YearOfConstruction { get; set; }
+        public string ClubAddress { get; set; }
+        public string ShortName { get; set; }
+        public DateTime YearOfFoundation { get; set; }
         public string Description { get; set; }
     }
 }

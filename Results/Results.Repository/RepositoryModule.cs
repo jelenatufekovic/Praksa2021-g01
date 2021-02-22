@@ -37,7 +37,7 @@ namespace Results.Repository
             builder.RegisterType<StandingsRepository>().As<IStandingsRepository>().InstancePerDependency();
 
             builder.RegisterType<StadiumRepository>().As<IStadiumRepository>().InstancePerDependency();
-
+            builder.RegisterType<ClubRepository>().As<IClubRepository>().InstancePerDependency();
         }
     }
 }

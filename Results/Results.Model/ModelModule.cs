@@ -28,6 +28,7 @@ namespace Results.Model
             builder.RegisterType<LeagueSeason>().As<ILeagueSeason>().InstancePerDependency();
             builder.RegisterType<Standings>().As<IStandings>().InstancePerDependency();
             builder.RegisterType<Stadium>().As<IStadium>().InstancePerDependency();
+            builder.RegisterType<Club>().As<IClub>().InstancePerDependency();
 
         }
     }

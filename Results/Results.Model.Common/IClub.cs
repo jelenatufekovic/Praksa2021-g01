@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Results.Model.Common
 {
-    public interface IStadium : IModelBase
+    public interface IClub : IModelBase
     {
+        Guid StadiumID { get; set; }
         string Name { get; set; }
-        string StadiumAddress { get; set; }
-        int Capacity { get; set; }
-        DateTime YearOfConstruction { get; set; }
+        string ClubAddress { get; set; }
+        string ShortName { get; set; }
+        DateTime YearOfFoundation { get; set; }
         string Description { get; set; }
     }
 }
