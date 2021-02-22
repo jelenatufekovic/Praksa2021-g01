@@ -86,6 +86,7 @@
     <Compile Include="IRepositoryBase.cs" />
     <Compile Include="IRepositoryFactory.cs" />
     <Compile Include="IResultsRepository.cs" />
+    <Compile Include="IStadiumRepository.cs" />
     <Compile Include="IStandingsRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserRepository.cs" />

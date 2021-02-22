@@ -85,6 +85,7 @@
     <Compile Include="IPlayer.cs" />
     <Compile Include="IReferee.cs" />
     <Compile Include="IResultsModel.cs" />
+    <Compile Include="IStadium.cs" />
     <Compile Include="IStandings.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

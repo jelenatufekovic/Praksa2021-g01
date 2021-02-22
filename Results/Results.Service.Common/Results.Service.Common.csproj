@@ -83,6 +83,7 @@
     <Compile Include="IRefereeService.cs" />
     <Compile Include="ILeagueSeasonService.cs" />
     <Compile Include="IResultsService.cs" />
+    <Compile Include="IStadiumService.cs" />
     <Compile Include="IStandingsService.cs" />
     <Compile Include="IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
