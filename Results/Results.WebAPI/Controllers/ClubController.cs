@@ -26,7 +26,7 @@ namespace Results.WebAPI.Controllers
 
         [Route("CreateClub")]
         [HttpPost]
-        public async Task<IHttpActionResult> CreateClub([FromBody] CreateClubRest newClub)
+        public async Task<IHttpActionResult> CreateClubAsync([FromBody] CreateClubRest newClub)
         {
             IClub club = await _clubService.GetClubByNameAsync(newClub.Name);
 
@@ -54,7 +54,7 @@ namespace Results.WebAPI.Controllers
 
         [Route("UpdateClub")]
         [HttpPut]
-        public async Task<IHttpActionResult> UpdateClub([FromBody] UpdateClubRest editedClub)
+        public async Task<IHttpActionResult> UpdateClubAsync([FromBody] UpdateClubRest editedClub)
         {
             IClub club = await _clubService.GetClubByIdAsync(editedClub.Id);
 
@@ -78,7 +78,7 @@ namespace Results.WebAPI.Controllers
 
         [Route("DeleteClub")]
         [HttpDelete]
-        public async Task<IHttpActionResult> DeleteClub([FromBody] DeleteClubRest clubForDelete)
+        public async Task<IHttpActionResult> DeleteClubAsync([FromBody] DeleteClubRest clubForDelete)
         {
             IClub club = await _clubService.GetClubByIdAsync(clubForDelete.Id);
 
@@ -102,7 +102,7 @@ namespace Results.WebAPI.Controllers
 
         [Route("GetAllClubs")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetAllClubs()
+        public async Task<IHttpActionResult> GetAllClubsAsync()
         {
             List<IClub> clubs = await _clubService.GetAllClubsAsync();
 

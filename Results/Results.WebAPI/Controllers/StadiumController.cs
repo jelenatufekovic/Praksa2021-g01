@@ -27,7 +27,7 @@ namespace Results.WebAPI.Controllers
         
         [Route("CreateStadium")]
         [HttpPost]
-        public async Task<IHttpActionResult> CreateStadium([FromBody]CreateStadiumRest newStadium)
+        public async Task<IHttpActionResult> CreateStadiumAsync([FromBody]CreateStadiumRest newStadium)
         {
             IStadium stadium = await _stadiumService.GetStadiumByNameAsync(newStadium.Name);
 
@@ -49,7 +49,7 @@ namespace Results.WebAPI.Controllers
 
         [Route("UpdateStadium")]
         [HttpPut]
-        public async Task<IHttpActionResult> UpdateStadium([FromBody]UpdateStadiumRest editedStadium)
+        public async Task<IHttpActionResult> UpdateStadiumAsync([FromBody]UpdateStadiumRest editedStadium)
         {
             IStadium stadium = await _stadiumService.GetStadiumByIdAsync(editedStadium.Id);
 
@@ -73,7 +73,7 @@ namespace Results.WebAPI.Controllers
 
         [Route("DeleteStadium")]
         [HttpDelete]
-        public async Task<IHttpActionResult> DeleteStadium([FromBody]DeleteStadiumRest stadiumForDelete)
+        public async Task<IHttpActionResult> DeleteStadiumAsync([FromBody]DeleteStadiumRest stadiumForDelete)
         {
             IStadium stadium = await _stadiumService.GetStadiumByIdAsync(stadiumForDelete.Id);
 
@@ -97,7 +97,7 @@ namespace Results.WebAPI.Controllers
 
         [Route("GetAllStadiums")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetAllStadiums()
+        public async Task<IHttpActionResult> GetAllStadiumsAsync()
         {
             List<IStadium> stadiums = await _stadiumService.GetAllStadiumsAsync();
             
