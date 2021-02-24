@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IClubRepository.cs" />
+    <Compile Include="IScoreRepository.cs" />
     <Compile Include="ICoachRepository.cs" />
     <Compile Include="IPersonRepository.cs" />
     <Compile Include="IPlayerRepository.cs" />
