@@ -14,7 +14,7 @@ namespace Results.WebAPI.AutoMapper
     {
         public UserProfile()
         {
-            CreateMap<CreateUserRest, IUser>();
+            CreateMap<RegisterUserRest, IUser>();
             CreateMap<UpdateUserRest, IUser>();
             CreateMap<UpdateUserPasswordRest, IUser>();
             CreateMap<IUser, UserViewModel>();

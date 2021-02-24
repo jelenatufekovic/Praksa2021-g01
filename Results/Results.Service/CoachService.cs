@@ -18,16 +18,18 @@ namespace Results.Service
             _repositoryFactory = repositoryFactory;
         }
 
-        public async Task<Guid> CreateCoachAsync(ICoach coach)
+        public async Task<ICoach> CreateCoachAsync(ICoach coach)
         {
             using (IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
             {
                 coach.Id = await unitOfWork.Person.CreatePersonAsync(coach);
                 await unitOfWork.Coach.CreateCoachAsync(coach);
 
+                ICoach createdCoach = await unitOfWork.Coach.GetCoachByIdAsync(coach.Id);
+
                 unitOfWork.Commit();
 
-                return coach.Id;
+                return createdCoach;
             }
         }
 
@@ -45,11 +47,11 @@ namespace Results.Service
             return await coachRepository.GetCoachByIdAsync(id);
         }
 
-        public async Task<PagedList<ICoach>> GetCoachByQueryAsync(CoachParameters parameters)
+        public async Task<PagedList<ICoach>> FindCoachesAsync(CoachParameters parameters)
         {
             ICoachRepository coachRepository = _repositoryFactory.GetRepository<CoachRepository>();
 
-            return await coachRepository.GetCoachByQueryAsync(parameters);
+            return await coachRepository.FindCoachesAsync(parameters);
         }
 
         public async Task<bool> UpdateCoachAsync(ICoach coach)

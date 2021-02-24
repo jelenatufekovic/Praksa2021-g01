@@ -14,6 +14,6 @@ namespace Results.Model
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public bool IsDeleted { get; set; } = false;
         public Guid ByUser { get; set; }
-
+        public string AdminUserName { get; set; }
     }
 }

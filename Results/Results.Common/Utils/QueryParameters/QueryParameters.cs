@@ -30,14 +30,37 @@ namespace Results.Common.Utils.QueryParameters
 
         public string IsDeleted { get; set; }
         public string ByUser { get; set; }
-        public DateTime MinCreatedAt { get; set; }
-        public DateTime MaxCreatedAt { get; set; } = DateTime.Now;
-        public DateTime MinUpdatedAt { get; set; }
-        public DateTime MaxUpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? MinCreatedAt { get; set; }
+        public DateTime? MaxCreatedAt { get; set; }
+        public DateTime? MinUpdatedAt { get; set; }
+        public DateTime? MaxUpdatedAt { get; set; }
 
         public virtual bool IsValid()
         {
-            return (MinCreatedAt < MaxCreatedAt && MinUpdatedAt < MaxUpdatedAt);
+            return (
+                MinCreatedAt == null ?
+                    true : 
+                    MinCreatedAt > DateTime.MinValue && MinCreatedAt < DateTime.Now
+                &&
+                MaxCreatedAt == null ?
+                    true :
+                    MaxCreatedAt <= DateTime.Now && MaxCreatedAt > DateTime.MinValue
+                && 
+                MinCreatedAt == null && MaxCreatedAt == null ?
+                    true :
+                    MinCreatedAt < MaxCreatedAt
+                &&
+                MinUpdatedAt == null ?
+                    true :
+                    MinUpdatedAt > DateTime.MinValue && MinUpdatedAt < DateTime.Now
+                &&
+                MaxUpdatedAt == null ?
+                    true :
+                    MaxUpdatedAt <= DateTime.Now && MaxUpdatedAt > DateTime.MinValue
+                &&
+                MinUpdatedAt == null && MaxUpdatedAt == null ?
+                    true :
+                    MinCreatedAt < MaxUpdatedAt);
         }
 
     }

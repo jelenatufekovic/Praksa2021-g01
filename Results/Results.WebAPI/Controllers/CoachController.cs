@@ -39,14 +39,14 @@ namespace Results.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IHttpActionResult> GetCoachByQueryAsync([FromUri] CoachParameters parameters)
+        public async Task<IHttpActionResult> FindCoachesAsync([FromUri] CoachParameters parameters)
         {
             if (!parameters.IsValid())
             {
                 return BadRequest();
             }
 
-            PagedList<ICoach> playerList = await _coachService.GetCoachByQueryAsync(parameters);
+            PagedList<ICoach> playerList = await _coachService.FindCoachesAsync(parameters);
 
             if (playerList == null)
             {
@@ -56,15 +56,17 @@ namespace Results.WebAPI.Controllers
             return Ok(_mapper.Map<PagedList<ICoach>, IEnumerable<CoachViewModel>>(playerList));
         }
 
-
         [HttpPost]
         public async Task<IHttpActionResult> CreateCoachAsync([FromBody] CoachRest coachRest)
         {
             ICoach coach = _mapper.Map<ICoach>(coachRest);
 
-            Guid coachId = await _coachService.CreateCoachAsync(coach);
+            coach = await _coachService.CreateCoachAsync(coach);
 
-            coach = await _coachService.GetCoachByIdAsync(coach.Id);
+            if (coach == null)
+            {
+                return BadRequest();
+            }
 
             return CreatedAtRoute(nameof(GetCoachByIdAsync), new { coach.Id }, _mapper.Map<CoachViewModel>(coach));
         }

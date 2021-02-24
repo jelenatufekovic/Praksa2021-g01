@@ -78,7 +78,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITokenService.cs" />
+    <Compile Include="IUserManager.cs" />
     <Compile Include="IClubService.cs" />
+    <Compile Include="ITokenService.cs" />
+    <Compile Include="IUserManager.cs" />
     <Compile Include="ICoachService.cs" />
     <Compile Include="ILeagueService.cs" />
     <Compile Include="IPlayerService.cs" />

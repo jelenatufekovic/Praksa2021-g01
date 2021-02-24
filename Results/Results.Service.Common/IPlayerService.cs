@@ -8,10 +8,10 @@ namespace Results.Service.Common
 {
     public interface IPlayerService
     {
-        Task<Guid> CreatePlayerAsync(IPlayer player);
+        Task<IPlayer> CreatePlayerAsync(IPlayer player);
         Task<bool> DeletePlayerAsync(Guid id, Guid userId);
         Task<IPlayer> GetPlayerByIdAsync(Guid id);
-        Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters);
+        Task<PagedList<IPlayer>> FindPlayersAsync(PlayerParameters parameters);
         Task<bool> UpdatePlayerAsync(IPlayer player);
     }
 }

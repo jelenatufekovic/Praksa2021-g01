@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Web.Http;
 
 
-namespace Results.WebAPI.Controllers
-{
+namespace Results.WebAPI.Controllers 
+{ 
+
+    [Authorize(Roles = "Admin")]
     [RoutePrefix("api/user")]
     public class UserController : ApiController
     {
@@ -27,7 +29,6 @@ namespace Results.WebAPI.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetUserByIdAsync(Guid id)
         {
-
             IUser user = await _userService.GetUserByIdAsync(id);
             
             if (user == null)
@@ -35,13 +36,11 @@ namespace Results.WebAPI.Controllers
                 return NotFound();
             }
 
-            UserViewModel userViewModel = _mapper.Map<UserViewModel>(user);
-
-            return Ok(userViewModel);
+            return Ok(_mapper.Map<UserViewModel>(user));
         }
 
         [HttpPost]
-        public async Task<IHttpActionResult> CreateUserAsync([FromBody] CreateUserRest newUser)
+        public async Task<IHttpActionResult> CreateUserAsync([FromBody] RegisterUserRest newUser)
         {
             IUser user = await _userService.GetUserByEmailAsync(newUser.Email);
             if (user != null)
