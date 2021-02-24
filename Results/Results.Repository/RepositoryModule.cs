@@ -41,6 +41,7 @@ namespace Results.Repository
 
             builder.RegisterType<SeasonRepository>().As<ISeasonRepository>().InstancePerDependency();
             builder.RegisterType<LeagueRepository>().As<ILeagueRepository>().InstancePerDependency();
+            builder.RegisterType<StatisticsRepository>().As<IStatisticsRepository>().InstancePerDependency();
         }
     }
 }

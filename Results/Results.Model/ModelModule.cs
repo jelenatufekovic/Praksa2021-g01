@@ -31,6 +31,7 @@ namespace Results.Model
             builder.RegisterType<Score>().As<IScore>().InstancePerDependency();
             builder.RegisterType<Season>().As<ISeason>().InstancePerDependency();
             builder.RegisterType<League>().As<ILeague>().InstancePerDependency();
+            builder.RegisterType<Statistics>().As<IStatistics>().InstancePerDependency();
 
             base.Load(builder);
 

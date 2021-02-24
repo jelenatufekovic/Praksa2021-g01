@@ -113,6 +113,7 @@
     <Compile Include="SeasonRepository.cs" />
     <Compile Include="StadiumRepository.cs" />
     <Compile Include="StandingsRepository.cs" />
+    <Compile Include="StatisticsRepository.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="UserRepository.cs" />
   </ItemGroup>
