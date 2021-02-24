@@ -78,6 +78,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITokenService.cs" />
+    <Compile Include="IUserManager.cs" />
     <Compile Include="IClubService.cs" />
     <Compile Include="ITokenService.cs" />
     <Compile Include="IUserManager.cs" />
