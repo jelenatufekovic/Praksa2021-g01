@@ -144,23 +144,35 @@
   <ItemGroup>
     <Compile Include="App_Start\ContainerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="AutoMapper\ClubProfile.cs" />
     <Compile Include="AutoMapper\CoachProfile.cs" />
     <Compile Include="AutoMapper\PlayerProfile.cs" />
     <Compile Include="AutoMapper\RefereeProfile.cs" />
     <Compile Include="AutoMapper\LeagueSeasonProfile.cs" />
+    <Compile Include="AutoMapper\StadiumProfile.cs" />
     <Compile Include="AutoMapper\StandingsProfile.cs" />
     <Compile Include="AutoMapper\UserProfile.cs" />
+    <Compile Include="Controllers\ClubController.cs" />
     <Compile Include="Controllers\CoachController.cs" />
     <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Controllers\RefereeController.cs" />
     <Compile Include="Controllers\LeagueSeasonController.cs" />
+    <Compile Include="Controllers\StadiumController.cs" />
     <Compile Include="Controllers\StandingsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\RestModels\Club\CreateClubRest.cs" />
+    <Compile Include="Models\RestModels\Club\DeleteClubRest.cs" />
+    <Compile Include="Models\RestModels\Club\GetAllClubsRest.cs" />
+    <Compile Include="Models\RestModels\Club\UpdateClubRest.cs" />
     <Compile Include="Models\RestModels\LeagueSeason\CreateLeagueSeasonRest.cs" />
     <Compile Include="Models\RestModels\LeagueSeason\LeagueSeasonIdProviderRest.cs" />
+    <Compile Include="Models\RestModels\Stadium\CreateStadiumRest.cs" />
+    <Compile Include="Models\RestModels\Stadium\DeleteStadiumRest.cs" />
+    <Compile Include="Models\RestModels\Stadium\GetAllStadiumsRest.cs" />
+    <Compile Include="Models\RestModels\Stadium\UpdateStadiumRest.cs" />
     <Compile Include="Models\RestModels\Standing\CreateDeleteStandingsRest.cs" />
     <Compile Include="Models\RestModels\Standing\UpdateStandingsRest.cs" />
     <Compile Include="Models\RestModels\Person\CoachRest.cs" />
