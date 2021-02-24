@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Club.cs" />
+    <Compile Include="Score.cs" />
     <Compile Include="Coach.cs" />
     <Compile Include="LeagueSeason.cs" />
     <Compile Include="ModelBase.cs" />

@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IClub.cs" />
+    <Compile Include="IScore.cs" />
     <Compile Include="ILeagueSeason.cs" />
     <Compile Include="ICoach.cs" />
     <Compile Include="IModelBase.cs" />
