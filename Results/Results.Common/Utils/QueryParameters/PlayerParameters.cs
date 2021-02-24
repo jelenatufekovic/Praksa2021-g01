@@ -14,27 +14,25 @@ namespace Results.Common.Utils.QueryParameters
             OrderBy = "LastName";
         }
 
-        public int MinPlayerValue { get; set; } = -1;
-        public int MaxPlayerValue { get; set; } = -1;
+        public int? MinPlayerValue { get; set; }
+        public int? MaxPlayerValue { get; set; }
 
         public override bool IsValid()
         {
             return (base.IsValid() &&
-                MinPlayerValue != -1 ?
+                MinPlayerValue == null ?
+                    true :
                     MinPlayerValue > 0 ?
-                        MinPlayerValue >= minPlayerValue
-                        : false
-                    : true &&
-                MaxPlayerValue != -1 ?
+                        MinPlayerValue >= minPlayerValue : false
+                    &&
+                MaxPlayerValue == null ?
+                    true :
                     MaxPlayerValue > 0 ?
-                        MaxPlayerValue < Int32.MaxValue
-                        : false
-                    : true &&
-                MaxPlayerValue != -1 && MinPlayerValue != -1 ?
-                    MaxPlayerValue > 0 && MinPlayerValue > 0 ?
-                        MaxPlayerValue >= MinPlayerValue
-                        : false
-                    : true);
+                        MaxPlayerValue < Int32.MaxValue : false
+                    &&
+                MaxPlayerValue > 0 && MinPlayerValue > 0 ?
+                    MaxPlayerValue >= MinPlayerValue : false);
+                
         }
     }
 }

@@ -18,16 +18,18 @@ namespace Results.Service
             _repositoryFactory = repositoryFactory;
         }
 
-        public async Task<Guid> CreatePlayerAsync(IPlayer player)
+        public async Task<IPlayer> CreatePlayerAsync(IPlayer player)
         {
             using (IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
             {
                 player.Id = await unitOfWork.Person.CreatePersonAsync(player);
-
                 await unitOfWork.Player.CreatePlayerAsync(player);
+
+                IPlayer createdPlayer = await unitOfWork.Player.GetPlayerByIdAsync(player.Id);
+
                 unitOfWork.Commit();
 
-                return player.Id;
+                return createdPlayer;
             }
         }
 
@@ -37,11 +39,12 @@ namespace Results.Service
 
             return await playerRepository.GetPlayerByIdAsync(id);
         }
-        public async Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters)
+
+        public async Task<PagedList<IPlayer>> FindPlayersAsync(PlayerParameters parameters)
         {
             IPlayerRepository playerRepository = _repositoryFactory.GetRepository<PlayerRepository>();
 
-            return await playerRepository.GetPlayersByQueryAsync(parameters);
+            return await playerRepository.FindPlayersAsync(parameters);
         }
 
         public async Task<bool> DeletePlayerAsync(Guid id, Guid userId)
@@ -50,7 +53,6 @@ namespace Results.Service
 
             return await playerRepository.DeletePlayerAsync(id, userId);
         }
-
 
         public async Task<bool> UpdatePlayerAsync(IPlayer player)
         {

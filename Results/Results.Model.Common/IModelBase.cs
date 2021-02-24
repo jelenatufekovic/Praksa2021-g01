@@ -13,5 +13,6 @@ namespace Results.Model.Common
         DateTime UpdatedAt { get; set; }
         bool IsDeleted { get; set; }
         Guid ByUser { get; set; }
+        string AdminUserName { get; set; }
     }
 }

@@ -123,7 +123,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<PagedList<IReferee>> GetRefereeByQueryAsync(RefereeParameters parameters)
+        public async Task<PagedList<IReferee>> FindRefereesAsync(RefereeParameters parameters)
         {
             IQueryHelper<IReferee, RefereeParameters> _queryHelper = new QueryHelper<IReferee, RefereeParameters>();
 

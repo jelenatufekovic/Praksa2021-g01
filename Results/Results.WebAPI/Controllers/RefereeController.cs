@@ -39,14 +39,14 @@ namespace Results.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IHttpActionResult> GetRefereeByQueryAsync([FromUri] RefereeParameters parameters)
+        public async Task<IHttpActionResult> FindRefereesAsync([FromUri] RefereeParameters parameters)
         {
             if (!parameters.IsValid())
             {
                 return BadRequest();
             }
 
-            PagedList<IReferee> playerList = await _refereeService.GetRefereeByQueryAsync(parameters);
+            PagedList<IReferee> playerList = await _refereeService.FindRefereesAsync(parameters);
 
             if (playerList == null)
             {
@@ -61,9 +61,12 @@ namespace Results.WebAPI.Controllers
         {
             IReferee referee = _mapper.Map<IReferee>(refereeRest);
 
-            Guid refereeId = await _refereeService.CreateRefereeAsync(referee);
+            referee = await _refereeService.CreateRefereeAsync(referee);
 
-            referee = await _refereeService.GetRefereeByIdAsync(referee.Id);
+            if (referee == null)
+            {
+                BadRequest();
+            }
 
             return CreatedAtRoute(nameof(GetRefereeByIdAsync), new { referee.Id }, _mapper.Map<RefereeViewModel>(referee));
         }

@@ -67,6 +67,7 @@ namespace Results.Repository
 
         public async Task<IPlayer> GetPlayerByIdAsync(Guid id)
         {
+            
             _command.CommandText = @"SELECT
                                 Player.Id AS Id,
                                 Person.FirstName AS FirstName,
@@ -81,6 +82,11 @@ namespace Results.Repository
                             FROM Player 
                             LEFT JOIN Person ON Player.Id = Person.Id
                             WHERE Player.Id = @Id;";
+
+            if (_command.Transaction != null)
+            {
+                _command.Parameters.Clear();
+            }
 
             _command.Parameters.AddWithValue("@Id", id);
 
@@ -121,7 +127,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<PagedList<IPlayer>> GetPlayersByQueryAsync(PlayerParameters parameters)
+        public async Task<PagedList<IPlayer>> FindPlayersAsync(PlayerParameters parameters)
         {
             //IQueryHelper<IPlayer, PlayerParameters> _queryHelper = new QueryHelper<IPlayer, PlayerParameters>();
             IQueryHelper<IPlayer, PlayerParameters> _queryHelper = GetQueryHelper<IPlayer, PlayerParameters>();
@@ -138,9 +144,11 @@ namespace Results.Repository
                                 Player.ByUser AS ByUser,
                                 Player.IsDeleted AS IsDeleted,
                                 Player.CreatedAt AS CreatedAt,
-                                Player.UpdatedAt AS UpdatedAt
+                                Player.UpdatedAt AS UpdatedAt,
+                                AppUser.UserName AS AdminUserName
                              FROM Player 
-                             LEFT JOIN Person ON Player.Id = Person.Id ";
+                             LEFT JOIN Person ON Player.Id = Person.Id
+                             LEFT JOIN AppUser ON Player.ByUser = AppUser.Id ";
             query += _queryHelper.Filter.ApplyFilters(parameters);
             query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
             query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
@@ -161,6 +169,7 @@ namespace Results.Repository
                         DateOfBirth = DateTime.Parse(reader["DateOfBirth"].ToString()),
                         PlayerValue = Int32.Parse(reader["PlayerValue"].ToString()),
                         ByUser = Guid.Parse(reader["ByUser"].ToString()),
+                        AdminUserName = reader["AdminUserName"].ToString(),
                         IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
                         CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
                         UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),

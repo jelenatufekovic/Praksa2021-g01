@@ -6,13 +6,12 @@ using System.Web;
 
 namespace Results.WebAPI.Models.RestModels.User
 {
-    public class CreateUserRest : UserRestBase
+    public class RegisterUserRest : UserRestBase
     {
         public string UserName { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
-        public Guid ByUser { get; set; }
-
+        
         public bool ValidatePassword()
         {
             if (String.IsNullOrEmpty(Password) || String.IsNullOrEmpty(ConfirmPassword))

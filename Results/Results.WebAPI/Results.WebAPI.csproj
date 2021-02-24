@@ -188,11 +188,12 @@
     <Compile Include="Models\RestModels\Person\PersonRestBase.cs" />
     <Compile Include="Models\RestModels\Person\PlayerRest.cs" />
     <Compile Include="Models\RestModels\Person\RefereeRest.cs" />
-    <Compile Include="Models\RestModels\User\CreateUserRest.cs" />
+    <Compile Include="Models\RestModels\User\RegisterUserRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserPasswordRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserRest.cs" />
     <Compile Include="Models\RestModels\User\LoginUserRest.cs" />
     <Compile Include="Models\RestModels\User\UserRestBase.cs" />
+    <Compile Include="Models\ViewModels\AdminViewModelBase.cs" />
     <Compile Include="Models\ViewModels\LeagueSeasonViewModel.cs" />
     <Compile Include="Models\ViewModels\StandingsViewModel.cs" />
     <Compile Include="Models\ViewModels\Person\CoachViewModel.cs" />

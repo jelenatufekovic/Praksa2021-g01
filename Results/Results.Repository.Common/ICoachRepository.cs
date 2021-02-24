@@ -14,7 +14,7 @@ namespace Results.Repository.Common
         Task<bool> CreateCoachAsync(ICoach coach);
         Task<bool> DeleteCoachAsync(Guid id, Guid userId);
         Task<ICoach> GetCoachByIdAsync(Guid id);
-        Task<PagedList<ICoach>> GetCoachByQueryAsync(CoachParameters parameters);
+        Task<PagedList<ICoach>> FindCoachesAsync(CoachParameters parameters);
         Task<bool> UpdateCoachAsync(ICoach coach);
     }
 }

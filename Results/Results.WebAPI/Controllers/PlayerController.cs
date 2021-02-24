@@ -7,6 +7,8 @@ using Results.WebAPI.Models.RestModels.Person;
 using Results.WebAPI.Models.ViewModels.Person;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -39,16 +41,15 @@ namespace Results.WebAPI.Controllers
             return Ok(_mapper.Map<PlayerViewModel>(player));
         }
 
-        [AllowAnonymous]
         [HttpGet]
-        public async Task<IHttpActionResult> GetPlayersByQueryAsync([FromUri] PlayerParameters parameters)
+        public async Task<IHttpActionResult> FindPlayersAsync([FromUri] PlayerParameters parameters)
         {
             if (!parameters.IsValid())
             {
                 return BadRequest();
             }
 
-            PagedList<IPlayer> playerList = await _playerService.GetPlayersByQueryAsync(parameters);
+            PagedList<IPlayer> playerList = await _playerService.FindPlayersAsync(parameters);
 
             if (playerList == null)
             {
@@ -63,9 +64,10 @@ namespace Results.WebAPI.Controllers
         {
             IPlayer player = _mapper.Map<IPlayer>(playerRest);
 
-            Guid playerId = await _playerService.CreatePlayerAsync(player);
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            player.ByUser = Guid.Parse(identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
-            player = await _playerService.GetPlayerByIdAsync(playerId);
+            player = await _playerService.CreatePlayerAsync(player);
 
             if (player == null)
             {
@@ -88,6 +90,9 @@ namespace Results.WebAPI.Controllers
 
             player = _mapper.Map(playerRest, player);
 
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            player.ByUser = Guid.Parse(identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
             if (!(await _playerService.UpdatePlayerAsync(player)))
             {
                 return BadRequest();
@@ -106,6 +111,9 @@ namespace Results.WebAPI.Controllers
             {
                 return NotFound();
             }
+
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            player.ByUser = Guid.Parse(identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
             if (!(await _playerService.DeletePlayerAsync(id, player.ByUser)))
             {

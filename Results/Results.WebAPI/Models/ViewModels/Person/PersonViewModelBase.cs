@@ -5,9 +5,8 @@ using System.Web;
 
 namespace Results.WebAPI.Models.ViewModels.Person
 {
-    public class PersonViewModelBase
+    public class PersonViewModelBase : AdminViewModelBase
     {
-        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Country { get; set; }
