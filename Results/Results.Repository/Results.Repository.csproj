@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClubRepository.cs" />
+    <Compile Include="ScoreRepository.cs" />
     <Compile Include="CoachRepository.cs" />
     <Compile Include="LeagueRepository.cs" />
     <Compile Include="PersonRepository.cs" />
