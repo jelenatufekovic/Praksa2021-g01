@@ -32,6 +32,7 @@ namespace Results.Service
 
             builder.RegisterType<SeasonService>().As<ISeasonService>().InstancePerDependency();
             builder.RegisterType<LeagueService>().As<ILeagueService>().InstancePerDependency();
+            builder.RegisterType<StatisticsService>().As<IStatisticsService>().InstancePerDependency();
 
             base.Load(builder);
 

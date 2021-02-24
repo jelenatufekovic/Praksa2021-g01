@@ -171,6 +171,7 @@
     <Compile Include="AutoMapper\SeasonProfile.cs" />
     <Compile Include="AutoMapper\StadiumProfile.cs" />
     <Compile Include="AutoMapper\StandingsProfile.cs" />
+    <Compile Include="AutoMapper\StatisticsProfile.cs" />
     <Compile Include="AutoMapper\UserProfile.cs" />
     <Compile Include="Controllers\ClubController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Controllers\SeasonController.cs" />
     <Compile Include="Controllers\StadiumController.cs" />
     <Compile Include="Controllers\StandingsController.cs" />
+    <Compile Include="Controllers\StatisticsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\BearerAuthenticationAttribute.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />
@@ -211,6 +213,10 @@
     <Compile Include="Models\RestModels\Person\PlayerRest.cs" />
     <Compile Include="Models\RestModels\Person\RefereeRest.cs" />
     <Compile Include="Models\RestModels\User\RegisterUserRest.cs" />
+    <Compile Include="Models\RestModels\Statistics\CreateStatisticsRest.cs" />
+    <Compile Include="Models\RestModels\Statistics\StatisticsViewModel.cs" />
+    <Compile Include="Models\RestModels\Statistics\UpdateStatisticsRest.cs" />
+    <Compile Include="Models\RestModels\User\CreateUserRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserPasswordRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserRest.cs" />
     <Compile Include="Models\RestModels\User\LoginUserRest.cs" />

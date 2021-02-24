@@ -93,6 +93,7 @@
     <Compile Include="IStadium.cs" />
     <Compile Include="IStandings.cs" />
     <Compile Include="ISubstitution.cs" />
+    <Compile Include="IStatistics.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

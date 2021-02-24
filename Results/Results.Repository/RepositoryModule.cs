@@ -44,6 +44,7 @@ namespace Results.Repository
             builder.RegisterType<ScoreRepository>().As<IScoreRepository>().InstancePerDependency();
             builder.RegisterType<CardRepository>().As<ICardRepository>().InstancePerDependency();
             builder.RegisterType<SubstitutionRepository>().As<ISubstitutionRepository>().InstancePerDependency();
+            builder.RegisterType<StatisticsRepository>().As<IStatisticsRepository>().InstancePerDependency();
         }
     }
 }
