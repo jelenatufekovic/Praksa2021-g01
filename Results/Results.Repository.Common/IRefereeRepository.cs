@@ -14,7 +14,7 @@ namespace Results.Repository.Common
         Task<bool> CreateRefereeAsync(IReferee referee);
         Task<bool> DeleteRefereeAsync(Guid id, Guid userId);
         Task<IReferee> GetRefereeByIdAsync(Guid id);
-        Task<PagedList<IReferee>> GetRefereeByQueryAsync(RefereeParameters parameters);
+        Task<PagedList<IReferee>> FindRefereesAsync(RefereeParameters parameters);
         Task<bool> UpdateRefereeAsync(IReferee referee);
     }
 }

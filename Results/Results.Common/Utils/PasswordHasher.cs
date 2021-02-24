@@ -18,7 +18,7 @@ namespace Results.Common.Utils
             var bytes = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256);
 
             //return Convert.ToBase64String(salt) + "|" + iterations + "|" + Convert.ToBase64String(bytes.GetBytes(24));
-            return Convert.ToBase64String(bytes.GetBytes(24));
+            return Convert.ToBase64String(bytes.GetBytes(64));
         }
     }
 }

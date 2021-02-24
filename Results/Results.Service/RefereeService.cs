@@ -18,16 +18,18 @@ namespace Results.Service
             _repositoryFactory = repositoryFactory;
         }
 
-        public async Task<Guid> CreateRefereeAsync(IReferee referee)
+        public async Task<IReferee> CreateRefereeAsync(IReferee referee)
         {
             using (IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
             {
                 referee.Id = await unitOfWork.Person.CreatePersonAsync(referee);
                 await unitOfWork.Referee.CreateRefereeAsync(referee);
 
+                IReferee createdReferee = await unitOfWork.Referee.GetRefereeByIdAsync(referee.Id);
+
                 unitOfWork.Commit();
 
-                return referee.Id;
+                return createdReferee;
             }
         }
 
@@ -45,11 +47,11 @@ namespace Results.Service
             return await refereeRepository.GetRefereeByIdAsync(id);
         }
 
-        public async Task<PagedList<IReferee>> GetRefereeByQueryAsync(RefereeParameters parameters)
+        public async Task<PagedList<IReferee>> FindRefereesAsync(RefereeParameters parameters)
         {
             IRefereeRepository refereeRepository = _repositoryFactory.GetRepository<RefereeRepository>();
 
-            return await refereeRepository.GetRefereeByQueryAsync(parameters);
+            return await refereeRepository.FindRefereesAsync(parameters);
         }
 
         public async Task<bool> UpdateRefereeAsync(IReferee referee)

@@ -25,9 +25,7 @@ namespace Results.Common.Utils.QueryHelpers
                 var propertyValue = property.GetValue(filterQueryParams);
 
                 if (String.IsNullOrEmpty(propertyValue?.ToString())) { continue; }
-                if (propertyValue?.ToString() == "01-Jan-01 0:00:00") { continue; }
-                if (propertyValue?.ToString() == "-1") { continue; }
-
+                
                 string propertyName = property.Name;
 
                 if (propertyName.ToLower().Contains("min"))

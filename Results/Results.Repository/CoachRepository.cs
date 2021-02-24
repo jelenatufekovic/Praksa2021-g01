@@ -122,7 +122,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<PagedList<ICoach>> GetCoachByQueryAsync(CoachParameters parameters)
+        public async Task<PagedList<ICoach>> FindCoachesAsync(CoachParameters parameters)
         {
             IQueryHelper<ICoach, CoachParameters> _queryHelper = new QueryHelper<ICoach, CoachParameters>();
 

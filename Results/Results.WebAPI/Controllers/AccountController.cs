@@ -30,7 +30,7 @@ namespace Results.WebAPI.Controllers
         [AllowAnonymous]
         [Route("register")]
         [HttpPost]
-        public async Task<IHttpActionResult> RegisterUserAsync([FromBody] CreateUserRest newUser)
+        public async Task<IHttpActionResult> RegisterUserAsync([FromBody] RegisterUserRest newUser)
         {
             if (!newUser.ValidatePassword())
             {
