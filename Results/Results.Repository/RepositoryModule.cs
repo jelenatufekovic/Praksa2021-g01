@@ -38,6 +38,9 @@ namespace Results.Repository
 
             builder.RegisterType<StadiumRepository>().As<IStadiumRepository>().InstancePerDependency();
             builder.RegisterType<ClubRepository>().As<IClubRepository>().InstancePerDependency();
+
+            builder.RegisterType<SeasonRepository>().As<ISeasonRepository>().InstancePerDependency();
+            builder.RegisterType<LeagueRepository>().As<ILeagueRepository>().InstancePerDependency();
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Results.Service
     {
         protected override void Load(ContainerBuilder builder)
         {
-            base.Load(builder);
 
             builder.RegisterType<ResultsService>().As<IResultsService>().InstancePerDependency();
             builder.RegisterType<UserService>().As<IUserService>().InstancePerDependency();
@@ -24,6 +23,11 @@ namespace Results.Service
             builder.RegisterType<StandingsService>().As<IStandingsService>().InstancePerDependency();
             builder.RegisterType<StadiumService>().As<IStadiumService>().InstancePerDependency();
             builder.RegisterType<ClubService>().As<IClubService>().InstancePerDependency();
+
+            builder.RegisterType<SeasonService>().As<ISeasonService>().InstancePerDependency();
+            builder.RegisterType<LeagueService>().As<ILeagueService>().InstancePerDependency();
+
+            base.Load(builder);
 
         }
     }

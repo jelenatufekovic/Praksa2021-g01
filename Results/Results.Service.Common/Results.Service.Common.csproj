@@ -80,10 +80,12 @@
   <ItemGroup>
     <Compile Include="IClubService.cs" />
     <Compile Include="ICoachService.cs" />
+    <Compile Include="ILeagueService.cs" />
     <Compile Include="IPlayerService.cs" />
     <Compile Include="IRefereeService.cs" />
     <Compile Include="ILeagueSeasonService.cs" />
     <Compile Include="IResultsService.cs" />
+    <Compile Include="ISeasonService.cs" />
     <Compile Include="IStadiumService.cs" />
     <Compile Include="IStandingsService.cs" />
     <Compile Include="IUserService.cs" />

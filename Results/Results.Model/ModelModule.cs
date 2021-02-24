@@ -12,7 +12,6 @@ namespace Results.Model
     {
         protected override void Load(ContainerBuilder builder)
         {
-            base.Load(builder);
 
             builder.RegisterType<ResultsModel>().As<IResultsModel>().InstancePerDependency();
             builder.RegisterType<ModelBase>().As<IModelBase>().InstancePerDependency();
@@ -30,6 +29,10 @@ namespace Results.Model
             builder.RegisterType<Stadium>().As<IStadium>().InstancePerDependency();
             builder.RegisterType<Club>().As<IClub>().InstancePerDependency();
             builder.RegisterType<Score>().As<IScore>().InstancePerDependency();
+            builder.RegisterType<Season>().As<ISeason>().InstancePerDependency();
+            builder.RegisterType<League>().As<ILeague>().InstancePerDependency();
+
+            base.Load(builder);
 
         }
     }

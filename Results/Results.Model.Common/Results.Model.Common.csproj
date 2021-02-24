@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IClub.cs" />
+    <Compile Include="ILeague.cs" />
     <Compile Include="IScore.cs" />
     <Compile Include="ILeagueSeason.cs" />
     <Compile Include="ICoach.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="IPlayer.cs" />
     <Compile Include="IReferee.cs" />
     <Compile Include="IResultsModel.cs" />
+    <Compile Include="ISeason.cs" />
     <Compile Include="IStadium.cs" />
     <Compile Include="IStandings.cs" />
     <Compile Include="IUser.cs" />
