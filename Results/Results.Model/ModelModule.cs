@@ -29,6 +29,7 @@ namespace Results.Model
             builder.RegisterType<Standings>().As<IStandings>().InstancePerDependency();
             builder.RegisterType<Stadium>().As<IStadium>().InstancePerDependency();
             builder.RegisterType<Club>().As<IClub>().InstancePerDependency();
+            builder.RegisterType<Score>().As<IScore>().InstancePerDependency();
 
         }
     }
