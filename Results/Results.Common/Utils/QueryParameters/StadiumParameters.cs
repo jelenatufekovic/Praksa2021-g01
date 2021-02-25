@@ -14,9 +14,13 @@ namespace Results.Common.Utils.QueryParameters
         }
 
         public string Name { get; set; }
-        public string StadiumAddres { get; set; }
-        public string Capacity { get; set; }
-        public DateTime YearOfConstruction { get; set; }
-            
+        public string StadiumAddress { get; set; }
+        public int Capacity { get; set; }
+        public DateTime? YearOfConstruction { get; set; }
+
+        public override bool IsValid()
+        {
+            return base.IsValid();
+        }
     }
 }
