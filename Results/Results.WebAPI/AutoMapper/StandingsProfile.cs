@@ -15,7 +15,7 @@ namespace Results.WebAPI.AutoMapper
         public StandingsProfile()
         {
             CreateMap<IStandings, StandingsViewModel>();
-            CreateMap<CreateDeleteStandingsRest, IStandings>();
+            CreateMap<StandingsIdProviderRest, IStandings>();
             CreateMap<UpdateStandingsRest, IStandings>();
         }
     }

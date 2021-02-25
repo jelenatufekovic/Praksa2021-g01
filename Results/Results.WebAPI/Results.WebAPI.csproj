@@ -206,6 +206,7 @@
     <Compile Include="Models\RestModels\Stadium\GetAllStadiumsRest.cs" />
     <Compile Include="Models\RestModels\Stadium\UpdateStadiumRest.cs" />
     <Compile Include="Models\RestModels\Standing\CreateDeleteStandingsRest.cs" />
+    <Compile Include="Models\RestModels\Standing\StandingsIdProviderRest.cs" />
     <Compile Include="Models\RestModels\Standing\UpdateStandingsRest.cs" />
     <Compile Include="Models\RestModels\Person\CoachRest.cs" />
     <Compile Include="Models\RestModels\Person\PersonRestBase.cs" />

@@ -17,31 +17,19 @@ namespace Results.Service
         {
             _leagueSeasonRepository = leagueSeasonRepository;
         }
-        public async Task<List<ILeagueSeason>> GetAllLeagueSeasonIdAsync()
+        public async Task<List<ILeagueSeason>> GetLeagueSeasonIdAsync()
         {
-            return await _leagueSeasonRepository.GetAllLeagueSeasonIdAsync();
+            return await _leagueSeasonRepository.GetLeagueSeasonIdAsync();
         }
 
-        public async Task<ILeagueSeason> GetLeagueSeasonByBothIdAsync(ILeagueSeason leagueSeasonModel)
+        public async Task<ILeagueSeason> GetLeagueSeasonByBothIdAsync(ILeagueSeason leagueSeason)
         {
-            List<ILeagueSeason> list = await _leagueSeasonRepository.GetAllLeagueSeasonIdAsync();
-            ILeagueSeason model = null;
-            try
-            {
-                model = list.Where(x => x.LeagueID == leagueSeasonModel.LeagueID && x.SeasonID == leagueSeasonModel.SeasonID).FirstOrDefault();
-
-            }
-            catch (ArgumentNullException)
-            {
-                return null;
-            }
-
-            return model;
+            return await _leagueSeasonRepository.GetLeagueSeasonByBothIdAsync(leagueSeason);
         }
 
-        public async Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeason leagueSeasonModel)
+        public async Task<Guid> LeagueSeasonRegistrationAsync(ILeagueSeason leagueSeason)
         {
-            return await _leagueSeasonRepository.LeagueSeasonRegistrationAsync(leagueSeasonModel);
+            return await _leagueSeasonRepository.LeagueSeasonRegistrationAsync(leagueSeason);
         }
     }
 }
