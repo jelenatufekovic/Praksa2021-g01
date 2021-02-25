@@ -15,7 +15,7 @@ namespace Results.Repository
 {
     public class StandingsRepository : IStandingsRepository
     {
-        public async Task<List<IStandings>> GetTableByLeagueSeasonAsync(Guid guid)
+        public async Task<List<IStandings>> GetStandingsByLeagueSeasonAsync(Guid id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
@@ -29,7 +29,7 @@ namespace Results.Repository
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
-                    command.Parameters.AddWithValue("@leagueSeasonID", guid);
+                    command.Parameters.AddWithValue("@leagueSeasonID", id);
 
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
@@ -57,11 +57,11 @@ namespace Results.Repository
             }
         }
 
-        public async Task<string> CheckExistingClubForLeagueSeasonAsync(IStandings standings)
+        public async Task<bool> CheckStandingsForClubAsync(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"SELECT LeagueSeasonID, ClubID, IsDeleted FROM Standing
+                string query = @"SELECT LeagueSeasonID, ClubID FROM Standing
                                 WHERE LeagueSeasonID = @LeagueSeasonID
                                 AND ClubID = @ClubID";
 
@@ -73,53 +73,15 @@ namespace Results.Repository
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        IStandings model = null;
-                        while (await reader.ReadAsync())
-                        {
-                            model =new Standings
-                            {
-                                ClubID = Guid.Parse(reader["ClubID"].ToString()),
-                                LeagueSeasonID = Guid.Parse(reader["LeagueSeasonID"].ToString()),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString())
-                            };
-                        }
-
-                        if (model == null) return "NoExist";
-
-                        if (model.IsDeleted == true) return "Deleted";
-
-                        return "Exist";
+                        return await reader.ReadAsync();
                     }
                 }
             }
         }
 
-        public async Task<bool> UpdateTableFromDelete(IStandings standings)
+        public async Task<bool> CreateStandingsForClubAsync(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
-            {
-                string query = @"UPDATE Standing
-                                SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
-                                WHERE LeagueSeasonID = @LeagueSeasonID
-                                AND ClubID = @ClubID";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@LeagueSeasonID", standings.LeagueSeasonID);
-                    command.Parameters.AddWithValue("@ClubID", standings.ClubID);
-                    command.Parameters.AddWithValue("@UpdatedAt", standings.UpdatedAt = DateTime.Now);
-                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
-                    command.Parameters.AddWithValue("@ByUser", standings.ByUser);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
-            }
-        }
-
-        public async Task<bool> CreateTableByLeagueSeasonAsync(IStandings standings)
-        {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
             {
                 string query = @"INSERT INTO Standing(LeagueSeasonID, ClubID, Played, Won, Draw, Lost, GoalsScored, GoalsConceded, Points, CreatedAt, UpdatedAt, IsDeleted, ByUser)
                                 VALUES(@LeagueSeasonID, @ClubID, @Played, @Won, @Draw, @Lost, @GoalsScored, @GoalsConceded, @Points, @CreatedAt, @UpdatedAt, @IsDeleted, @ByUser)";
@@ -146,9 +108,9 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> UpdateTableForClubAsync(IStandings standings)
+        public async Task<bool> UpdateStandingsForClubAsync(IStandings standings)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = @"UPDATE Standing
                                 SET LeagueSeasonID = @LeagueSeasonID, ClubID=@ClubID, Played=@Played, Won=@Won, Draw=@Draw, Lost=@Lost, GoalsScored=@GoalsScored, GoalsConceded=@GoalsConceded, Points=@Points, UpdatedAt=@UpdatedAt, IsDeleted=@IsDeleted, ByUser=@ByUser
@@ -176,9 +138,9 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> DeleteTableByLeagueSeasonAsync(IStandings standings)
+        public async Task<bool> DeleteLeagueSeasonStandingsAsync(IStandings standings)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString())) 
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = @"UPDATE Standing
                                 SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
@@ -196,7 +158,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandings standings)
+        public async Task<bool> DeleteClubStandingsAsync(IStandings standings)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {

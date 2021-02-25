@@ -25,26 +25,17 @@ namespace Results.WebAPI.Controllers
 
         [Route("Get")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetAllLeagueSeasonIdAsync()
+        public async Task<IHttpActionResult> GetLeagueSeasonIdAsync()
         {
-
-            List<ILeagueSeason> leagueSeason = await _leagueSeasonService.GetAllLeagueSeasonIdAsync();
-            List<LeagueSeasonViewModel> view = new List<LeagueSeasonViewModel>();
+            List<ILeagueSeason> leagueSeason = await _leagueSeasonService.GetLeagueSeasonIdAsync();
 
             if (leagueSeason == null)
             {
                 return NotFound();
             }
-            
-            else
-            {
-                foreach (LeagueSeason result in leagueSeason)
-                {
-                    view.Add(_mapper.Map<LeagueSeasonViewModel>(result));
-                }
 
-                return Ok(view);
-            }
+            List<LeagueSeasonViewModel> view = _mapper.Map<List<ILeagueSeason>, List<LeagueSeasonViewModel>>(leagueSeason); 
+            return Ok(view);
         }
 
         [Route("Get/Id")]
@@ -59,12 +50,8 @@ namespace Results.WebAPI.Controllers
                 return NotFound();
             }
 
-            else
-            {
-                LeagueSeasonViewModel view = _mapper.Map<LeagueSeasonViewModel>(leagueSeason);
-
-                return Ok(view);
-            }
+            LeagueSeasonViewModel view = _mapper.Map<LeagueSeasonViewModel>(leagueSeason); 
+            return Ok(view);
         }
 
         [Route("Register")]
@@ -75,11 +62,16 @@ namespace Results.WebAPI.Controllers
 
             if (leagueSeason != null)
             {
-                ModelState.AddModelError("League-Season Information", "Season for that league already exists");
+                return BadRequest("Season for that league already exists");
             }
 
             leagueSeason = _mapper.Map<LeagueSeason>(newLeagueSeason);
             Guid leagueSeasonId = await _leagueSeasonService.LeagueSeasonRegistrationAsync(leagueSeason);
+
+            if (leagueSeason != null)
+            {
+                return BadRequest("Something went wrong");
+            }
 
             return Ok(leagueSeasonId);
         }

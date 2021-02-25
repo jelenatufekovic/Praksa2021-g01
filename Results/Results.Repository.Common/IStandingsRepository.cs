@@ -9,12 +9,11 @@ namespace Results.Repository.Common
 {
     public interface IStandingsRepository
     {
-        Task<List<IStandings>> GetTableByLeagueSeasonAsync(Guid guid);
-        Task<string> CheckExistingClubForLeagueSeasonAsync(IStandings standings);
-        Task<bool> UpdateTableFromDelete(IStandings standings);
-        Task<bool> CreateTableByLeagueSeasonAsync(IStandings standings);
-        Task<bool> UpdateTableForClubAsync(IStandings standings);
-        Task<bool> DeleteTableByLeagueSeasonAsync(IStandings standings);
-        Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandings standings);
+        Task<List<IStandings>> GetStandingsByLeagueSeasonAsync(Guid id);
+        Task<bool> CheckStandingsForClubAsync(IStandings standings);
+        Task<bool> CreateStandingsForClubAsync(IStandings standings);
+        Task<bool> UpdateStandingsForClubAsync(IStandings standings);
+        Task<bool> DeleteLeagueSeasonStandingsAsync(IStandings standings);
+        Task<bool> DeleteClubStandingsAsync(IStandings standings);
     }
 }

@@ -18,39 +18,34 @@ namespace Results.Service
             _standingsRepository = standingRepository;
         }
 
-        public async Task<List<IStandings>> GetTableByLeagueSeasonAsync(Guid guid)
+        public async Task<List<IStandings>> GetStandingsByLeagueSeasonAsync(Guid id)
         {
-            return await _standingsRepository.GetTableByLeagueSeasonAsync(guid);
+            return await _standingsRepository.GetStandingsByLeagueSeasonAsync(id);
         }
 
-        public async Task<string> CheckExistingClubForLeagueSeasonAsync(IStandings standings)
+        public async Task<bool> CheckStandingsForClubAsync(IStandings standings)
         {
-            return await _standingsRepository.CheckExistingClubForLeagueSeasonAsync(standings);
+            return await _standingsRepository.CheckStandingsForClubAsync(standings);
         }
 
-        public async Task<bool> UpdateTableFromDelete(IStandings standings)
+        public async Task<bool> CreateStandingsForClubAsync(IStandings standings)
         {
-            return await _standingsRepository.UpdateTableFromDelete(standings);
+            return await _standingsRepository.CreateStandingsForClubAsync(standings);
         }
 
-        public async Task<bool> CreateTableByLeagueSeasonAsync(IStandings standings)
+        public async Task<bool> UpdateStandingsForClubAsync(IStandings standings)
         {
-            return await _standingsRepository.CreateTableByLeagueSeasonAsync(standings);
+            return await _standingsRepository.UpdateStandingsForClubAsync(standings);
         }
 
-        public async Task<bool> UpdateTableForClubAsync(IStandings standings)
+        public async Task<bool> DeleteLeagueSeasonStandingsAsync(IStandings standings)
         {
-            return await _standingsRepository.UpdateTableForClubAsync(standings);
+            return await _standingsRepository.DeleteLeagueSeasonStandingsAsync(standings);
         }
 
-        public async Task<bool> DeleteTableByLeagueSeasonAsync(IStandings standings)
+        public async Task<bool> DeleteClubStandingsAsync(IStandings standings)
         {
-            return await _standingsRepository.DeleteTableByLeagueSeasonAsync(standings);
-        }
-
-        public async Task<bool> DeleteClubTableByLeagueSeasonAsync(IStandings standings)
-        {
-            return await _standingsRepository.DeleteClubTableByLeagueSeasonAsync(standings);
+            return await _standingsRepository.DeleteClubStandingsAsync(standings);
         }
     }
 }

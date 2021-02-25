@@ -8,7 +8,6 @@ namespace Results.Model.Common
 {
     public interface ILeagueSeason : IModelBase
     {
-        Guid Id { get; set; }
         Guid LeagueID { get; set; }
         Guid SeasonID { get; set; }
         string Category { get; set; }

@@ -26,11 +26,11 @@ namespace Results.WebAPI.Controllers
             _mapper = mapper;
         }
 
-        [Route("Get/{Guid}")]
+        [Route("Get/{id}")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetTableByLeagueSeasonAsync([FromUri] Guid guid)
+        public async Task<IHttpActionResult> GetStandingsByLeagueSeasonAsync([FromUri] Guid id)
         {
-            List<IStandings> standings = await _standingsService.GetTableByLeagueSeasonAsync(guid);
+            List<IStandings> standings = await _standingsService.GetStandingsByLeagueSeasonAsync(id);
 
             if (standings == null)
             {
@@ -43,30 +43,20 @@ namespace Results.WebAPI.Controllers
 
         [Route("Post")]
         [HttpPost]
-        public async Task<IHttpActionResult> CreateTableByLeagueSeasonAsync([FromBody] CreateDeleteStandingsRest createStandingRest)
+        public async Task<IHttpActionResult> CreateStandingsForClubAsync([FromBody] StandingsIdProviderRest provider)
         {
-            IStandings standings = _mapper.Map<IStandings>(createStandingRest);
+            IStandings standings = _mapper.Map<IStandings>(provider);
 
-            string result = await _standingsService.CheckExistingClubForLeagueSeasonAsync(standings);
-            if (result == "Exist")
+            bool result = await _standingsService.CheckStandingsForClubAsync(standings);
+            if (result)
             {
                 return BadRequest("Standings for that club already exist for this League-Season");
             }
 
-            if (result == "Deleted")
+            bool success = await _standingsService.CreateStandingsForClubAsync(standings);
+            if (success)
             {
-                if(await _standingsService.UpdateTableFromDelete(standings)) return Ok("Standings for club successfully created");
-
-                return BadRequest("Something went wrong with reviveing standings for that club");
-            }
-
-            if (result == "NoExist")
-            {
-                bool success = await _standingsService.CreateTableByLeagueSeasonAsync(standings);
-                if (success)
-                {
-                    return Ok("Standings for club successfully created");
-                }
+                return Ok("Standings for club successfully created");
             }
 
             return BadRequest("Something went wrong");
@@ -74,11 +64,11 @@ namespace Results.WebAPI.Controllers
 
         [Route("Put")]
         [HttpPut]
-        public async Task<IHttpActionResult> UpdateTableForClubAsync([FromBody] UpdateStandingsRest updateStandingRest)
+        public async Task<IHttpActionResult> UpdateStandingsForClubAsync([FromBody] UpdateStandingsRest updateStandingRest)
         {
             IStandings standings = _mapper.Map<IStandings>(updateStandingRest);
 
-            bool result = await _standingsService.UpdateTableForClubAsync(standings);
+            bool result = await _standingsService.UpdateStandingsForClubAsync(standings);
             if (result)
             {
                 return Ok("Standings for Club successfully updated");
@@ -89,11 +79,11 @@ namespace Results.WebAPI.Controllers
 
         [Route("Delete/LeagueSeason")]
         [HttpDelete]
-        public async Task<IHttpActionResult> DeleteTableByLeagueSeasonAsync([FromBody] CreateDeleteStandingsRest deleteStandingRest)
+        public async Task<IHttpActionResult> DeleteLeagueSeasonStandingsAsync([FromBody] StandingsIdProviderRest provider)
         {
-            IStandings standings = _mapper.Map<IStandings>(deleteStandingRest);
+            IStandings standings = _mapper.Map<IStandings>(provider);
 
-            bool result = await _standingsService.DeleteTableByLeagueSeasonAsync(standings);
+            bool result = await _standingsService.DeleteLeagueSeasonStandingsAsync(standings);
             if (result)
             {
                 return Ok("Standings for League-Season successfully deleted");
@@ -104,11 +94,11 @@ namespace Results.WebAPI.Controllers
 
         [Route("Delete/ClubByLeagueSeason")]
         [HttpDelete]
-        public async Task<IHttpActionResult> DeleteClubTableByLeagueSeasonAsync([FromBody] CreateDeleteStandingsRest deleteStandingRest)
+        public async Task<IHttpActionResult> DeleteClubStandingsAsync([FromBody] StandingsIdProviderRest provider)
         {
-            IStandings standings = _mapper.Map<IStandings>(deleteStandingRest);
+            IStandings standings = _mapper.Map<IStandings>(provider);
 
-            bool result = await _standingsService.DeleteClubTableByLeagueSeasonAsync(standings);
+            bool result = await _standingsService.DeleteClubStandingsAsync(standings);
             if (result)
             {
                 return Ok("Standings for club successfully deleted");
