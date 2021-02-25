@@ -29,11 +29,6 @@ namespace Results.Service
             return await _statisticsRepository.GetStatisticsAsync(MatchId);
         }
 
-        public async Task<List<IStatistics>> GetAllStatisticsAsync(StatisticsParameters parameters)
-        {
-         return await _statisticsRepository.GetStatisticsByQueryAsync(parameters);
-        }
-
         public async Task<bool> UpdateStatisticsAsync(IStatistics statistics)
         {
             return await _statisticsRepository.UpdateStatisticsAsync(statistics);

@@ -51,50 +51,11 @@ namespace Results.WebAPI.Controllers
             return BadRequest();
         }
 
-        [Route("{id}")]
-        [HttpDelete]
-        public async Task<IHttpActionResult> DeleteStatisticsAsync(Guid MatchId)
+        [Route("{matchid}")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetStatisticsAsync(Guid MatchId)
         {
             IStatistics statistics = await _statisticsService.GetStatisticsAsync(MatchId);
-            if (statistics == null)
-            {
-                return NotFound();
-            }
-
-            bool result = await _statisticsService.DeleteStatisticsAsync(MatchId);
-
-            if (!result)
-            {
-                return BadRequest();
-            }
-            return Ok();
-        }
-
-
-        [HttpGet]
-        public async Task<IHttpActionResult> GetAllStatisticsAsync(StatisticsParameters parameters)
-        {
-            List<IStatistics> statisticsList = await _statisticsService.GetAllStatisticsAsync(parameters);
-            if (statisticsList == null)
-            {
-                return BadRequest();
-            }
-
-            List<StatisticsViewModel> viewModels = new List<StatisticsViewModel>();
-
-            foreach(IStatistics statistics in statisticsList)
-            {
-                viewModels.Add(_mapper.Map<StatisticsViewModel>(statistics));
-            }
-                       
-            return Ok(viewModels);
-        }
-
-        [Route("{id}")]
-        [HttpGet]
-        public async Task<IHttpActionResult> GetStatisticsAsync(Guid Id)
-        {
-            IStatistics statistics = await _statisticsService.GetStatisticsAsync(Id);
             if (statistics == null)
             {
                 return BadRequest();
@@ -116,7 +77,7 @@ namespace Results.WebAPI.Controllers
                 return NotFound();
             }
 
-            statistics = _mapper.Map(updateStatistics, statistics);
+            statistics = _mapper.Map<IStatistics>(updateStatistics);
 
             bool result = await _statisticsService.UpdateStatisticsAsync(statistics);
 
@@ -127,6 +88,24 @@ namespace Results.WebAPI.Controllers
             return Ok();
         }
 
+        [Route("{matchid}")]
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteStatisticsAsync(Guid MatchId)
+        {
+            IStatistics statistics = await _statisticsService.GetStatisticsAsync(MatchId);
+            if (statistics == null)
+            {
+                return NotFound();
+            }
+
+            bool result = await _statisticsService.DeleteStatisticsAsync(MatchId);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
         #endregion Methods
     }
 }

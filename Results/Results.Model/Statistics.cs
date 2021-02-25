@@ -9,10 +9,7 @@ namespace Results.Model
 {
     public class Statistics : ModelBase, IStatistics
     {
-        public Guid Id { get; set; }
         public Guid MatchId { get; set; }
-        public Guid HomeTeamSeasonId { get; set; }
-        public Guid AwayTeamSeasonId { get; set; }
         public int HomeGoals { get; set; }
         public int AwayGoals { get; set; }
         public int HomeYellowCards { get; set; }

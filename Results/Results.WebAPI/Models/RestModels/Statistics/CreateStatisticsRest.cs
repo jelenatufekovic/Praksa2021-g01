@@ -8,8 +8,6 @@ namespace Results.WebAPI.Models.RestModels.Statistics
     public class CreateStatisticsRest
     {
         public Guid MatchId { get; set; }
-        public Guid HomeTeamSeasonId { get; set; }
-        public Guid AwayTeamSeasonId { get; set; }
         public Guid ByUser { get; set; }
         public int HomeGoals { get; set; }
         public int AwayGoals { get; set; }

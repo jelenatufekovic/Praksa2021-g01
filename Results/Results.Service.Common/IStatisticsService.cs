@@ -12,8 +12,8 @@ namespace Results.Service.Common
     {
         Task<bool> CreateStatisticsAsync(IStatistics statistics);
         Task<IStatistics> GetStatisticsAsync(Guid MatchId);
-        Task<List<IStatistics>> GetAllStatisticsAsync(StatisticsParameters parameters);
         Task<bool> UpdateStatisticsAsync(IStatistics statistics);
         Task<bool> DeleteStatisticsAsync(Guid MatchId);
+
     }
 }
