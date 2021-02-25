@@ -28,11 +28,6 @@ namespace Results.Service
             return await _standingsRepository.CheckStandingsForClubAsync(standings);
         }
 
-        //public async Task<bool> UpdateTableFromDelete(IStandings standings)
-        //{
-        //    return await _standingsRepository.UpdateTableFromDelete(standings);
-        //}
-
         public async Task<bool> CreateStandingsForClubAsync(IStandings standings)
         {
             return await _standingsRepository.CreateStandingsForClubAsync(standings);

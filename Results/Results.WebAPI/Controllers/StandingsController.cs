@@ -53,13 +53,6 @@ namespace Results.WebAPI.Controllers
                 return BadRequest("Standings for that club already exist for this League-Season");
             }
 
-            //if (result == "Deleted")
-            //{
-            //    if(await _standingsService.UpdateTableFromDelete(standings)) return Ok("Standings for club successfully created");
-
-            //    return BadRequest("Something went wrong with reviveing standings for that club");
-            //}
-
             bool success = await _standingsService.CreateStandingsForClubAsync(standings);
             if (success)
             {

@@ -11,7 +11,6 @@ namespace Results.Repository.Common
     {
         Task<List<IStandings>> GetStandingsByLeagueSeasonAsync(Guid id);
         Task<bool> CheckStandingsForClubAsync(IStandings standings);
-        //Task<bool> UpdateTableFromDelete(IStandings standings);
         Task<bool> CreateStandingsForClubAsync(IStandings standings);
         Task<bool> UpdateStandingsForClubAsync(IStandings standings);
         Task<bool> DeleteLeagueSeasonStandingsAsync(IStandings standings);
