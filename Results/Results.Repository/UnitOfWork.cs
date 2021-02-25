@@ -19,6 +19,7 @@ namespace Results.Repository
         private IPlayerRepository _player;
         private ICoachRepository _coach;
         private IRefereeRepository _referee;
+        private IStatisticsRepository _statistics;
 
         public UnitOfWork(SqlConnection connection)
         {
@@ -83,6 +84,18 @@ namespace Results.Repository
                     _referee = new RefereeRepository(Transaction);
                 }
                 return _referee;
+            }
+        }
+
+        public IStatisticsRepository Statistics
+        {
+            get
+            {
+                if (_statistics == null)
+                {
+                    _statistics = new StatisticsRepository(Transaction);
+                }
+                return _statistics;
             }
         }
 

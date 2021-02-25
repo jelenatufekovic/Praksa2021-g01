@@ -14,6 +14,5 @@ namespace Results.Service.Common
         Task<IStatistics> GetStatisticsAsync(Guid MatchId);
         Task<bool> UpdateStatisticsAsync(IStatistics statistics);
         Task<bool> DeleteStatisticsAsync(Guid MatchId);
-
     }
 }
