@@ -1,6 +1,8 @@
 ﻿using Results.Model.Common;
 using Results.Repository.Common;
 using Results.Model;
+using Results.Common.Utils.QueryParameters;
+using Results.Common.Utils.QueryHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +54,47 @@ namespace Results.Repository
                             list.Add(model);
                         }
                         return list;
+                    }
+                }
+            }
+        }
+
+        public async Task<IStandings> GetStandingsByQueryAsync(StandingsParameters parameters)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            {
+                string query = @"SELECT LeagueSeasonID, Club.Id as ClubID, Club.Name as Club, Played, Won, Draw, Lost, GoalsScored, GoalsConceded, Points 
+                                FROM Standing 
+                                JOIN Club ON Standing.ClubID = Club.Id ";
+
+                IQueryHelper<IStandings, StandingsParameters> queryHelper = new QueryHelper<IStandings, StandingsParameters>();
+
+                query += queryHelper.Filter.ApplyFilters(parameters);
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    IStandings standings = null;
+                    
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            standings = new Standings()
+                            {
+                                LeagueSeasonID = Guid.Parse(reader["LeagueSeasonID"].ToString()),
+                                ClubID = Guid.Parse(reader["ClubID"].ToString()),
+                                ClubName = reader["Club"].ToString(),
+                                Played = Convert.ToInt32(reader["Played"].ToString()),
+                                Won = Convert.ToInt32(reader["Won"].ToString()),
+                                Draw = Convert.ToInt32(reader["Draw"].ToString()),
+                                Lost = Convert.ToInt32(reader["Lost"].ToString()),
+                                GoalsScored = Convert.ToInt32(reader["GoalsScored"].ToString()),
+                                GoalsConceded = Convert.ToInt32(reader["GoalsConceded"].ToString()),
+                                Points = Convert.ToInt32(reader["Points"].ToString()),
+                            };
+                        }
+                        return standings;
                     }
                 }
             }
@@ -121,13 +164,13 @@ namespace Results.Repository
                 {
                     command.Parameters.AddWithValue("@LeagueSeasonID", standings.LeagueSeasonID);
                     command.Parameters.AddWithValue("@ClubID", standings.ClubID);
-                    command.Parameters.AddWithValue("@Played", (standings.Won + standings.Draw + standings.Lost));
+                    command.Parameters.AddWithValue("@Played", standings.Played);
                     command.Parameters.AddWithValue("@Won", standings.Won);
                     command.Parameters.AddWithValue("@Draw", standings.Draw);
                     command.Parameters.AddWithValue("@Lost", standings.Lost);
                     command.Parameters.AddWithValue("@GoalsScored", standings.GoalsScored);
                     command.Parameters.AddWithValue("@GoalsConceded", standings.GoalsConceded);
-                    command.Parameters.AddWithValue("@Points", ((standings.Won*3)+standings.Draw));
+                    command.Parameters.AddWithValue("@Points", standings.Points);
                     command.Parameters.AddWithValue("@UpdatedAt", standings.UpdatedAt = DateTime.Now);
                     command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
                     command.Parameters.AddWithValue("@ByUser", standings.ByUser);

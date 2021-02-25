@@ -2,6 +2,7 @@
 using Results.Model;
 using Results.Model.Common;
 using Results.Service.Common;
+using Results.Common.Utils.QueryParameters;
 using Results.WebAPI.Models.RestModels.Standing;
 using Results.WebAPI.Models.ViewModels;
 using System;
@@ -39,6 +40,20 @@ namespace Results.WebAPI.Controllers
 
             List<StandingsViewModel> view = _mapper.Map<List<IStandings>, List<StandingsViewModel>>(standings);
             return Ok(view);
+        }
+
+        [Route("Get")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetStandingsByQueryAsync([FromBody] StandingsIdProviderRest provider)
+        {
+            IStandings standings = await _standingsService.GetStandingsByQueryAsync(_mapper.Map<StandingsParameters>(provider));
+
+            if (standings == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<StandingsViewModel>(standings));
         }
 
         [Route("Post")]

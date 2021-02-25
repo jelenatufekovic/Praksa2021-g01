@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Results.Model;
 using Results.Model.Common;
+using Results.Common.Utils.QueryParameters;
 using Results.WebAPI.Models.RestModels.Standing;
 using Results.WebAPI.Models.ViewModels;
 using System;
@@ -17,6 +18,7 @@ namespace Results.WebAPI.AutoMapper
             CreateMap<IStandings, StandingsViewModel>();
             CreateMap<StandingsIdProviderRest, IStandings>();
             CreateMap<UpdateStandingsRest, IStandings>();
+            CreateMap<StandingsIdProviderRest, StandingsParameters>();
         }
     }
 }

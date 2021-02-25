@@ -1,6 +1,7 @@
 ﻿using Results.Model.Common;
 using Results.Repository.Common;
 using Results.Service.Common;
+using Results.Common.Utils.QueryParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,11 @@ namespace Results.Service
             return await _standingsRepository.GetStandingsByLeagueSeasonAsync(id);
         }
 
+        public async Task<IStandings> GetStandingsByQueryAsync(StandingsParameters parameters)
+        {
+            return await _standingsRepository.GetStandingsByQueryAsync(parameters);
+        }
+
         public async Task<bool> CheckStandingsForClubAsync(IStandings standings)
         {
             return await _standingsRepository.CheckStandingsForClubAsync(standings);
@@ -35,7 +41,11 @@ namespace Results.Service
 
         public async Task<bool> UpdateStandingsForClubAsync(IStandings standings)
         {
-            return await _standingsRepository.UpdateStandingsForClubAsync(standings);
+            if((standings.Played == (standings.Won + standings.Draw + standings.Lost)) && (standings.Points <= ((standings.Won*3) + standings.Draw)))
+            {
+                return await _standingsRepository.UpdateStandingsForClubAsync(standings);
+            }
+            return false;
         }
 
         public async Task<bool> DeleteLeagueSeasonStandingsAsync(IStandings standings)
