@@ -7,40 +7,61 @@ using Results.Service.Common;
 using Results.Model.Common;
 using Results.Repository.Common;
 using Results.Repository;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 
 namespace Results.Service
 {
     public class StadiumService : IStadiumService
     {
-        private readonly IStadiumRepository _stadiumRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public StadiumService(IStadiumRepository stadiumRepository)
+        public StadiumService(IRepositoryFactory repositoryFactory)
         {
-            _stadiumRepository = stadiumRepository;
+            _repositoryFactory = repositoryFactory;
         }
         public async Task<bool> CreateStadiumAsync(IStadium stadium)
         {
-            return await _stadiumRepository.CreateStadiumAsync(stadium);
+            IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();
+
+            return await stadiumRepository.CreateStadiumAsync(stadium);
         }
         public async Task<bool> UpdateStadiumAsync(IStadium stadium)
         {
-            return await _stadiumRepository.UpdateStadiumAsync(stadium);
+            IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();
+
+            return await stadiumRepository.UpdateStadiumAsync(stadium);
         }
         public async Task<bool> DeleteStadiumAsync(IStadium stadium)
         {
-            return await _stadiumRepository.DeleteStadiumAsync(stadium);
+            IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();
+
+            return await stadiumRepository.DeleteStadiumAsync(stadium);
         }
         public async Task<List<IStadium>> GetAllStadiumsAsync()
         {
-            return await _stadiumRepository.GetAllStadiumsAsync();
+            IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();
+
+            return await stadiumRepository.GetAllStadiumsAsync();
         }
         public async Task<IStadium> GetStadiumByIdAsync(Guid id)
         {
-            return await _stadiumRepository.GetStadiumByIdAsync(id);
+            IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();
+
+            return await stadiumRepository.GetStadiumByIdAsync(id);
         }
         public async Task<IStadium> GetStadiumByNameAsync(string name)
         {
-            return await _stadiumRepository.GetStadiumByNameAsync(name);
+            IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();
+
+            return await stadiumRepository.GetStadiumByNameAsync(name);
         }
+        public async Task<PagedList<IStadium>> GetStadiumsByQueryAsync(StadiumParameters parameters)
+        {
+            IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();
+
+            return await stadiumRepository.GetStadiumsByQueryAsync(parameters);
+        }
+
     }
 }

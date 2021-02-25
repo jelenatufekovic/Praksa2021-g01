@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Card.cs" />
     <Compile Include="Club.cs" />
     <Compile Include="League.cs" />
     <Compile Include="Score.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Season.cs" />
     <Compile Include="Stadium.cs" />
     <Compile Include="Standings.cs" />
+    <Compile Include="Substitution.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

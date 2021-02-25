@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICard.cs" />
     <Compile Include="IClub.cs" />
     <Compile Include="ILeague.cs" />
     <Compile Include="IScore.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="ISeason.cs" />
     <Compile Include="IStadium.cs" />
     <Compile Include="IStandings.cs" />
+    <Compile Include="ISubstitution.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

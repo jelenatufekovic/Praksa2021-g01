@@ -22,10 +22,14 @@ namespace Results.Common.Utils.QueryHelpers
             {
                 if (property.Name.Equals("PageNumber") || property.Name.Equals("PageSize") || property.Name.Equals("OrderBy")) { continue; }
 
+                
                 var propertyValue = property.GetValue(filterQueryParams);
 
                 if (String.IsNullOrEmpty(propertyValue?.ToString())) { continue; }
                 
+                if (propertyValue?.ToString() == "01-Jan-01 0:00:00" || propertyValue?.ToString() == "1.1.0001. 0:00:00") { continue; }
+                if (propertyValue?.ToString() == "-1") { continue; }
+
                 string propertyName = property.Name;
 
                 if (propertyName.ToLower().Contains("min"))

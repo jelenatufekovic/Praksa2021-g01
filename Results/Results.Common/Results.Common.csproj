@@ -133,6 +133,7 @@
     <Compile Include="Utils\QueryParameters\RefereeParameters.cs" />
     <Compile Include="Utils\QueryParameters\SeasonParameters.cs" />
     <Compile Include="Utils\QueryParameters\StandingsParameters.cs" />
+    <Compile Include="Utils\QueryParameters\StadiumParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

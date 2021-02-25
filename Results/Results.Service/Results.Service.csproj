@@ -91,6 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CardService.cs" />
     <Compile Include="ClubService.cs" />
     <Compile Include="CoachService.cs" />
     <Compile Include="LeagueService.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="RefereeService.cs" />
     <Compile Include="LeagueSeasonService.cs" />
     <Compile Include="SeasonService.cs" />
+    <Compile Include="ScoreService.cs" />
     <Compile Include="ServiceModule.cs" />
     <Compile Include="ResultsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="StandingsService.cs" />
     <Compile Include="TokenService.cs" />
     <Compile Include="UserManager.cs" />
+    <Compile Include="SubstitutionService.cs" />
     <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>

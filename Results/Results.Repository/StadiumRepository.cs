@@ -9,11 +9,28 @@ using Results.Model.Common;
 using Results.Repository.Common;
 using Results.Model;
 using System.Data;
+using Results.Common.Utils.QueryHelpers;
+using Results.Common.Utils.QueryParameters;
+using Results.Repository;
 
 namespace Results.Repository
 {
-    public class StadiumRepository : IStadiumRepository
+    public class StadiumRepository : RepositoryBase, IStadiumRepository
     {
+        private SqlConnection _connection;
+        private SqlCommand _command;
+
+        public StadiumRepository(SqlConnection connection) : base(connection)
+        {
+            _command = new SqlCommand(String.Empty, connection);
+            _connection = connection;
+            _connection.Open();
+        }
+
+        public StadiumRepository(SqlTransaction transaction) : base(transaction.Connection)
+        {
+            _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
+        }
         public async Task<bool> CreateStadiumAsync(IStadium stadium) 
         {
             using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
@@ -180,6 +197,51 @@ namespace Results.Repository
                         return null;
                     }
                 }
+            }
+        }
+
+        public async Task<PagedList<IStadium>> GetStadiumsByQueryAsync(StadiumParameters parameters)
+        {
+            IQueryHelper<IStadium, StadiumParameters> _queryHelper = GetQueryHelper<IStadium, StadiumParameters>();
+
+            int totalCount = await GetTableCount<Stadium>();
+
+            string query = @"SELECT * FROM Stadium ";
+
+            query += _queryHelper.Filter.ApplyFilters(parameters);
+            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
+            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
+
+            _command.CommandText = query;
+            using(SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                PagedList<IStadium> stadiumList = new PagedList<IStadium>(totalCount, parameters.PageNumber, parameters.PageSize);
+
+                while (await reader.ReadAsync())
+                {
+                    IStadium stadium = new Stadium()
+                    {
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        Name = reader["Name"].ToString(),
+                        StadiumAddress = reader["StadiumAddress"].ToString(),
+                        Capacity = int.Parse(reader["Capacity"].ToString()),
+                        YearOfConstruction = DateTime.Parse(reader["YearOfConstruction"].ToString()),
+                        Description = reader["Description"].ToString(),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString())
+                    };
+                    stadiumList.Add(stadium);
+                }
+                reader.Close();
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return stadiumList;
             }
         }
     }

@@ -11,8 +11,22 @@ using Results.Model;
 
 namespace Results.Repository
 {
-    public class ClubRepository : IClubRepository
+    public class ClubRepository : RepositoryBase, IClubRepository
     {
+        private SqlConnection _connection;
+        private SqlCommand _command;
+
+        public ClubRepository(SqlConnection connection) : base(connection)
+        {
+            _command = new SqlCommand(String.Empty, connection);
+            _connection = connection;
+            _connection.Open();
+        }
+
+        public ClubRepository(SqlTransaction transaction) : base(transaction.Connection)
+        {
+            _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
+        }
         public async Task<bool> CreateClubAsync(IClub club) 
         {
             using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
