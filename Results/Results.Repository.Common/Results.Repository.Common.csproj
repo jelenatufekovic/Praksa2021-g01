@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICardRepository.cs" />
     <Compile Include="IClubRepository.cs" />
     <Compile Include="IScoreRepository.cs" />
     <Compile Include="ICoachRepository.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="IResultsRepository.cs" />
     <Compile Include="IStadiumRepository.cs" />
     <Compile Include="IStandingsRepository.cs" />
+    <Compile Include="ISubstitutionRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -7,10 +7,10 @@ using Results.Model.Common;
 
 namespace Results.Repository.Common
 {
-    public interface IScoreRepository
+    public interface ICardRepository
     {
-        Task<bool> CreateScoreAsync(IScore score);
-        Task<bool> UpdateScoreAsync(IScore score);
-        Task<bool> DeleteScoreAsync(Guid id, Guid byUser);
+        Task<bool> CreateCardAsync(ICard card);
+        Task<bool> UpdateCardAsync(ICard card);
+        Task<bool> DeleteCardAsync(Guid id, Guid byUser);
     }
 }

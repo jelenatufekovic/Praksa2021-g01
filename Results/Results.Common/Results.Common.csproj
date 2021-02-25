@@ -116,6 +116,7 @@
     <Compile Include="Utils\QueryParameters\QueryParameters.cs" />
     <Compile Include="Utils\QueryHelpers\SortHelper.cs" />
     <Compile Include="Utils\QueryParameters\RefereeParameters.cs" />
+    <Compile Include="Utils\QueryParameters\StadiumParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

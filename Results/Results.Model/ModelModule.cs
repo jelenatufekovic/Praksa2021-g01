@@ -30,6 +30,8 @@ namespace Results.Model
             builder.RegisterType<Stadium>().As<IStadium>().InstancePerDependency();
             builder.RegisterType<Club>().As<IClub>().InstancePerDependency();
             builder.RegisterType<Score>().As<IScore>().InstancePerDependency();
+            builder.RegisterType<Card>().As<ICard>().InstancePerDependency();
+            builder.RegisterType<Substitution>().As<ISubstitution>().InstancePerDependency();
 
         }
     }

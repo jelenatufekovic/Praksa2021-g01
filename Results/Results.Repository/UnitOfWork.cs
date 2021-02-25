@@ -19,6 +19,10 @@ namespace Results.Repository
         private IPlayerRepository _player;
         private ICoachRepository _coach;
         private IRefereeRepository _referee;
+        private IStadiumRepository _stadium;
+        private IClubRepository _club;
+        private IScoreRepository _score;
+        private ICardRepository _card;
 
         public UnitOfWork(SqlConnection connection)
         {
@@ -83,6 +87,54 @@ namespace Results.Repository
                     _referee = new RefereeRepository(Transaction);
                 }
                 return _referee;
+            }
+        }
+
+        public IStadiumRepository Stadium
+        {
+            get
+            {
+                if (_stadium == null)
+                {
+                    _stadium = new StadiumRepository(Transaction);
+                }
+                return _stadium;
+            }
+        }
+
+        public IClubRepository Club
+        {
+            get
+            {
+                if (_club == null)
+                {
+                    _club = new ClubRepository(Transaction);
+                }
+                return _club;
+            }
+        }
+
+        public IScoreRepository Score
+        {
+            get
+            {
+                if (_score == null)
+                {
+                    _score = new ScoreRepository(Transaction);
+                }
+                return _score;
+            }
+        }
+
+        public ICardRepository Card
+        {
+            get
+            {
+                if (_card == null)
+                {
+                    _card = new CardRepository(Transaction);
+                }
+                return _card;
             }
         }
 

@@ -78,16 +78,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CardService.cs" />
     <Compile Include="ClubService.cs" />
     <Compile Include="CoachService.cs" />
     <Compile Include="PlayerService.cs" />
     <Compile Include="RefereeService.cs" />
     <Compile Include="LeagueSeasonService.cs" />
+    <Compile Include="ScoreService.cs" />
     <Compile Include="ServiceModule.cs" />
     <Compile Include="ResultsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StadiumService.cs" />
     <Compile Include="StandingsService.cs" />
+    <Compile Include="SubstitutionService.cs" />
     <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>

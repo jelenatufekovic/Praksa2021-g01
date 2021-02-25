@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Results.Model.Common;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 
 namespace Results.Service.Common
 {
@@ -15,5 +17,6 @@ namespace Results.Service.Common
         Task<List<IStadium>> GetAllStadiumsAsync();
         Task<IStadium> GetStadiumByIdAsync(Guid id);
         Task<IStadium> GetStadiumByNameAsync(string name);
+        Task<PagedList<IStadium>> GetStadiumsByQueryAsync(StadiumParameters parameters);
     }
 }

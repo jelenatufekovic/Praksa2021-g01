@@ -38,6 +38,10 @@ namespace Results.Repository
 
             builder.RegisterType<StadiumRepository>().As<IStadiumRepository>().InstancePerDependency();
             builder.RegisterType<ClubRepository>().As<IClubRepository>().InstancePerDependency();
+
+            builder.RegisterType<ScoreRepository>().As<IScoreRepository>().InstancePerDependency();
+            builder.RegisterType<CardRepository>().As<ICardRepository>().InstancePerDependency();
+            builder.RegisterType<SubstitutionRepository>().As<ISubstitutionRepository>().InstancePerDependency();
         }
     }
 }

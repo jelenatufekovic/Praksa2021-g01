@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 
 namespace Results.Common.Utils.QueryParameters
@@ -31,13 +32,13 @@ namespace Results.Common.Utils.QueryParameters
         public string IsDeleted { get; set; }
         public string ByUser { get; set; }
         public DateTime MinCreatedAt { get; set; }
-        public DateTime MaxCreatedAt { get; set; } = DateTime.Now;
+        public string MaxCreatedAt { get; set; } = DateTime.Now.ToString("dd'-'MMM'-'yy HH:mm:ss", CultureInfo.InvariantCulture);
         public DateTime MinUpdatedAt { get; set; }
-        public DateTime MaxUpdatedAt { get; set; } = DateTime.Now;
+        public string MaxUpdatedAt { get; set; } = DateTime.Now.ToString("dd'-'MMM'-'yy HH:mm:ss", CultureInfo.InvariantCulture);
 
         public virtual bool IsValid()
         {
-            return (MinCreatedAt < MaxCreatedAt && MinUpdatedAt < MaxUpdatedAt);
+            return (MinCreatedAt < DateTime.Parse(MaxCreatedAt) && MinUpdatedAt < DateTime.Parse(MaxUpdatedAt));
         }
 
     }
