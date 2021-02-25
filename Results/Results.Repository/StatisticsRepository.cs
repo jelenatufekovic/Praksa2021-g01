@@ -21,8 +21,6 @@ namespace Results.Repository
             using(SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
                 string query = @"insert into MatchStatistics (MatchId, 
-                                                              HomeTeamSeasonID,
-                                                              AwayTeamSeasonID,
                                                               HomeGoals, 
                                                               AwayGoals, 
                                                               HomeYellowCards, 
@@ -38,8 +36,6 @@ namespace Results.Repository
                                                               IsDeleted, 
                                                               ByUser) 
                                                       values (@MatchId, 
-                                                              @HomeTeamSeasonID,
-                                                              @AwayTeamSeasonID,
                                                               @HomeGoals, 
                                                               @AwayGoals, 
                                                               @HomeYellowCards, 
@@ -58,8 +54,6 @@ namespace Results.Repository
                 using(SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@MatchId", statistics.MatchId);
-                    command.Parameters.AddWithValue("@HomeTeamSeasonID", statistics.HomeTeamSeasonId);
-                    command.Parameters.AddWithValue("@AwayTeamSeasonID", statistics.AwayTeamSeasonId);
                     command.Parameters.AddWithValue("@HomeGoals", statistics.HomeGoals);
                     command.Parameters.AddWithValue("@AwayGoals", statistics.AwayGoals);
                     command.Parameters.AddWithValue("@HomeYellowCards", statistics.HomeYellowCards);
@@ -126,9 +120,7 @@ namespace Results.Repository
                                         HomeShotsOnTarget = Convert.ToInt32(reader["HomeShotsOnTarget"]),
                                         AwayShotsOnTarget = Convert.ToInt32(reader["AwayShotsOnTarget"]),
                                         HomePossession = Convert.ToInt32(reader["HomePossession"]),
-                                        AwayPossession = Convert.ToInt32(reader["AwayPossession"]),
-                                        HomeTeamSeasonId = Guid.Parse(reader["HomeTeamSeasonID"].ToString()),
-                                        AwayTeamSeasonId = Guid.Parse(reader["AwayTeamSeasonID"].ToString())
+                                        AwayPossession = Convert.ToInt32(reader["AwayPossession"])
                                     };
                                 }
                             }
@@ -139,66 +131,11 @@ namespace Results.Repository
             }
         }
 
-        public async Task<List<IStatistics>> GetStatisticsByQueryAsync(StatisticsParameters parameters)
-        {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
-            {
-                List<IStatistics> statisticsList = new List<IStatistics>();
-                string query = "select * from MatchStatistics where HomeTeamSeasonID = @TeamSeasonID or AwayTeamSeasonID = @TeamSeasonID";
-
-                IQueryHelper<IStatistics, StatisticsParameters> queryHelper = new QueryHelper<IStatistics, StatisticsParameters>();
-
-                //query += queryHelper.Sort.ApplySort(parameters.OrderBy + " desc");
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@TeamSeasonID", parameters.TeamSeasonID);
-                    await connection.OpenAsync();
-                                        
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        if (reader.HasRows)
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                if (Convert.ToBoolean(reader["IsDeleted"]) != true)
-                                {
-                                    IStatistics statistics = new Statistics()
-                                    {
-                                        Id = Guid.Parse(reader["Id"].ToString()),
-                                        MatchId = Guid.Parse(reader["MatchID"].ToString()),
-                                        HomeTeamSeasonId = Guid.Parse(reader["HomeTeamSeasonID"].ToString()),
-                                        AwayTeamSeasonId = Guid.Parse(reader["AwayTeamSeasonID"].ToString()),
-                                        HomeGoals = Convert.ToInt32(reader["HomeGoals"]),
-                                        AwayGoals = Convert.ToInt32(reader["AwayGoals"]),
-                                        HomeYellowCards = Convert.ToInt32(reader["HomeYellowCards"]),
-                                        AwayYellowCards = Convert.ToInt32(reader["AwayYellowCards"]),
-                                        HomeRedCards = Convert.ToInt32(reader["HomeRedCards"]),
-                                        AwayRedCards = Convert.ToInt32(reader["AwayRedCards"]),
-                                        HomeShots = Convert.ToInt32(reader["HomeShots"]),
-                                        AwayShots = Convert.ToInt32(reader["AwayShots"]),
-                                        HomeShotsOnTarget = Convert.ToInt32(reader["HomeShotsOnTarget"]),
-                                        AwayShotsOnTarget = Convert.ToInt32(reader["AwayShotsOnTarget"]),
-                                        HomePossession = Convert.ToInt32(reader["HomePossession"]),
-                                        AwayPossession = Convert.ToInt32(reader["AwayPossession"])                                        
-                                    };
-
-                                    statisticsList.Add(statistics);
-                                }
-                            }
-                        }
-                        return statisticsList;
-                    }
-                }
-            }
-        }
-
         public async Task<bool> UpdateStatisticsAsync(IStatistics statistics)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                string query = @"update MatchStatistics set HomeTeamSeasonID = @HomeTeamSeasonID,
-                                                   AwayTeamSeasonID = @AwayTeamSeasonID,
+                string query = @"update MatchStatistics set 
                                                    HomeGoals = @HomeGoals, 
                                                    AwayGoals = @AwayGoals, 
                                                    HomeYellowCards = @HomeYellowCards, 
@@ -216,8 +153,6 @@ namespace Results.Repository
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@HomeTeamSeasonID", statistics.HomeTeamSeasonId);
-                    command.Parameters.AddWithValue("@AwayTeamSeasonID", statistics.AwayTeamSeasonId);
                     command.Parameters.AddWithValue("@MatchId", statistics.MatchId);
                     command.Parameters.AddWithValue("@HomeGoals", statistics.HomeGoals);
                     command.Parameters.AddWithValue("@AwayGoals", statistics.AwayGoals);
@@ -268,6 +203,36 @@ namespace Results.Repository
                         if (await adapter.InsertCommand.ExecuteNonQueryAsync() > 0) result = true;
                         return result;
                     }
+                }
+            }
+        }
+
+        public async Task<List<Guid>> GetClubIDsAsync(Guid MatchId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            {
+                List<Guid> clubIDs = null;
+                string query = "select t.clubID from TeamSeason t left join Match m on t.Id = m.HomeTeamSeasonID or t.Id = m.AwayTeamSeasonID where m.Id = @MatchId";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@MatchId", MatchId);
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        clubIDs = new List<Guid>();
+
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                clubIDs.Add(Guid.Parse(reader["ClubID"].ToString()));                                
+                            }
+                        }                                            
+                    }
+                    return clubIDs;
                 }
             }
         }

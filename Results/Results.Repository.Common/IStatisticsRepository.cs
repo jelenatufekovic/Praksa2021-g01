@@ -13,8 +13,8 @@ namespace Results.Repository.Common
     {
         Task<bool> CreateStatisticsAsync(IStatistics statistics);
         Task<IStatistics> GetStatisticsAsync(Guid MatchId);
-        Task<List<IStatistics>> GetStatisticsByQueryAsync(StatisticsParameters parameters);
         Task<bool> UpdateStatisticsAsync(IStatistics statistics);
         Task<bool> DeleteStatisticsAsync(Guid Id);
+        Task<List<Guid>> GetClubIDsAsync(Guid MatchId);
     }
 }
