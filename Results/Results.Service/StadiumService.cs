@@ -50,12 +50,6 @@ namespace Results.Service
 
             return await stadiumRepository.GetStadiumByIdAsync(id);
         }
-        public async Task<IStadium> GetStadiumByNameAsync(string name)
-        {
-            IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();
-
-            return await stadiumRepository.GetStadiumByNameAsync(name);
-        }
         public async Task<PagedList<IStadium>> GetStadiumsByQueryAsync(StadiumParameters parameters)
         {
             IStadiumRepository stadiumRepository = _repositoryFactory.GetRepository<StadiumRepository>();

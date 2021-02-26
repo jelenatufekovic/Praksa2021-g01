@@ -5,6 +5,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryHelpers;
+using Results.Common.Utils.QueryParameters;
+using Results.Model;
 using Results.Model.Common;
 using Results.Repository.Common;
 
@@ -89,6 +93,50 @@ namespace Results.Repository
             }
 
             return result;
+        }
+
+        public async Task<PagedList<ISubstitution>> GetSubstitutionsByQueryAsync(SubstitutionParameters parameters)
+        {
+            IQueryHelper<ISubstitution, SubstitutionParameters> _queryHelper = GetQueryHelper<ISubstitution, SubstitutionParameters>();
+
+            int totalCount = await GetTableCount<Substitution>();
+
+            string query = @"SELECT * FROM Substitution ";
+
+            query += _queryHelper.Filter.ApplyFilters(parameters);
+            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
+            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
+
+            _command.CommandText = query;
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                PagedList<ISubstitution> substitutionList = new PagedList<ISubstitution>(totalCount, parameters.PageNumber, parameters.PageSize);
+
+                while (await reader.ReadAsync())
+                {
+                    ISubstitution substitution = new Substitution()
+                    {
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        MatchID = Guid.Parse(reader["MatchID"].ToString()),
+                        PlayerInID = Guid.Parse(reader["PlayerID"].ToString()),
+                        PlayerOutID = Guid.Parse(reader["PlayerID"].ToString()),
+                        MatchMinute = int.Parse(reader["MatchMinute"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString())
+                    };
+                    substitutionList.Add(substitution);
+                }
+                reader.Close();
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return substitutionList;
+            }
         }
     }
 }

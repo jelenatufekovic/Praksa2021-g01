@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace Results.Common.Utils.QueryParameters
 {
-    public class StadiumParameters : QueryParameters
+    public class ClubParameters : QueryParameters
     {
-        public StadiumParameters()
+        public ClubParameters()
         {
             OrderBy = "Name";
         }
 
+        public Guid StadiumID { get; set; }
         public string Name { get; set; }
-        public string StadiumAddress { get; set; }
-        public string Capacity { get; set; }
-        public DateTime? YearOfConstruction { get; set; }
+        public string ClubAddress { get; set; }
+        public string ShortName { get; set; }
+        public DateTime? YearOfFoundation { get; set; }
 
         public override bool IsValid()
         {

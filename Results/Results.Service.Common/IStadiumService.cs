@@ -16,7 +16,6 @@ namespace Results.Service.Common
         Task<bool> DeleteStadiumAsync(IStadium stadium);
         Task<List<IStadium>> GetAllStadiumsAsync();
         Task<IStadium> GetStadiumByIdAsync(Guid id);
-        Task<IStadium> GetStadiumByNameAsync(string name);
         Task<PagedList<IStadium>> GetStadiumsByQueryAsync(StadiumParameters parameters);
     }
 }

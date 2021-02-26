@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 using Results.Model.Common;
 using Results.Repository;
 using Results.Repository.Common;
@@ -36,6 +38,12 @@ namespace Results.Service
             ISubstitutionRepository substitutionRepository = _repositoryFactory.GetRepository<SubstitutionRepository>();
 
             return await substitutionRepository.DeleteSubstitutionAsync(id, byUser);
+        }
+        public async Task<PagedList<ISubstitution>> GetSubstitutionsByQueryAsync(SubstitutionParameters parameters)
+        {
+            ISubstitutionRepository substitutionRepository = _repositoryFactory.GetRepository<SubstitutionRepository>();
+
+            return await substitutionRepository.GetSubstitutionsByQueryAsync(parameters);
         }
     }
 }

@@ -31,15 +31,16 @@ namespace Results.WebAPI.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> CreateStadiumAsync([FromBody]CreateStadiumRest newStadium)
         {
-            IStadium stadium = await _stadiumService.GetStadiumByNameAsync(newStadium.Name);
+            StadiumParameters parameters = new StadiumParameters();
+            parameters.Name = newStadium.Name;
+            PagedList<IStadium> stadiums = await _stadiumService.GetStadiumsByQueryAsync(parameters);
 
-            if(stadium != null && stadium.IsDeleted == false)
+            if(stadiums.Count != 0)
             {
-                ModelState.AddModelError("Name", $"Name {stadium.Name} in use.");
-                return BadRequest(ModelState);
+                return BadRequest("Stadium in use!");
             }
 
-            stadium = _mapper.Map<IStadium>(newStadium);
+            IStadium stadium = _mapper.Map<IStadium>(newStadium);
             bool result = await _stadiumService.CreateStadiumAsync(stadium);
             if(result)
             {
@@ -97,9 +98,9 @@ namespace Results.WebAPI.Controllers
         }
 
 
-        [Route("GetAllStadiums")]
+        [Route("FindStadiums")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetAllStadiumsAsync([FromUri] StadiumParameters parameters)
+        public async Task<IHttpActionResult> FindStadiumsAsync(StadiumParameters parameters)
         {
             PagedList<IStadium> stadiums = await _stadiumService.GetStadiumsByQueryAsync(parameters);
             

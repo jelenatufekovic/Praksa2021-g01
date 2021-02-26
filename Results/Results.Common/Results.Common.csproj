@@ -123,6 +123,8 @@
     <Compile Include="Utils\QueryHelpers\ISortHelper.cs" />
     <Compile Include="Utils\PagedList.cs" />
     <Compile Include="Utils\QueryHelpers\PagingHelper.cs" />
+    <Compile Include="Utils\QueryParameters\CardParameters.cs" />
+    <Compile Include="Utils\QueryParameters\ClubParameters.cs" />
     <Compile Include="Utils\QueryParameters\CoachParameters.cs" />
     <Compile Include="Utils\QueryParameters\LeagueParameters.cs" />
     <Compile Include="Utils\QueryParameters\PersonParameters.cs" />
@@ -131,9 +133,11 @@
     <Compile Include="Utils\QueryParameters\QueryParameters.cs" />
     <Compile Include="Utils\QueryHelpers\SortHelper.cs" />
     <Compile Include="Utils\QueryParameters\RefereeParameters.cs" />
+    <Compile Include="Utils\QueryParameters\ScoreParameters.cs" />
     <Compile Include="Utils\QueryParameters\SeasonParameters.cs" />
     <Compile Include="Utils\QueryParameters\StandingsParameters.cs" />
     <Compile Include="Utils\QueryParameters\StadiumParameters.cs" />
+    <Compile Include="Utils\QueryParameters\SubstitutionParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

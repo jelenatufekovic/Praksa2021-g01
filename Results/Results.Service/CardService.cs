@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 using Results.Model.Common;
 using Results.Repository;
 using Results.Repository.Common;
@@ -35,6 +37,12 @@ namespace Results.Service
             ICardRepository cardRepository = _repositoryFactory.GetRepository<CardRepository>();
 
             return await cardRepository.DeleteCardAsync(id, byUser);
+        }
+        public async Task<PagedList<ICard>> GetCardsByQueryAsync(CardParameters parameters)
+        {
+            ICardRepository cardRepository = _repositoryFactory.GetRepository<CardRepository>();
+
+            return await cardRepository.GetCardsByQueryAsync(parameters);
         }
     }
 }

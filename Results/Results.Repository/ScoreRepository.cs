@@ -8,6 +8,10 @@ using Results.Model.Common;
 using System.Data.SqlClient;
 using Results.Repository;
 using System.Data;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
+using Results.Common.Utils.QueryHelpers;
+using Results.Model;
 
 namespace Results.Repository
 {
@@ -88,6 +92,50 @@ namespace Results.Repository
             }
 
             return result;
+        }
+
+        public async Task<PagedList<IScore>> GetScoresByQueryAsync(ScoreParameters parameters)
+        {
+            IQueryHelper<IScore, ScoreParameters> _queryHelper = GetQueryHelper<IScore, ScoreParameters>();
+
+            int totalCount = await GetTableCount<Score>();
+
+            string query = @"SELECT * FROM Score ";
+
+            query += _queryHelper.Filter.ApplyFilters(parameters);
+            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
+            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
+
+            _command.CommandText = query;
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                PagedList<IScore> scoreList = new PagedList<IScore>(totalCount, parameters.PageNumber, parameters.PageSize);
+
+                while (await reader.ReadAsync())
+                {
+                    IScore score = new Score()
+                    {
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        MatchID = Guid.Parse(reader["MatchID"].ToString()),
+                        PlayerID = Guid.Parse(reader["PlayerID"].ToString()),
+                        MatchMinute = int.Parse(reader["YearOfConstruction"].ToString()),
+                        Autogoal = bool.Parse(reader["Description"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString())
+                    };
+                    scoreList.Add(score);
+                }
+                reader.Close();
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return scoreList;
+            }
         }
     }
 }

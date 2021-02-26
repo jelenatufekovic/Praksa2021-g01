@@ -5,6 +5,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryHelpers;
+using Results.Common.Utils.QueryParameters;
+using Results.Model;
 using Results.Model.Common;
 using Results.Repository.Common;
 
@@ -88,6 +92,51 @@ namespace Results.Repository
             }
 
             return result;
+        }
+
+        public async Task<PagedList<ICard>> GetCardsByQueryAsync(CardParameters parameters)
+        {
+            IQueryHelper<ICard, CardParameters> _queryHelper = GetQueryHelper<ICard, CardParameters>();
+
+            int totalCount = await GetTableCount<Card>();
+
+            string query = @"SELECT * FROM Card ";
+
+            query += _queryHelper.Filter.ApplyFilters(parameters);
+            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
+            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
+
+            _command.CommandText = query;
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                PagedList<ICard> cardList = new PagedList<ICard>(totalCount, parameters.PageNumber, parameters.PageSize);
+
+                while (await reader.ReadAsync())
+                {
+                    ICard card = new Card()
+                    {
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        MatchID = Guid.Parse(reader["MatchID"].ToString()),
+                        PlayerID = Guid.Parse(reader["PlayerID"].ToString()),
+                        YellowCard = bool.Parse(reader["YellowCard"].ToString()),
+                        RedCard = bool.Parse(reader["RedCard"].ToString()),
+                        MatchMinute = int.Parse(reader["MatchMinute"].ToString()),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString())
+                    };
+                    cardList.Add(card);
+                }
+                reader.Close();
+
+                if (_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return cardList;
+            }
         }
     }
 }
