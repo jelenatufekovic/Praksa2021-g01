@@ -9,6 +9,8 @@ using AutoMapper;
 using Results.WebAPI.Models.RestModels.Club;
 using Results.Model.Common;
 using System.Threading.Tasks;
+using Results.Common.Utils.QueryParameters;
+using Results.Common.Utils;
 
 namespace Results.WebAPI.Controllers
 {
@@ -28,15 +30,17 @@ namespace Results.WebAPI.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> CreateClubAsync([FromBody] CreateClubRest newClub)
         {
-            IClub club = await _clubService.GetClubByNameAsync(newClub.Name);
+            ClubParameters parameters = new ClubParameters();
+            parameters.Name = newClub.Name;
 
-            if (club != null && club.IsDeleted == false)
-            {
-                ModelState.AddModelError("Name", $"Name {club.Name} in use.");
-                return BadRequest(ModelState);
+            PagedList<IClub> clubList = await _clubService.GetClubsByQueryAsync(parameters);
+
+            if (clubList.Count != 0)
+            { 
+                return BadRequest("Club in use!");
             }
 
-            club = await _clubService.GetClubByStadiumIDAsync(newClub.StadiumID);
+            IClub club = await _clubService.GetClubByIdAsync(newClub.StadiumID);
             if(club != null)
             {
                 return BadRequest("Club with that stadium already exists.");
@@ -100,9 +104,9 @@ namespace Results.WebAPI.Controllers
         }
 
 
-        [Route("GetAllClubs")]
+        [Route("FindClubs")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetAllClubsAsync()
+        public async Task<IHttpActionResult> FindClubsAsync()
         {
             List<IClub> clubs = await _clubService.GetAllClubsAsync();
 

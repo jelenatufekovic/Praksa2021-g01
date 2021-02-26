@@ -6,45 +6,56 @@ using System.Threading.Tasks;
 using Results.Service.Common;
 using Results.Model.Common;
 using Results.Repository.Common;
+using Results.Common.Utils.QueryParameters;
+using Results.Repository;
+using Results.Common.Utils;
 
 namespace Results.Service
 {
     public class ClubService : IClubService
     {
-        private readonly IClubRepository _clubRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public ClubService(IClubRepository clubRepository)
+        public ClubService(IRepositoryFactory repositoryFactory)
         {
-            _clubRepository = clubRepository;
+            _repositoryFactory = repositoryFactory;
         }
         public async Task<bool> CreateClubAsync(IClub club)
         {
-            return await _clubRepository.CreateClubAsync(club);
+            IClubRepository clubRepository = _repositoryFactory.GetRepository<ClubRepository>();
+
+            return await clubRepository.CreateClubAsync(club);
         }
         public async Task<bool> UpdateClubAsync(IClub club)
         {
-            return await _clubRepository.UpdateClubAsync(club);
+            IClubRepository clubRepository = _repositoryFactory.GetRepository<ClubRepository>();
+
+            return await clubRepository.UpdateClubAsync(club);
         }
         public async Task<bool> DeleteClubAsync(IClub club)
         {
-            return await _clubRepository.DeleteClubAsync(club);
+            IClubRepository clubRepository = _repositoryFactory.GetRepository<ClubRepository>();
+
+            return await clubRepository.DeleteClubAsync(club);
         }
         public async Task<List<IClub>> GetAllClubsAsync()
         {
-            return await _clubRepository.GetAllClubsAsync();
+            IClubRepository clubRepository = _repositoryFactory.GetRepository<ClubRepository>();
+
+            return await clubRepository.GetAllClubsAsync();
         }
         public async Task<IClub> GetClubByIdAsync(Guid id)
         {
-            return await _clubRepository.GetClubByIdAsync(id);
-        }
-        public async Task<IClub> GetClubByNameAsync(string name)
-        {
-            return await _clubRepository.GetClubByNameAsync(name);
+            IClubRepository clubRepository = _repositoryFactory.GetRepository<ClubRepository>();
+
+            return await clubRepository.GetClubByIdAsync(id);
         }
 
-        public async Task<IClub> GetClubByStadiumIDAsync(Guid StadiumID)
+        public async Task<PagedList<IClub>> GetClubsByQueryAsync(ClubParameters parameters)
         {
-            return await _clubRepository.GetClubByStadiumIDAsync(StadiumID);
+            IClubRepository clubRepository = _repositoryFactory.GetRepository<ClubRepository>();
+
+            return await clubRepository.GetClubsByQueryAsync(parameters);
         }
     }
 }

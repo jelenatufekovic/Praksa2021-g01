@@ -1,70 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Results.Repository.Common;
-using Results.Model.Common;
-using System.Data.SqlClient;
-using Results.Repository;
-using System.Data;
 using Results.Common.Utils;
-using Results.Common.Utils.QueryParameters;
 using Results.Common.Utils.QueryHelpers;
+using Results.Common.Utils.QueryParameters;
 using Results.Model;
+using Results.Model.Common;
+using Results.Repository.Common;
 
 namespace Results.Repository
 {
-    public class ScoreRepository : RepositoryBase, IScoreRepository
+    public class CardRepository : RepositoryBase, ICardRepository
     {
         private SqlConnection _connection;
         private SqlCommand _command;
-
-        public ScoreRepository(SqlConnection connection) : base(connection)
+        
+        public CardRepository(SqlConnection connection) : base(connection)
         {
             _command = new SqlCommand(String.Empty, connection);
             _connection = connection;
             _connection.Open();
         }
 
-        public ScoreRepository(SqlTransaction transaction) : base(transaction.Connection)
+        public CardRepository(SqlTransaction transaction) : base(transaction.Connection)
         {
             _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
         }
 
-        public async Task<bool> CreateScoreAsync(IScore score)
+        public async Task<bool> CreateCardAsync(ICard card)
         {
-            _command.CommandText = "INSERT INTO Score (Id, MatchID, PlayerID, MatchMinute, Autogoal, ByUser" +
-                                   "VALUES (@Id, @MathcID, @PlayerID, @MatchMinute, @Autogoal, @ByUser)";
+            _command.CommandText = "INSERT INTO Card (Id, MatchID, PlayerID, YellowCard, RedCard, MatchMinute" +
+                                   "VALUES (@Id, @MathcID, @PlayerID, @YellowCard, @RedCard, @MatchMinute)";
 
-            _command.Parameters.AddWithValue("@Id", score.Id);
-            _command.Parameters.AddWithValue("@MatchID", score.MatchID);
-            _command.Parameters.AddWithValue("@PlayerID", score.PlayerID);
-            _command.Parameters.AddWithValue("@MatchMinute", score.MatchMinute);
-            _command.Parameters.AddWithValue("@Autogoal", score.Autogoal);
-            _command.Parameters.AddWithValue("@ByUser", score.ByUser);
-
-            bool result = await _command.ExecuteNonQueryAsync() > 0;
-
-            if(_command.Transaction == null)
-            {
-                _connection.Close();
-            }
-
-            return result;
-        }
-        public async Task<bool> UpdateScoreAsync(IScore score)
-        {
-            _command.CommandText = "UPDATE Score " +
-                "SET MatchMinute = @MatchMinute, Autogoal = @Autogoal, ByUser = @ByUser " +
-                "WHERE Id = @Id, MatchID = @MatchID, PlayerID = @PlayerID";
-
-            _command.Parameters.AddWithValue("@Id", score.Id);
-            _command.Parameters.AddWithValue("@MatchID", score.MatchID);
-            _command.Parameters.AddWithValue("@PlayerID", score.PlayerID);
-            _command.Parameters.AddWithValue("@MatchMinute", score.MatchMinute);
-            _command.Parameters.AddWithValue("@Autogoal", score.Autogoal);
-            _command.Parameters.AddWithValue("@ByUser", score.ByUser);
+            _command.Parameters.AddWithValue("@Id", card.Id);
+            _command.Parameters.AddWithValue("@MatchID", card.MatchID);
+            _command.Parameters.AddWithValue("@PlayerID", card.PlayerID);
+            _command.Parameters.AddWithValue("@YellowCard", card.YellowCard);
+            _command.Parameters.AddWithValue("@RedCard", card.RedCard);
+            _command.Parameters.AddWithValue("@MatchMinute", card.MatchMinute);
+            
 
             bool result = await _command.ExecuteNonQueryAsync() > 0;
 
@@ -75,9 +53,31 @@ namespace Results.Repository
 
             return result;
         }
-        public async Task<bool> DeleteScoreAsync(Guid id, Guid byUser)
+        public async Task<bool> UpdateCardAsync(ICard card)
         {
-            _command.CommandText = "UPDATE Score SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
+            _command.CommandText = "UPDATE Card " +
+                "SET YellowCard = @YellowCard, RedCard = @RedCard, MatchMinute = @MatchMinute " +
+                "WHERE Id = @Id, MatchID = @MatchID, PlayerID = @PlayerID";
+
+            _command.Parameters.AddWithValue("@Id", card.Id);
+            _command.Parameters.AddWithValue("@MatchID", card.MatchID);
+            _command.Parameters.AddWithValue("@PlayerID", card.PlayerID);
+            _command.Parameters.AddWithValue("@YellowCard", card.YellowCard);
+            _command.Parameters.AddWithValue("@RedCard", card.RedCard);
+            _command.Parameters.AddWithValue("@MatchMinute", card.MatchMinute);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
+            {
+                _connection.Close();
+            }
+
+            return result;
+        }
+        public async Task<bool> DeleteCardAsync(Guid id, Guid byUser)
+        {
+            _command.CommandText = "UPDATE Card SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
 
             _command.Parameters.AddWithValue("@Id", id);
             _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
@@ -94,13 +94,13 @@ namespace Results.Repository
             return result;
         }
 
-        public async Task<PagedList<IScore>> GetScoresByQueryAsync(ScoreParameters parameters)
+        public async Task<PagedList<ICard>> GetCardsByQueryAsync(CardParameters parameters)
         {
-            IQueryHelper<IScore, ScoreParameters> _queryHelper = GetQueryHelper<IScore, ScoreParameters>();
+            IQueryHelper<ICard, CardParameters> _queryHelper = GetQueryHelper<ICard, CardParameters>();
 
-            int totalCount = await GetTableCount<Score>();
+            int totalCount = await GetTableCount<Card>();
 
-            string query = @"SELECT * FROM Score ";
+            string query = @"SELECT * FROM Card ";
 
             query += _queryHelper.Filter.ApplyFilters(parameters);
             query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
@@ -109,23 +109,24 @@ namespace Results.Repository
             _command.CommandText = query;
             using (SqlDataReader reader = await _command.ExecuteReaderAsync())
             {
-                PagedList<IScore> scoreList = new PagedList<IScore>(totalCount, parameters.PageNumber, parameters.PageSize);
+                PagedList<ICard> cardList = new PagedList<ICard>(totalCount, parameters.PageNumber, parameters.PageSize);
 
                 while (await reader.ReadAsync())
                 {
-                    IScore score = new Score()
+                    ICard card = new Card()
                     {
                         Id = Guid.Parse(reader["Id"].ToString()),
                         MatchID = Guid.Parse(reader["MatchID"].ToString()),
                         PlayerID = Guid.Parse(reader["PlayerID"].ToString()),
-                        MatchMinute = int.Parse(reader["YearOfConstruction"].ToString()),
-                        Autogoal = bool.Parse(reader["Description"].ToString()),
+                        YellowCard = bool.Parse(reader["YellowCard"].ToString()),
+                        RedCard = bool.Parse(reader["RedCard"].ToString()),
+                        MatchMinute = int.Parse(reader["MatchMinute"].ToString()),
                         IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
                         CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
                         UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
                         ByUser = Guid.Parse(reader["ByUser"].ToString())
                     };
-                    scoreList.Add(score);
+                    cardList.Add(card);
                 }
                 reader.Close();
 
@@ -134,7 +135,7 @@ namespace Results.Repository
                     _connection.Close();
                 }
 
-                return scoreList;
+                return cardList;
             }
         }
     }

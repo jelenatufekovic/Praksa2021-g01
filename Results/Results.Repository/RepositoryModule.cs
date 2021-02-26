@@ -41,6 +41,9 @@ namespace Results.Repository
 
             builder.RegisterType<SeasonRepository>().As<ISeasonRepository>().InstancePerDependency();
             builder.RegisterType<LeagueRepository>().As<ILeagueRepository>().InstancePerDependency();
+            builder.RegisterType<ScoreRepository>().As<IScoreRepository>().InstancePerDependency();
+            builder.RegisterType<CardRepository>().As<ICardRepository>().InstancePerDependency();
+            builder.RegisterType<SubstitutionRepository>().As<ISubstitutionRepository>().InstancePerDependency();
         }
     }
 }

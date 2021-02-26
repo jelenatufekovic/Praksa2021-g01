@@ -32,8 +32,10 @@ namespace Results.Model
             builder.RegisterType<Season>().As<ISeason>().InstancePerDependency();
             builder.RegisterType<League>().As<ILeague>().InstancePerDependency();
 
+            
+            builder.RegisterType<Card>().As<ICard>().InstancePerDependency();
+            builder.RegisterType<Substitution>().As<ISubstitution>().InstancePerDependency();
             base.Load(builder);
-
         }
     }
 }

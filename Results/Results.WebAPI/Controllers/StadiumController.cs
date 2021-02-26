@@ -10,6 +10,8 @@ using Results.Model.Common;
 using Results.Model;
 using System.Threading.Tasks;
 using Results.WebAPI.Models.RestModels.Stadium;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
 
 namespace Results.WebAPI.Controllers
 {
@@ -29,15 +31,16 @@ namespace Results.WebAPI.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> CreateStadiumAsync([FromBody]CreateStadiumRest newStadium)
         {
-            IStadium stadium = await _stadiumService.GetStadiumByNameAsync(newStadium.Name);
+            StadiumParameters parameters = new StadiumParameters();
+            parameters.Name = newStadium.Name;
+            PagedList<IStadium> stadiums = await _stadiumService.GetStadiumsByQueryAsync(parameters);
 
-            if(stadium != null && stadium.IsDeleted == false)
+            if(stadiums.Count != 0)
             {
-                ModelState.AddModelError("Name", $"Name {stadium.Name} in use.");
-                return BadRequest(ModelState);
+                return BadRequest("Stadium in use!");
             }
 
-            stadium = _mapper.Map<IStadium>(newStadium);
+            IStadium stadium = _mapper.Map<IStadium>(newStadium);
             bool result = await _stadiumService.CreateStadiumAsync(stadium);
             if(result)
             {
@@ -95,18 +98,18 @@ namespace Results.WebAPI.Controllers
         }
 
 
-        [Route("GetAllStadiums")]
+        [Route("FindStadiums")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetAllStadiumsAsync()
+        public async Task<IHttpActionResult> FindStadiumsAsync(StadiumParameters parameters)
         {
-            List<IStadium> stadiums = await _stadiumService.GetAllStadiumsAsync();
+            PagedList<IStadium> stadiums = await _stadiumService.GetStadiumsByQueryAsync(parameters);
             
-            if(stadiums.Count == 0)
+            if(stadiums == null)
             {
                 return NotFound();
             }
 
-            List<GetAllStadiumsRest> stadiumsRest = _mapper.Map<List<IStadium>, List<GetAllStadiumsRest>>(stadiums);
+            List<GetAllStadiumsRest> stadiumsRest = _mapper.Map<PagedList<IStadium>, List<GetAllStadiumsRest>>(stadiums);
 
             return Ok(stadiumsRest);
         }

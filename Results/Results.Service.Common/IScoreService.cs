@@ -7,9 +7,9 @@ using Results.Common.Utils;
 using Results.Common.Utils.QueryParameters;
 using Results.Model.Common;
 
-namespace Results.Repository.Common
+namespace Results.Service.Common
 {
-    public interface IScoreRepository
+    public interface IScoreService
     {
         Task<bool> CreateScoreAsync(IScore score);
         Task<bool> UpdateScoreAsync(IScore score);

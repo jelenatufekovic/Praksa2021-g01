@@ -26,6 +26,9 @@ namespace Results.Service
             builder.RegisterType<UserManager>().As<IUserManager>().InstancePerDependency();
             builder.RegisterType<StadiumService>().As<IStadiumService>().InstancePerDependency();
             builder.RegisterType<ClubService>().As<IClubService>().InstancePerDependency();
+            builder.RegisterType<ScoreService>().As<IScoreService>().InstancePerDependency();
+            builder.RegisterType<CardService>().As<ICardService>().InstancePerDependency();
+            builder.RegisterType<SubstitutionService>().As<ISubstitutionService>().InstancePerDependency();
 
             builder.RegisterType<SeasonService>().As<ISeasonService>().InstancePerDependency();
             builder.RegisterType<LeagueService>().As<ILeagueService>().InstancePerDependency();

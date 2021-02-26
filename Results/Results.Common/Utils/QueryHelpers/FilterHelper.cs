@@ -21,7 +21,7 @@ namespace Results.Common.Utils.QueryHelpers
             foreach (var property in propertyInfos)
             {
                 if (property.Name.Equals("PageNumber") || property.Name.Equals("PageSize") || property.Name.Equals("OrderBy")) { continue; }
-
+                
                 var propertyValue = property.GetValue(filterQueryParams);
 
                 if (String.IsNullOrEmpty(propertyValue?.ToString())) { continue; }

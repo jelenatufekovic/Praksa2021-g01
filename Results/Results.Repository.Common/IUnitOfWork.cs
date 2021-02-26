@@ -13,6 +13,7 @@ namespace Results.Repository.Common
         IPlayerRepository Player { get; }
         ICoachRepository Coach { get; }
         IRefereeRepository Referee { get; }
+        IStadiumRepository Stadium { get; }
 
         void Commit();
     }

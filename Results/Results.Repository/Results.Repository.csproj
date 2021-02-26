@@ -98,7 +98,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CardRepository.cs" />
     <Compile Include="ClubRepository.cs" />
+    <Compile Include="ScoreRepository.cs" />
     <Compile Include="CoachRepository.cs" />
     <Compile Include="LeagueRepository.cs" />
     <Compile Include="PersonRepository.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="SeasonRepository.cs" />
     <Compile Include="StadiumRepository.cs" />
     <Compile Include="StandingsRepository.cs" />
+    <Compile Include="SubstitutionRepository.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="UserRepository.cs" />
   </ItemGroup>

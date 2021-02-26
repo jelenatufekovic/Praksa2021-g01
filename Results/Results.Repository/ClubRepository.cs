@@ -8,217 +8,236 @@ using Results.Model.Common;
 using System.Data.SqlClient;
 using System.Data;
 using Results.Model;
+using Results.Common.Utils;
+using Results.Common.Utils.QueryParameters;
+using Results.Common.Utils.QueryHelpers;
 
 namespace Results.Repository
 {
-    public class ClubRepository : IClubRepository
+    public class ClubRepository : RepositoryBase, IClubRepository
     {
+        private SqlConnection _connection;
+        private SqlCommand _command;
+
+        public ClubRepository(SqlConnection connection) : base(connection)
+        {
+            _command = new SqlCommand(String.Empty, connection);
+            _connection = connection;
+            _connection.Open();
+        }
+
+        public ClubRepository(SqlTransaction transaction) : base(transaction.Connection)
+        {
+            _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
+        }
         public async Task<bool> CreateClubAsync(IClub club) 
         {
-            using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
+            
+            _command.CommandText = @"INSERT INTO Club(StadiumID, Name, ClubAddress, ShortName, YearOfFoundation, Description, CreatedAt, UpdatedAt, IsDeleted, ByUser)
+                            VALUES(@StadiumID, @Name, @ClubAddress, @ShortName, @YearOfFoundation, @Description, @CreatedAt, @UpdatedAt, @IsDeleted, @ByUser);";
+
+                
+            _command.Parameters.AddWithValue("@StadiumID", club.StadiumID);
+            _command.Parameters.AddWithValue("@Name", club.Name);
+            _command.Parameters.AddWithValue("@ClubAddress", club.ClubAddress);
+            _command.Parameters.AddWithValue("@ShortName", club.ShortName);
+            _command.Parameters.AddWithValue("@YearOfFoundation", club.YearOfFoundation);
+            _command.Parameters.AddWithValue("@Description", club.Description);
+            _command.Parameters.AddWithValue("@CreatedAt", club.CreatedAt = DateTime.Now);
+            _command.Parameters.AddWithValue("@UpdatedAt", club.UpdatedAt = DateTime.Now);
+            _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
+            _command.Parameters.AddWithValue("@ByUser", club.ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"INSERT INTO Club(StadiumID, Name, ClubAddress, ShortName, YearOfFoundation, Description, CreatedAt, UpdatedAt, IsDeleted, ByUser)
-                                VALUES(@StadiumID, @Name, @ClubAddress, @ShortName, @YearOfFoundation, @Description, @CreatedAt, @UpdatedAt, @IsDeleted, @ByUser);";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@StadiumID", club.StadiumID);
-                    command.Parameters.AddWithValue("@Name", club.Name);
-                    command.Parameters.AddWithValue("@ClubAddress", club.ClubAddress);
-                    command.Parameters.AddWithValue("@ShortName", club.ShortName);
-                    command.Parameters.AddWithValue("@YearOfFoundation", club.YearOfFoundation);
-                    command.Parameters.AddWithValue("@Description", club.Description);
-                    command.Parameters.AddWithValue("@CreatedAt", club.CreatedAt = DateTime.Now);
-                    command.Parameters.AddWithValue("@UpdatedAt", club.UpdatedAt = DateTime.Now);
-                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
-                    command.Parameters.AddWithValue("@ByUser", club.ByUser);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
         }
         public async Task<bool> UpdateClubAsync(IClub club)
         {
-            using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
+            
+            string query = @"UPDATE Club 
+            SET Name = @Name, ClubAddress = @ClubAddress, ShortName = @ShortName, Description = @Description, UpdatedAt = @UpdatedAt, ByUser = @ByUser
+            WHERE Id = @Id;";
+
+                
+            _command.Parameters.AddWithValue("@Id", club.Id);
+            _command.Parameters.AddWithValue("@Name", club.Name);
+            _command.Parameters.AddWithValue("@ClubAddress", club.ClubAddress);
+            _command.Parameters.AddWithValue("@ShortName", club.ShortName);
+            _command.Parameters.AddWithValue("@Description", club.Description);
+            _command.Parameters.AddWithValue("@UpdatedAt", club.UpdatedAt = DateTime.Now);
+            _command.Parameters.AddWithValue("@ByUser", club.ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"UPDATE Club 
-                SET Name = @Name, ClubAddress = @ClubAddress, ShortName = @ShortName, Description = @Description, UpdatedAt = @UpdatedAt, ByUser = @ByUser
-                WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", club.Id);
-                    command.Parameters.AddWithValue("@Name", club.Name);
-                    command.Parameters.AddWithValue("@ClubAddress", club.ClubAddress);
-                    command.Parameters.AddWithValue("@ShortName", club.ShortName);
-                    command.Parameters.AddWithValue("@Description", club.Description);
-                    command.Parameters.AddWithValue("@UpdatedAt", club.UpdatedAt = DateTime.Now);
-                    command.Parameters.AddWithValue("@ByUser", club.ByUser);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
+
         }
         public async Task<bool> DeleteClubAsync(IClub club)
         {
-            using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
+            
+            _command.CommandText = @"UPDATE Club
+            SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
+            WHERE Id = @Id;";
+
+                
+            _command.Parameters.AddWithValue("@Id", club.Id);
+            _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
+            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+            _command.Parameters.AddWithValue("@ByUser", club.ByUser);
+
+            bool result = await _command.ExecuteNonQueryAsync() > 0;
+
+            if (_command.Transaction == null)
             {
-                string query = @"UPDATE Club
-                SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser
-                WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", club.Id);
-                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
-                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
-                    command.Parameters.AddWithValue("@ByUser", club.ByUser);
-
-                    await connection.OpenAsync();
-                    return (await command.ExecuteNonQueryAsync()) > 0;
-                }
+                _connection.Close();
             }
+
+            return result;
+
         }
         public async Task<List<IClub>> GetAllClubsAsync()
         {
-            using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
+            
+            _command.CommandText = "SELECT Name, ClubAddress, ShortName, YearOfFoundation, Description" +
+                            " FROM Club WHERE IsDeleted = @IsDeleted;";
+
+            if(_command.Transaction != null)
             {
-                string query = "SELECT Name, ClubAddress, ShortName, YearOfFoundation, Description" +
-                               " FROM Club WHERE IsDeleted = @IsDeleted;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@IsDeleted", false);
-
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        List<IClub> clubs = new List<IClub>();
-                        while (await reader.ReadAsync())
-                        {
-                            IClub club = new Club()
-                            {
-                                Name = reader["Name"].ToString(),
-                                ClubAddress = reader["ClubAddress"].ToString(),
-                                ShortName = reader["ShortName"].ToString(),
-                                YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
-                                Description = reader["Description"].ToString()
-                            };
-                            clubs.Add(club);
-                        }
-                        return clubs;
-                    }
-                }
+                _command.Parameters.Clear();
             }
+            
+            _command.Parameters.AddWithValue("@IsDeleted", false);
+
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                List<IClub> clubs = new List<IClub>();
+                while (await reader.ReadAsync())
+                {
+                    IClub club = new Club()
+                    {
+                        Name = reader["Name"].ToString(),
+                        ClubAddress = reader["ClubAddress"].ToString(),
+                        ShortName = reader["ShortName"].ToString(),
+                        YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
+                        Description = reader["Description"].ToString()
+                    };
+                    clubs.Add(club);
+                }
+                return clubs;
+            }
+            
+            
         }
         public async Task<IClub> GetClubByIdAsync(Guid id)
         {
-            using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
+            
+            _command.CommandText = @"SELECT * FROM Club WHERE Id = @Id;";
+
+            if(_command.Transaction != null)
             {
-                string query = @"SELECT * FROM Club WHERE Id = @Id;";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
-
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            return new Club()
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                StadiumID = Guid.Parse(reader["StadiumID"].ToString()),
-                                Name = reader["Name"].ToString(),
-                                ClubAddress = reader["ClubAddress"].ToString(),
-                                ShortName = reader["ShortName"].ToString(),
-                                YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
-                                Description = reader["Description"].ToString(),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                                ByUser = Guid.Parse(reader["ByUser"].ToString())
-                            };
-                        }
-                        return null;
-                    }
-                }
+                _command.Parameters.Clear();
             }
+            
+            _command.Parameters.AddWithValue("@Id", id);
+
+            
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            {
+                if (await reader.ReadAsync())
+                {
+                    IClub club = new Club()
+                    {
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        StadiumID = Guid.Parse(reader["StadiumID"].ToString()),
+                        Name = reader["Name"].ToString(),
+                        ClubAddress = reader["ClubAddress"].ToString(),
+                        ShortName = reader["ShortName"].ToString(),
+                        YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
+                        Description = reader["Description"].ToString(),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString())
+                    };
+
+                    reader.Close();
+
+                    if(_command.Transaction == null)
+                    {
+                        _connection.Close();
+                    }
+
+                    return club;
+                }
+
+                if(_command.Transaction == null)
+                {
+                    _connection.Close();
+                }
+
+                return null;
+            }
+            
+            
         }
-        public async Task<IClub> GetClubByNameAsync(string name)
+        public async Task<PagedList<IClub>> GetClubsByQueryAsync(ClubParameters parameters)
         {
-            using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
+            IQueryHelper<IClub, ClubParameters> _queryHelper = GetQueryHelper<IClub, ClubParameters>();
+
+            int totalCount = await GetTableCount<Club>();
+
+            string query = @"SELECT * FROM Club ";
+
+            query += _queryHelper.Filter.ApplyFilters(parameters);
+            query += _queryHelper.Sort.ApplySort(parameters.OrderBy);
+            query += _queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
+
+            _command.CommandText = query;
+
+            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
             {
-                string query = @"SELECT * FROM Club WHERE Name = @name";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                PagedList<IClub> clubList = new PagedList<IClub>(totalCount, parameters.PageNumber, parameters.PageSize);
+                
+                while (await reader.ReadAsync())
                 {
-                    command.Parameters.AddWithValue("@name", name);
-
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    IClub club = new Club()
                     {
-                        if (await reader.ReadAsync())
-                        {
-                            return new Club()
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                StadiumID = Guid.Parse(reader["StadiumID"].ToString()),
-                                Name = reader["Name"].ToString(),
-                                ClubAddress = reader["ClubAddress"].ToString(),
-                                ShortName = reader["ShortName"].ToString(),
-                                YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
-                                Description = reader["Description"].ToString(),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                                ByUser = Guid.Parse(reader["ByUser"].ToString())
-                            };
-                        }
-                        return null;
-                    }
+                        Id = Guid.Parse(reader["Id"].ToString()),
+                        StadiumID = Guid.Parse(reader["StadiumID"].ToString()),
+                        Name = reader["Name"].ToString(),
+                        ClubAddress = reader["ClubAddress"].ToString(),
+                        ShortName = reader["ShortName"].ToString(),
+                        YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
+                        Description = reader["Description"].ToString(),
+                        IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
+                        CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                        UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
+                        ByUser = Guid.Parse(reader["ByUser"].ToString())
+                    };
+                    clubList.Add(club);
                 }
-            }
-        }
+                reader.Close();
 
-
-        public async Task<IClub> GetClubByStadiumIDAsync(Guid StadiumID)
-        {
-            using (SqlConnection connection = new SqlConnection("data source=.; database=model; integrated security=SSPI"))
-            {
-                string query = @"SELECT * FROM Club WHERE StadiumID = @StadiumID";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                if(_command.Transaction == null)
                 {
-                    command.Parameters.AddWithValue("@StadiumID", StadiumID);
-
-                    await connection.OpenAsync();
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            return new Club()
-                            {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                StadiumID = Guid.Parse(reader["StadiumID"].ToString()),
-                                Name = reader["Name"].ToString(),
-                                ClubAddress = reader["ClubAddress"].ToString(),
-                                ShortName = reader["ShortName"].ToString(),
-                                YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
-                                Description = reader["Description"].ToString(),
-                                IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                                UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                                ByUser = Guid.Parse(reader["ByUser"].ToString())
-                            };
-                        }
-                        return null;
-                    }
+                    _connection.Close();
                 }
+
+                return clubList;
             }
+            
+            
         }
     }
 }
