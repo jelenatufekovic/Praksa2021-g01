@@ -91,9 +91,9 @@
     <Compile Include="IStadiumService.cs" />
     <Compile Include="IStandingsService.cs" />
     <Compile Include="ISubstitutionService.cs" />
-    <Compile Include="IStatisticsService.cs" />
     <Compile Include="ITokenService.cs" />
     <Compile Include="IUserManager.cs" />
+    <Compile Include="IStatisticsService.cs" />
     <Compile Include="IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
