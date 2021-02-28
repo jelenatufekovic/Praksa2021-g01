@@ -14,5 +14,6 @@ namespace Results.WebAPI.Models.RestModels.Match
         public int? MatchDay { get; set; }
         public DateTime? MatchDate { get; set; }
         public bool? IsPlayed { get; set; }
+        public string OrderBy { get; set; }
     }
 }

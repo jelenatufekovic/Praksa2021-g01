@@ -1,6 +1,7 @@
 ﻿using Results.Model.Common;
 using Results.Repository.Common;
 using Results.Service.Common;
+using Results.Common.Utils;
 using Results.Common.Utils.QueryParameters;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace Results.Service
         {
             return await _matchRepository.GetMatchByIdAsync(id);
         }
-        public async Task<IMatch> GetMatchByQueryAsync(MatchQueryParameters parameters)
+        public async Task<PagedList<IMatch>> GetMatchByQueryAsync(MatchQueryParameters parameters)
         {
             return await _matchRepository.GetMatchByQueryAsync(parameters);
         }

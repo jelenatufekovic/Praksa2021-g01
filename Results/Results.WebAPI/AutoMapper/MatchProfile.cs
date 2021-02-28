@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Results.Model;
 using Results.Model.Common;
+using Results.Common.Utils;
 using Results.Common.Utils.QueryParameters;
 using Results.WebAPI.Models.RestModels.Match;
 using Results.WebAPI.Models.ViewModels;
@@ -15,6 +16,7 @@ namespace Results.WebAPI.AutoMapper
     {
         public MatchProfile()
         {
+            CreateMap<PagedList<IMatch>, MatchViewModel>();
             CreateMap<IMatch, MatchViewModel>();
             CreateMap<UpdateMatchRest, IMatch>();
             CreateMap<CreateMatchRest, IMatch>();

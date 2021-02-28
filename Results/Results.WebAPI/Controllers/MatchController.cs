@@ -2,6 +2,7 @@
 using Results.Model;
 using Results.Model.Common;
 using Results.Service.Common;
+using Results.Common.Utils;
 using Results.Common.Utils.QueryParameters;
 using Results.WebAPI.Models.RestModels.Match;
 using Results.WebAPI.Models.ViewModels;
@@ -45,14 +46,14 @@ namespace Results.WebAPI.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetMatchByQueryAsync(QueryMatchRest matchRest)
         {
-            IMatch match = await _matchService.GetMatchByQueryAsync(_mapper.Map<MatchQueryParameters>(matchRest));
+            PagedList<IMatch> match = await _matchService.GetMatchByQueryAsync(_mapper.Map<MatchQueryParameters>(matchRest));
 
             if (match == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<MatchViewModel>(match));
+            return Ok(_mapper.Map<List<MatchViewModel>>(match));
         }
 
         [Route("Post")]
@@ -68,7 +69,7 @@ namespace Results.WebAPI.Controllers
             }
 
             Guid id = await _matchService.CreateMatchAsync(match);
-            if (id != Guid.Empty) //provjerit ovo sa empty
+            if (id != Guid.Empty) 
             {
                 return Ok("Standings for club successfully created with ID = " + id);
             }

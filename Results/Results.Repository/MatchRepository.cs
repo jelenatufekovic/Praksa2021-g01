@@ -171,7 +171,7 @@ namespace Results.Repository
             }
         }
 
-        public async Task<IMatch> GetMatchByQueryAsync(MatchQueryParameters parameters)
+        public async Task<PagedList<IMatch>> GetMatchByQueryAsync(MatchQueryParameters parameters)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
@@ -192,20 +192,25 @@ namespace Results.Repository
 
                 IQueryHelper<IMatch, MatchQueryParameters> queryHelper = new QueryHelper<IMatch, MatchQueryParameters>();
 
+                int totalCount = await GetTableCount(connection);
+
                 string statement = queryHelper.Filter.ApplyFilters(parameters);
                 if (statement.Contains("LeagueSeasonID")) statement = statement.Replace("LeagueSeasonID", "Match.LeagueSeasonID");
                 query += statement;
+                query += queryHelper.Sort.ApplySort(parameters.OrderBy);
+                query += queryHelper.Paging.ApplayPaging(parameters.PageNumber, parameters.PageSize);
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    IMatch match = null;
-
-                    await connection.OpenAsync();
+                    //await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync())
+
+                        PagedList<IMatch> matchList = new PagedList<IMatch>(totalCount, parameters.PageNumber, parameters.PageSize);
+
+                        while (await reader.ReadAsync())
                         {
-                            match = new Match()
+                            IMatch match = new Match()
                             {
                                 Id = Guid.Parse(reader["Id"].ToString()),
                                 HomeTeam = reader["HomeTeam"].ToString(),
@@ -216,19 +221,22 @@ namespace Results.Repository
                                 MatchDay = Convert.ToInt32(reader["MatchDay"].ToString()),
                                 IsPlayed = bool.Parse(reader["IsPlayed"].ToString())
                             };
-                            reader.Close();
+                            matchList.Add(match);
                         }
-                        return match;
+                        reader.Close();
+                        return matchList;
                     }
                 }
             }
         }
 
-        //private async Task<int> GetTableCount()
-        //{
-        //    _command.CommandText = "SELECT COUNT(*) AS TotalCount FROM Match;";
-        //    return (Int32)(await _command.ExecuteScalarAsync());
-        //}
+        private async Task<int> GetTableCount(SqlConnection connection)
+        {
+            string query = "SELECT COUNT(*) AS TotalCount FROM Match;";
+            SqlCommand command = new SqlCommand(query, connection);
+            await connection.OpenAsync();
+            return (Int32)(await command.ExecuteScalarAsync());
+        }
     }
 
 }

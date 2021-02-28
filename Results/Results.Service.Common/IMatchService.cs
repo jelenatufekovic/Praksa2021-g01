@@ -1,4 +1,5 @@
 ﻿using Results.Model.Common;
+using Results.Common.Utils;
 using Results.Common.Utils.QueryParameters;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,6 @@ namespace Results.Service.Common
         Task<bool> DeleteMatchAsync(Guid id, Guid ByUser);
         Task<bool> UpdateMatchAsync(IMatch match);
         Task<IMatch> GetMatchByIdAsync(Guid id);
-        Task<IMatch> GetMatchByQueryAsync(MatchQueryParameters parameters);
+        Task<PagedList<IMatch>> GetMatchByQueryAsync(MatchQueryParameters parameters);
     }
 }

@@ -38,6 +38,7 @@ namespace Results.Common
             builder.RegisterType<SortHelper<ScoreParameters>>().As<ISortHelper<ScoreParameters>>().InstancePerDependency();
             builder.RegisterType<SortHelper<CardParameters>>().As<ISortHelper<CardParameters>>().InstancePerDependency();
             builder.RegisterType<SortHelper<SubstitutionParameters>>().As<ISortHelper<SubstitutionParameters>>().InstancePerDependency();
+            builder.RegisterType<SortHelper<MatchQueryParameters>>().As<ISortHelper<MatchQueryParameters>>().InstancePerDependency();
 
             #endregion
 
