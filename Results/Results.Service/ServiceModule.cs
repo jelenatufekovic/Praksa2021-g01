@@ -19,6 +19,8 @@ namespace Results.Service
             builder.RegisterType<CoachService>().As<ICoachService>().InstancePerDependency();
             builder.RegisterType<RefereeService>().As<IRefereeService>().InstancePerDependency();
             builder.RegisterType<ResultsService>().As<IResultsService>().InstancePerDependency();
+
+            builder.RegisterType<MatchService>().As<IMatchService>().InstancePerDependency();
             builder.RegisterType<LeagueSeasonService>().As<ILeagueSeasonService>().InstancePerDependency();
             builder.RegisterType<StandingsService>().As<IStandingsService>().InstancePerDependency();
 

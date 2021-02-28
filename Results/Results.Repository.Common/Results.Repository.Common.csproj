@@ -83,6 +83,7 @@
     <Compile Include="IScoreRepository.cs" />
     <Compile Include="ICoachRepository.cs" />
     <Compile Include="ILeagueRepository.cs" />
+    <Compile Include="IMatchRepository.cs" />
     <Compile Include="IPersonRepository.cs" />
     <Compile Include="IPlayerRepository.cs" />
     <Compile Include="IRefereeRepository.cs" />

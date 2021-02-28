@@ -103,6 +103,7 @@
     <Compile Include="ScoreRepository.cs" />
     <Compile Include="CoachRepository.cs" />
     <Compile Include="LeagueRepository.cs" />
+    <Compile Include="MatchRepository.cs" />
     <Compile Include="PersonRepository.cs" />
     <Compile Include="PlayerRepository.cs" />
     <Compile Include="RefereeRepository.cs" />

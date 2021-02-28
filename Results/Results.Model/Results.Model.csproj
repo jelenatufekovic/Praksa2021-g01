@@ -81,6 +81,7 @@
     <Compile Include="Card.cs" />
     <Compile Include="Club.cs" />
     <Compile Include="League.cs" />
+    <Compile Include="Match.cs" />
     <Compile Include="Score.cs" />
     <Compile Include="Coach.cs" />
     <Compile Include="LeagueSeason.cs" />

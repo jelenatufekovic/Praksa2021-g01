@@ -81,6 +81,7 @@
     <Compile Include="ICard.cs" />
     <Compile Include="IClub.cs" />
     <Compile Include="ILeague.cs" />
+    <Compile Include="IMatch.cs" />
     <Compile Include="IScore.cs" />
     <Compile Include="ILeagueSeason.cs" />
     <Compile Include="ICoach.cs" />
