@@ -216,7 +216,6 @@
     <Compile Include="Models\RestModels\Statistics\CreateStatisticsRest.cs" />
     <Compile Include="Models\RestModels\Statistics\StatisticsViewModel.cs" />
     <Compile Include="Models\RestModels\Statistics\UpdateStatisticsRest.cs" />
-    <Compile Include="Models\RestModels\User\CreateUserRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserPasswordRest.cs" />
     <Compile Include="Models\RestModels\User\UpdateUserRest.cs" />
     <Compile Include="Models\RestModels\User\LoginUserRest.cs" />

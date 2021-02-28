@@ -136,6 +136,8 @@ namespace Results.Repository
                     _card = new CardRepository(Transaction);
                 }
                 return _card;
+            }
+        }
         public IStatisticsRepository Statistics
         {
             get

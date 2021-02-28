@@ -220,10 +220,10 @@ namespace Results.Repository
         public async Task<List<Guid>> GetClubIDsAsync(Guid MatchId)
         {
             List<Guid> clubIDs = null;
-            string query = @"select t.clubID from TeamSeason t left join Match m on t.Id = m.HomeTeamSeasonID where m.Id = @MatchId;
-                                 select t.clubID from TeamSeason t left join Match m on t.Id = m.AwayTeamSeasonID where m.Id = @MatchId;";
+            _command.CommandText = @"select t.ClubID, m.LeagueSeasonID from TeamSeason t left join Match m on t.Id = m.HomeTeamSeasonID where m.Id = @MatchIdent;
+                                 select t.ClubID from TeamSeason t left join Match m on t.Id = m.AwayTeamSeasonID where m.Id = @MatchIdent;";
             
-            _command.Parameters.AddWithValue("@MatchId", MatchId);
+            _command.Parameters.AddWithValue("@MatchIdent", MatchId);
 
             using (SqlDataReader reader = await _command.ExecuteReaderAsync())
             {
@@ -233,6 +233,7 @@ namespace Results.Repository
                 {
                     while (await reader.ReadAsync())
                     {
+                        clubIDs.Add(Guid.Parse(reader["LeagueSeasonID"].ToString()));
                         clubIDs.Add(Guid.Parse(reader["ClubID"].ToString()));
                     }
 

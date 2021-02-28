@@ -15,15 +15,18 @@ namespace Results.Service
     public class StatisticsService : IStatisticsService
     {
         IRepositoryFactory _repositoryFactory;
+        IStandingsRepository _standingsRepository;
 
-        public StatisticsService(IRepositoryFactory repositoryFactory)
+        public StatisticsService(IRepositoryFactory repositoryFactory, IStandingsRepository standingsRepository)
         {
             _repositoryFactory = repositoryFactory;
+            _standingsRepository = standingsRepository;
         }
 
         public async Task<bool> CreateStatisticsAsync(IStatistics statistics)
         {
-            return await UpdateClubStandingsWithNewStatistics(statistics);
+            await UpdateClubStandingsWithNewStatistics(statistics);
+            return await _repositoryFactory.GetRepository<StatisticsRepository>().CreateStatisticsAsync(statistics);
         }
 
         public async Task<IStatistics> GetStatisticsAsync(Guid MatchId)
@@ -34,7 +37,8 @@ namespace Results.Service
 
         public async Task<bool> UpdateStatisticsAsync(IStatistics statistics)
         {
-            return await UpdateClubStandingsWithNewStatistics(statistics);
+            await UpdateClubStandingsWithNewStatistics(statistics);
+            return await _repositoryFactory.GetRepository<StatisticsRepository>().UpdateStatisticsAsync(statistics);
         }
 
         public async Task<bool> DeleteStatisticsAsync(Guid MatchId)
@@ -45,23 +49,33 @@ namespace Results.Service
 
         public async Task<bool> UpdateClubStandingsWithNewStatistics(IStatistics statistics)
         {
-            using(IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
+            bool first_club = false;
+            bool second_club = false;
+
+            using (IUnitOfWork unitOfWork = _repositoryFactory.GetUnitOfWork())
             {
                 List<Guid> clubIDs = await unitOfWork.Statistics.GetClubIDsAsync(statistics.MatchId);
 
                 foreach (Guid Id in clubIDs)
                 {
-                    if (clubIDs.IndexOf(Id) == 0)
+                    if (clubIDs.IndexOf(Id) == 1)
                     {
-                        IStandings standingsUpdate = new Standings();
+                        StandingsParameters standingsParameters = new StandingsParameters()
+                        {
+                            LeagueSeasonID = clubIDs[0],
+                            ClubID = clubIDs[1]
+                        };
+                        IStandings standingsUpdate = await _standingsRepository.GetStandingsByQueryAsync(standingsParameters);
 
                         if (statistics.HomeGoals > statistics.AwayGoals)
                         {
                             standingsUpdate.Won += 1;
+                            standingsUpdate.Points += 3;
                         }
                         else if (statistics.HomeGoals == statistics.AwayGoals)
                         {
                             standingsUpdate.Draw += 1;
+                            standingsUpdate.Points += 1;
                         }
                         else
                         {
@@ -70,19 +84,29 @@ namespace Results.Service
                         standingsUpdate.GoalsScored += statistics.HomeGoals;
                         standingsUpdate.GoalsConceded += statistics.AwayGoals;
                         standingsUpdate.ByUser = statistics.ByUser;
-                        
-                    }
-                    else if (clubIDs.IndexOf(Id) == 1)
-                    {
-                        IStandings standingsUpdate = new Standings();
+                        standingsUpdate.Played++;
 
+                        first_club = await _standingsRepository.UpdateStandingsForClubAsync(standingsUpdate);
+                    }
+                    else if (clubIDs.IndexOf(Id) == 2)
+                    {
+
+                        StandingsParameters standingsParameters = new StandingsParameters()
+                        {
+                            LeagueSeasonID = clubIDs[0],
+                            ClubID = clubIDs[2]
+                        };
+                        IStandings standingsUpdate = await _standingsRepository.GetStandingsByQueryAsync(standingsParameters);
+                        
                         if (statistics.AwayGoals > statistics.HomeGoals)
                         {
                             standingsUpdate.Won += 1;
+                            standingsUpdate.Points += 3;
                         }
                         else if (statistics.AwayGoals == statistics.HomeGoals)
                         {
                             standingsUpdate.Draw += 1;
+                            standingsUpdate.Points += 1;
                         }
                         else
                         {
@@ -91,15 +115,14 @@ namespace Results.Service
                         standingsUpdate.GoalsScored += statistics.AwayGoals;
                         standingsUpdate.GoalsConceded += statistics.HomeGoals;
                         standingsUpdate.ByUser = statistics.ByUser;
+                        standingsUpdate.Played++;
 
-
+                        second_club = await _standingsRepository.UpdateStandingsForClubAsync(standingsUpdate);
                     }
                 }
-
-                bool result = await unitOfWork.Statistics.CreateStatisticsAsync(statistics);
-
-                return result;
             }
+
+            return first_club && second_club;
           
         }
     }
