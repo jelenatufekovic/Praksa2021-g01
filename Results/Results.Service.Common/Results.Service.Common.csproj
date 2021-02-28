@@ -79,6 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICardService.cs" />
+    <Compile Include="IMatchService.cs" />
+    <Compile Include="ITokenService.cs" />
+    <Compile Include="IUserManager.cs" />
     <Compile Include="IClubService.cs" />
     <Compile Include="ICoachService.cs" />
     <Compile Include="ILeagueService.cs" />
