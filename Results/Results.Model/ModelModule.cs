@@ -32,6 +32,7 @@ namespace Results.Model
             builder.RegisterType<Season>().As<ISeason>().InstancePerDependency();
             builder.RegisterType<League>().As<ILeague>().InstancePerDependency();
             builder.RegisterType<Statistics>().As<IStatistics>().InstancePerDependency();
+            builder.RegisterType<Match>().As<IMatch>().InstancePerDependency();
 
             
             builder.RegisterType<Card>().As<ICard>().InstancePerDependency();

@@ -201,7 +201,7 @@
     <Compile Include="Models\RestModels\League\CreateLeagueRest.cs" />
     <Compile Include="Models\RestModels\League\LeagueViewModel.cs" />
     <Compile Include="Models\RestModels\League\UpdateLeagueRest.cs" />
-    <Compile Include="Models\RestModels\Match\MatchIdProviderRest.cs" />
+    <Compile Include="Models\RestModels\Match\CreateMatchRest.cs" />
     <Compile Include="Models\RestModels\Match\UpdateMatchRest.cs" />
     <Compile Include="Models\RestModels\Match\MatchViewModel.cs" />
     <Compile Include="Models\RestModels\Season\CreateSeasonRest.cs" />

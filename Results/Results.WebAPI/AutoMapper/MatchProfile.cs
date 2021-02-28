@@ -17,8 +17,8 @@ namespace Results.WebAPI.AutoMapper
         {
             CreateMap<IMatch, MatchViewModel>();
             CreateMap<UpdateMatchRest, IMatch>();
-            CreateMap<MatchIdProviderRest, IMatch>();
-            CreateMap<MatchIdProviderRest, MatchParameters>();
+            CreateMap<CreateMatchRest, IMatch>();
+            CreateMap<CreateMatchRest, MatchParameters>();
         }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
-using Results.Common.Utils;
-using Results.Common.Utils.QueryParameters;
+using Results.Model;
 using Results.Model.Common;
 using Results.Service.Common;
+using Results.Common.Utils.QueryParameters;
 using Results.WebAPI.Models.RestModels.Match;
 using Results.WebAPI.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -37,9 +40,9 @@ namespace Results.WebAPI.Controllers
 
             return Ok(_mapper.Map<MatchViewModel>(match));
         }
-        [Route("Post/{id}")]
+        [Route("Post")]
         [HttpPost]
-        public async Task<IHttpActionResult> CreateMatchAsync([FromBody] MatchIdProviderRest provider)
+        public async Task<IHttpActionResult> CreateMatchAsync([FromBody] CreateMatchRest provider)
         {
             IMatch match = _mapper.Map<IMatch>(provider);
 
@@ -52,15 +55,15 @@ namespace Results.WebAPI.Controllers
             Guid id = await _matchService.CreateMatchAsync(match);
             if (id != Guid.Empty) //provjerit ovo sa empty
             {
-                return Ok("Standings for club successfully created");
+                return Ok("Standings for club successfully created with ID = " + id);
             }
 
             return BadRequest("Something went wrong");
         }
 
-        [Route("Delete/{id}")]
+        [Route("Delete")]
         [HttpDelete]
-        public async Task<IHttpActionResult> DeleteMatchAsync(Guid id)
+        public async Task<IHttpActionResult> DeleteMatchAsync([FromUri] Guid id, [FromUri] Guid byUser)
         {
             IMatch match = await _matchService.GetMatchByIdAsync(id);
             if (match == null)
@@ -68,7 +71,7 @@ namespace Results.WebAPI.Controllers
                 return NotFound();
             }
 
-            bool result = await _matchService.DeleteMatchAsync(id, match.ByUser); //odakle dobije usera
+            bool result = await _matchService.DeleteMatchAsync(id, byUser); 
             if (result)
             {
                 return Ok("Match successfully deleted");

@@ -14,9 +14,9 @@ namespace Results.Service
     {
         private readonly IMatchRepository _matchRepository;
 
-        public MatchService(IMatchRepository standingRepository)
+        public MatchService(IMatchRepository matchRepository)
         {
-            _matchRepository = standingRepository;
+            _matchRepository = matchRepository;
         }
         public async Task<Guid> CreateMatchAsync(IMatch match)
         {

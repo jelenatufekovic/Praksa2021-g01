@@ -17,170 +17,156 @@ namespace Results.Repository
 {
     public class MatchRepository : IMatchRepository
     {
-        private SqlConnection _connection;
-        private SqlCommand _command;
-
-        public MatchRepository(SqlConnection connection)
-        {
-            _command = new SqlCommand(String.Empty, connection);
-            _connection = connection;
-            _connection.Open();
-        }
-
-        public MatchRepository(SqlTransaction transaction)
-        {
-            _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
-        }
-
         public async Task<Guid> CreateMatchAsync(IMatch match)
         {
-            _command.CommandText = @"DECLARE @MatchVar table(Id uniqueidentifier);
-								INSERT INTO Match (HomeTeamSeasonID, AwayTeamSeasonID, LeagueSeasonID, RefereeID, MatchDate, MatchDay, IsPlayed, CreatedAt, UpdatedAt, IsDeleted, ByUser)
-								OUTPUT INSERTED.Id INTO @MatchVar
-								VALUES (@HomeTeamSeasonID, @AwayTeamSeasonID, @LeagueSeasonID, @RefereeID, @MatchDate, @MatchDay, @IsPlayed, @CreatedAt, @UpdatedAt, @IsDeleted, @ByUser);
-								SELECT Id FROM @MatchVar;";  //ako bude error pogledat prvo ;
-
-            _command.Parameters.AddWithValue("@HomeTeamSeasonID", match.HomeTeamSeasonID);
-            _command.Parameters.AddWithValue("@AwayTeamSeasonID", match.AwayTeamSeasonID);
-            _command.Parameters.AddWithValue("@LeagueSeasonID", match.LeagueSeasonID);
-            _command.Parameters.AddWithValue("@RefereeID", match.RefereeID);
-            _command.Parameters.AddWithValue("@MatchDate", match.MatchDate);
-            _command.Parameters.AddWithValue("@MatchDay", match.MatchDay);
-            _command.Parameters.Add("@IsPlayed", SqlDbType.Bit).Value = false;
-            _command.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
-            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
-            _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
-            _command.Parameters.AddWithValue("@ByUser", match.ByUser);
-
-            using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                await reader.ReadAsync();
-                Guid result = Guid.Parse(reader["Id"].ToString());
+                string query = @"DECLARE @MatchVar table(Id uniqueidentifier);
+							INSERT INTO Match (HomeTeamSeasonID, AwayTeamSeasonID, LeagueSeasonID, RefereeID, MatchDate, MatchDay, IsPlayed, CreatedAt, UpdatedAt, IsDeleted, ByUser)
+							OUTPUT INSERTED.Id INTO @MatchVar
+							VALUES (@HomeTeamSeasonID, @AwayTeamSeasonID, @LeagueSeasonID, @RefereeID, @MatchDate, @MatchDay, @IsPlayed, @CreatedAt, @UpdatedAt, @IsDeleted, @ByUser);
+							SELECT Id FROM @MatchVar;";  //ako bude error pogledat prvo ;
 
-                if (_command.Transaction == null)
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    _connection.Close();
-                }
+                    command.Parameters.AddWithValue("@HomeTeamSeasonID", match.HomeTeamSeasonID);
+                    command.Parameters.AddWithValue("@AwayTeamSeasonID", match.AwayTeamSeasonID);
+                    command.Parameters.AddWithValue("@LeagueSeasonID", match.LeagueSeasonID);
+                    command.Parameters.AddWithValue("@RefereeID", match.RefereeID);
+                    command.Parameters.AddWithValue("@MatchDate", match.MatchDate);
+                    command.Parameters.AddWithValue("@MatchDay", match.MatchDay);
+                    command.Parameters.Add("@IsPlayed", SqlDbType.Bit).Value = false;
+                    command.Parameters.AddWithValue("@CreatedAt", match.CreatedAt = DateTime.Now);
+                    command.Parameters.AddWithValue("@UpdatedAt", match.UpdatedAt = DateTime.Now);
+                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = false;
+                    command.Parameters.AddWithValue("@ByUser", match.ByUser); 
 
-                return result;
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        await reader.ReadAsync();
+                        Guid result = Guid.Parse(reader["Id"].ToString());
+                        return result;
+                    }
+                }
             }
         }
 
         public async Task<bool> CheckMatchExistingAsync(MatchParameters parameters)
         {
-            IQueryHelper<IMatch, MatchParameters> queryHelper = new QueryHelper<IMatch, MatchParameters>();
-
-            string query = @"SELECT * FROM Match";
-            query += queryHelper.Filter.ApplyFilters(parameters);
-
-            _command.CommandText = query;
-
-            bool result = await _command.ExecuteNonQueryAsync() > 0;
-            if (_command.Transaction == null)
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                _connection.Close();
-            }
+                IQueryHelper<IMatch, MatchParameters> queryHelper = new QueryHelper<IMatch, MatchParameters>();
 
-            return result;
+                string query = @"SELECT * FROM Match ";
+                query += queryHelper.Filter.ApplyFilters(parameters);
+
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        return await reader.ReadAsync();
+                    }
+                }
+            }
         }
 
         public async Task<bool> DeleteMatchAsync(Guid id, Guid ByUser)
         {
-            _command.CommandText = "UPDATE Match SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
-
-            _command.Parameters.AddWithValue("@Id", id);
-            _command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
-            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
-            _command.Parameters.AddWithValue("@ByUser", ByUser);
-
-            bool result = await _command.ExecuteNonQueryAsync() > 0;
-
-            if (_command.Transaction == null)
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                _connection.Close();
-            }
+                string query = "UPDATE Match SET IsDeleted = @IsDeleted, UpdatedAt = @UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
 
-            return result;
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.Add("@IsDeleted", SqlDbType.Bit).Value = true;
+                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+                    command.Parameters.AddWithValue("@ByUser", ByUser);
+
+                    await connection.OpenAsync();
+                    return (await command.ExecuteNonQueryAsync()) > 0;
+                }
+            }
         }
 
         public async Task<bool> UpdateMatchAsync(IMatch match)
         {
-            _command.CommandText = "UPDATE Match SET RefereeID = @RefereeID, MatchDate = @MatchDate, MatchDay = @MatchDay, IsPlayed = @IsPlayed, @UpdatedAt = UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
-
-            _command.Parameters.AddWithValue("@Id", match.Id);
-            _command.Parameters.AddWithValue("@RefereeID", match.RefereeID);
-            _command.Parameters.AddWithValue("@MatchDate", match.MatchDate);
-            _command.Parameters.AddWithValue("@MatchDay", match.MatchDay);
-            _command.Parameters.AddWithValue("@IsPlayed", match.IsPlayed);
-            _command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
-            _command.Parameters.AddWithValue("@ByUser", match.ByUser);
-
-            bool result = await _command.ExecuteNonQueryAsync() > 0;
-
-            if (_command.Transaction == null)
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                _connection.Close();
-            }
+                string query = "UPDATE Match SET RefereeID = @RefereeID, MatchDate = @MatchDate, MatchDay = @MatchDay, IsPlayed = @IsPlayed, @UpdatedAt = UpdatedAt, ByUser = @ByUser WHERE Id = @Id;";
 
-            return result;
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", match.Id);
+                    command.Parameters.AddWithValue("@RefereeID", match.RefereeID);
+                    command.Parameters.AddWithValue("@MatchDate", match.MatchDate);
+                    command.Parameters.AddWithValue("@MatchDay", match.MatchDay);
+                    command.Parameters.AddWithValue("@IsPlayed", match.IsPlayed);
+                    command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+                    command.Parameters.AddWithValue("@ByUser", match.ByUser);
+
+                    await connection.OpenAsync();
+                    try
+                    {
+                        return (await command.ExecuteNonQueryAsync()) > 0;
+                    }
+                    catch(SqlException)
+                    {
+                        return false;
+                    }
+                    
+                }
+            }
         }
 
         public async Task<IMatch> GetMatchByIdAsync(Guid id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
             {
-                _command.CommandText = @"SELECT
+                string query = @"SELECT
                                 Match.Id AS Id,
                                 homeclub.Name AS HomeTeam,
                                 awayclub.Name AS AwayTeam,
                                 Match.LeagueSeasonID AS LeagueSeason,
-                                Referee.Name AS Referee,
-                                MatchDate, MatchDay, IsPlayed,
-                                ByUser, IsDeleted, CreatedAt, UpdatedAt
-								FROM Match
-								LEFT JOIN TeamSeason hometeam ON Match.HomeTeamSeasonID = hometeam.Id
-								LEFT JOIN TeamSeason awayteam ON Match.AwayTeamSeasonID = awayteam.Id
-								LEFT JOIN Club homeclub ON hometeam.ClubID = homeclub.Id
-								LEFT JOIN Club awayclub ON awayteam.ClubID = awayclub.Id
-								LEFT JOIN Referee ON Match.RefereeID = Referee.Id
-								WHERE Match.Id = @Id;";
+                                person.FirstName AS Referee,
+                                MatchDate, MatchDay, IsPlayed
+                                FROM Match
+                                LEFT JOIN TeamSeason hometeam ON Match.HomeTeamSeasonID = hometeam.Id
+                                LEFT JOIN TeamSeason awayteam ON Match.AwayTeamSeasonID = awayteam.Id
+                                LEFT JOIN Club homeclub ON hometeam.ClubID = homeclub.Id
+                                LEFT JOIN Club awayclub ON awayteam.ClubID = awayclub.Id
+                                LEFT JOIN Referee ref ON Match.RefereeID = ref.Id
+                                LEFT JOIN Person person ON ref.PersonId = person.Id
+                                WHERE Match.Id = @Id";
 
-                _command.Parameters.AddWithValue("@Id", id);
-                using (SqlDataReader reader = await _command.ExecuteReaderAsync())
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    if (await reader.ReadAsync())
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    IMatch match = null;
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        IMatch match = new Match()
+                        if (await reader.ReadAsync())
                         {
-                            Id = Guid.Parse(reader["Id"].ToString()),
-                            HomeTeam = reader["HomeTeam"].ToString(),
-                            AwayTeam = reader["AwayTeam"].ToString(),
-                            LeagueSeasonID = Guid.Parse(reader["LeagueSeason"].ToString()),
-                            RefereeName = reader["Referee"].ToString(),
-                            MatchDate = DateTime.Parse(reader["MatchDate"].ToString()),
-                            MatchDay = Convert.ToInt32(reader["MatchDay"].ToString()),
-                            IsPlayed = bool.Parse(reader["IsPlayed"].ToString()),
-                            ByUser = Guid.Parse(reader["ByUser"].ToString()),
-                            IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
-                            CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
-                            UpdatedAt = DateTime.Parse(reader["UpdatedAt"].ToString()),
-                        };
-                        reader.Close();
-
-                        if (_command.Transaction == null)
-                        {
-                            _connection.Close();
+                            match = new Match()
+                            {
+                                Id = Guid.Parse(reader["Id"].ToString()),
+                                HomeTeam = reader["HomeTeam"].ToString(),
+                                AwayTeam = reader["AwayTeam"].ToString(),
+                                LeagueSeasonID = Guid.Parse(reader["LeagueSeason"].ToString()),
+                                RefereeName = reader["Referee"].ToString(),
+                                MatchDate = DateTime.Parse(reader["MatchDate"].ToString()),
+                                MatchDay = Convert.ToInt32(reader["MatchDay"].ToString()),
+                                IsPlayed = bool.Parse(reader["IsPlayed"].ToString())
+                            };
+                            reader.Close();
                         }
-
                         return match;
                     }
-
-                    if (_command.Transaction == null)
-                    {
-                        _connection.Close();
-                    }
-
-                    return null;
                 }
             }
         }
