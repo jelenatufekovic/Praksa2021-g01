@@ -95,6 +95,7 @@
     <Compile Include="Stadium.cs" />
     <Compile Include="Standings.cs" />
     <Compile Include="Substitution.cs" />
+    <Compile Include="Statistics.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

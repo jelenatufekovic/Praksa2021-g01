@@ -23,6 +23,7 @@ namespace Results.Repository
         private IClubRepository _club;
         private IScoreRepository _score;
         private ICardRepository _card;
+        private IStatisticsRepository _statistics;
 
         public UnitOfWork(SqlConnection connection)
         {
@@ -135,6 +136,17 @@ namespace Results.Repository
                     _card = new CardRepository(Transaction);
                 }
                 return _card;
+            }
+        }
+        public IStatisticsRepository Statistics
+        {
+            get
+            {
+                if (_statistics == null)
+                {
+                    _statistics = new StatisticsRepository(Transaction);
+                }
+                return _statistics;
             }
         }
 

@@ -94,6 +94,7 @@
     <Compile Include="IStadiumRepository.cs" />
     <Compile Include="IStandingsRepository.cs" />
     <Compile Include="ISubstitutionRepository.cs" />
+    <Compile Include="IStatisticsRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -138,6 +138,7 @@
     <Compile Include="Utils\QueryParameters\StandingsParameters.cs" />
     <Compile Include="Utils\QueryParameters\StadiumParameters.cs" />
     <Compile Include="Utils\QueryParameters\SubstitutionParameters.cs" />
+    <Compile Include="Utils\QueryParameters\StatisticsParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

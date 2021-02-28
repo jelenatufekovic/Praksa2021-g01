@@ -14,6 +14,7 @@ namespace Results.Repository.Common
         ICoachRepository Coach { get; }
         IRefereeRepository Referee { get; }
         IStadiumRepository Stadium { get; }
+        IStatisticsRepository Statistics { get; }
 
         void Commit();
     }

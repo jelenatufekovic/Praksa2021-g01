@@ -108,6 +108,7 @@
     <Compile Include="TokenService.cs" />
     <Compile Include="UserManager.cs" />
     <Compile Include="SubstitutionService.cs" />
+    <Compile Include="StatisticsService.cs" />
     <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>
