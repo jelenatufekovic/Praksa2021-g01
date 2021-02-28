@@ -19,6 +19,7 @@ namespace Results.WebAPI.AutoMapper
             CreateMap<UpdateMatchRest, IMatch>();
             CreateMap<CreateMatchRest, IMatch>();
             CreateMap<CreateMatchRest, MatchParameters>();
+            CreateMap<QueryMatchRest, MatchQueryParameters>();
         }
     }
 }

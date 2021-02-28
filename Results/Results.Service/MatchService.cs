@@ -38,5 +38,9 @@ namespace Results.Service
         {
             return await _matchRepository.GetMatchByIdAsync(id);
         }
+        public async Task<IMatch> GetMatchByQueryAsync(MatchQueryParameters parameters)
+        {
+            return await _matchRepository.GetMatchByQueryAsync(parameters);
+        }
     }
 }

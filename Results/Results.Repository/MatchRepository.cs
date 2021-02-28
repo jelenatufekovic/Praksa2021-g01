@@ -171,6 +171,59 @@ namespace Results.Repository
             }
         }
 
+        public async Task<IMatch> GetMatchByQueryAsync(MatchQueryParameters parameters)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.GetDefaultConnectionString()))
+            {
+                string query = @"SELECT
+                                Match.Id AS Id,
+                                homeclub.Name AS HomeTeam,
+                                awayclub.Name AS AwayTeam,
+                                Match.LeagueSeasonID AS LeagueSeason,
+                                person.FirstName AS Referee,
+                                MatchDate, MatchDay, IsPlayed
+                                FROM Match
+                                LEFT JOIN TeamSeason hometeam ON Match.HomeTeamSeasonID = hometeam.Id
+                                LEFT JOIN TeamSeason awayteam ON Match.AwayTeamSeasonID = awayteam.Id
+                                LEFT JOIN Club homeclub ON hometeam.ClubID = homeclub.Id
+                                LEFT JOIN Club awayclub ON awayteam.ClubID = awayclub.Id
+                                LEFT JOIN Referee ref ON Match.RefereeID = ref.Id
+                                LEFT JOIN Person person ON ref.PersonId = person.Id ";
+
+                IQueryHelper<IMatch, MatchQueryParameters> queryHelper = new QueryHelper<IMatch, MatchQueryParameters>();
+
+                string statement = queryHelper.Filter.ApplyFilters(parameters);
+                if (statement.Contains("LeagueSeasonID")) statement = statement.Replace("LeagueSeasonID", "Match.LeagueSeasonID");
+                query += statement;
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    IMatch match = null;
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            match = new Match()
+                            {
+                                Id = Guid.Parse(reader["Id"].ToString()),
+                                HomeTeam = reader["HomeTeam"].ToString(),
+                                AwayTeam = reader["AwayTeam"].ToString(),
+                                LeagueSeasonID = Guid.Parse(reader["LeagueSeason"].ToString()),
+                                RefereeName = reader["Referee"].ToString(),
+                                MatchDate = DateTime.Parse(reader["MatchDate"].ToString()),
+                                MatchDay = Convert.ToInt32(reader["MatchDay"].ToString()),
+                                IsPlayed = bool.Parse(reader["IsPlayed"].ToString())
+                            };
+                            reader.Close();
+                        }
+                        return match;
+                    }
+                }
+            }
+        }
+
         //private async Task<int> GetTableCount()
         //{
         //    _command.CommandText = "SELECT COUNT(*) AS TotalCount FROM Match;";

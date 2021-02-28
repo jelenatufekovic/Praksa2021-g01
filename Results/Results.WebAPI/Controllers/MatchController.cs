@@ -40,6 +40,21 @@ namespace Results.WebAPI.Controllers
 
             return Ok(_mapper.Map<MatchViewModel>(match));
         }
+
+        [Route("Get")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetMatchByQueryAsync(QueryMatchRest matchRest)
+        {
+            IMatch match = await _matchService.GetMatchByQueryAsync(_mapper.Map<MatchQueryParameters>(matchRest));
+
+            if (match == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<MatchViewModel>(match));
+        }
+
         [Route("Post")]
         [HttpPost]
         public async Task<IHttpActionResult> CreateMatchAsync([FromBody] CreateMatchRest provider)
