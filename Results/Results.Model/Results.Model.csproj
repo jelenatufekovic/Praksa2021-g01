@@ -82,6 +82,7 @@
     <Compile Include="Club.cs" />
     <Compile Include="League.cs" />
     <Compile Include="Match.cs" />
+    <Compile Include="Position.cs" />
     <Compile Include="Score.cs" />
     <Compile Include="Coach.cs" />
     <Compile Include="LeagueSeason.cs" />
@@ -97,6 +98,8 @@
     <Compile Include="Standings.cs" />
     <Compile Include="Substitution.cs" />
     <Compile Include="Statistics.cs" />
+    <Compile Include="TeamRegistration.cs" />
+    <Compile Include="TeamSeason.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

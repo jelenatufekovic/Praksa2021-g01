@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="ICardRepository.cs" />
     <Compile Include="IClubRepository.cs" />
+    <Compile Include="IPositionRepository.cs" />
     <Compile Include="IScoreRepository.cs" />
     <Compile Include="ICoachRepository.cs" />
     <Compile Include="ILeagueRepository.cs" />
@@ -96,6 +97,8 @@
     <Compile Include="IStandingsRepository.cs" />
     <Compile Include="ISubstitutionRepository.cs" />
     <Compile Include="IStatisticsRepository.cs" />
+    <Compile Include="ITeamRegistrationRepository.cs" />
+    <Compile Include="ITeamSeasonRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -33,8 +33,11 @@ namespace Results.Model
             builder.RegisterType<League>().As<ILeague>().InstancePerDependency();
             builder.RegisterType<Statistics>().As<IStatistics>().InstancePerDependency();
             builder.RegisterType<Match>().As<IMatch>().InstancePerDependency();
+            builder.RegisterType<Position>().As<IPosition>().InstancePerDependency();
+            builder.RegisterType<TeamSeason>().As<ITeamSeason>().InstancePerDependency();
+            builder.RegisterType<TeamRegistration>().As<ITeamRegistration>().InstancePerDependency();
 
-            
+
             builder.RegisterType<Card>().As<ICard>().InstancePerDependency();
             builder.RegisterType<Substitution>().As<ISubstitution>().InstancePerDependency();
             base.Load(builder);

@@ -15,6 +15,8 @@ namespace Results.Repository.Common
         IRefereeRepository Referee { get; }
         IStadiumRepository Stadium { get; }
         IStatisticsRepository Statistics { get; }
+        ITeamSeasonRepository TeamSeason { get; }
+        ITeamRegistrationRepository TeamRegistration { get; }
 
         void Commit();
     }

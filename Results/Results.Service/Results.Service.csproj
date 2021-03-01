@@ -97,6 +97,7 @@
     <Compile Include="LeagueService.cs" />
     <Compile Include="MatchService.cs" />
     <Compile Include="PlayerService.cs" />
+    <Compile Include="PositionService.cs" />
     <Compile Include="RefereeService.cs" />
     <Compile Include="LeagueSeasonService.cs" />
     <Compile Include="SeasonService.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StadiumService.cs" />
     <Compile Include="StandingsService.cs" />
+    <Compile Include="TeamSeasonService.cs" />
     <Compile Include="TokenService.cs" />
     <Compile Include="UserManager.cs" />
     <Compile Include="SubstitutionService.cs" />

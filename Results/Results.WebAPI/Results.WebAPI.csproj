@@ -167,12 +167,15 @@
     <Compile Include="AutoMapper\LeagueProfile.cs" />
     <Compile Include="AutoMapper\MatchProfile.cs" />
     <Compile Include="AutoMapper\PlayerProfile.cs" />
+    <Compile Include="AutoMapper\PositionProfile.cs" />
     <Compile Include="AutoMapper\RefereeProfile.cs" />
     <Compile Include="AutoMapper\LeagueSeasonProfile.cs" />
     <Compile Include="AutoMapper\SeasonProfile.cs" />
     <Compile Include="AutoMapper\StadiumProfile.cs" />
     <Compile Include="AutoMapper\StandingsProfile.cs" />
     <Compile Include="AutoMapper\StatisticsProfile.cs" />
+    <Compile Include="AutoMapper\TeamRegistrationProfile.cs" />
+    <Compile Include="AutoMapper\TeamSeasonProfile.cs" />
     <Compile Include="AutoMapper\UserProfile.cs" />
     <Compile Include="Controllers\ClubController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -180,12 +183,14 @@
     <Compile Include="Controllers\LeagueController.cs" />
     <Compile Include="Controllers\MatchController.cs" />
     <Compile Include="Controllers\PlayerController.cs" />
+    <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\RefereeController.cs" />
     <Compile Include="Controllers\LeagueSeasonController.cs" />
     <Compile Include="Controllers\SeasonController.cs" />
     <Compile Include="Controllers\StadiumController.cs" />
     <Compile Include="Controllers\StandingsController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
+    <Compile Include="Controllers\TeamSeasonController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\BearerAuthenticationAttribute.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />
@@ -205,6 +210,7 @@
     <Compile Include="Models\RestModels\Match\QueryMatchRest.cs" />
     <Compile Include="Models\RestModels\Match\UpdateMatchRest.cs" />
     <Compile Include="Models\RestModels\Match\MatchViewModel.cs" />
+    <Compile Include="Models\RestModels\Position\PositionRest.cs" />
     <Compile Include="Models\RestModels\Season\CreateSeasonRest.cs" />
     <Compile Include="Models\RestModels\Season\SeasonViewModel.cs" />
     <Compile Include="Models\RestModels\Season\UpdateSeasonRest.cs" />
@@ -218,6 +224,9 @@
     <Compile Include="Models\RestModels\Person\PersonRestBase.cs" />
     <Compile Include="Models\RestModels\Person\PlayerRest.cs" />
     <Compile Include="Models\RestModels\Person\RefereeRest.cs" />
+    <Compile Include="Models\RestModels\TeamSeason\CreateTeamSeason.cs" />
+    <Compile Include="Models\RestModels\TeamSeason\TeamRegistrationRest.cs" />
+    <Compile Include="Models\RestModels\TeamSeason\UpdateTeamSeason.cs" />
     <Compile Include="Models\RestModels\User\RegisterUserRest.cs" />
     <Compile Include="Models\RestModels\Statistics\CreateStatisticsRest.cs" />
     <Compile Include="Models\RestModels\Statistics\StatisticsViewModel.cs" />
@@ -233,6 +242,8 @@
     <Compile Include="Models\ViewModels\Person\PersonViewModelBase.cs" />
     <Compile Include="Models\ViewModels\Person\PlayerViewModel.cs" />
     <Compile Include="Models\ViewModels\Person\RefereeViewModel.cs" />
+    <Compile Include="Models\ViewModels\TeamRegistrationView.cs" />
+    <Compile Include="Models\ViewModels\TeamSeasonView.cs" />
     <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Results\AddChallengeOnUnauthorizedResult.cs" />

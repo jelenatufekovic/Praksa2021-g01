@@ -80,6 +80,8 @@
   <ItemGroup>
     <Compile Include="ICardService.cs" />
     <Compile Include="IMatchService.cs" />
+    <Compile Include="IPositionService.cs" />
+    <Compile Include="ITeamSeasonService.cs" />
     <Compile Include="ITokenService.cs" />
     <Compile Include="IClubService.cs" />
     <Compile Include="ICoachService.cs" />

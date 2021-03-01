@@ -25,6 +25,7 @@ namespace Results.Common
             builder.RegisterType<FilterHelper<ICard, CardParameters>>().As<IFilterHelper<ICard, CardParameters>>().InstancePerDependency();
             builder.RegisterType<FilterHelper<ISubstitution, SubstitutionParameters>>().As<IFilterHelper<ISubstitution, SubstitutionParameters>>().InstancePerDependency();
             builder.RegisterType<FilterHelper<IMatch, MatchQueryParameters>>().As<IFilterHelper<IMatch, MatchQueryParameters>>().InstancePerDependency();
+            builder.RegisterType<FilterHelper<IPosition, PositionParameters>>().As<IFilterHelper<IPosition, PositionParameters>>().InstancePerDependency();
 
             #endregion
 
@@ -39,6 +40,7 @@ namespace Results.Common
             builder.RegisterType<SortHelper<CardParameters>>().As<ISortHelper<CardParameters>>().InstancePerDependency();
             builder.RegisterType<SortHelper<SubstitutionParameters>>().As<ISortHelper<SubstitutionParameters>>().InstancePerDependency();
             builder.RegisterType<SortHelper<MatchQueryParameters>>().As<ISortHelper<MatchQueryParameters>>().InstancePerDependency();
+            builder.RegisterType<SortHelper<PositionParameters>>().As<ISortHelper<PositionParameters>>().InstancePerDependency();
 
             #endregion
 
@@ -53,6 +55,7 @@ namespace Results.Common
             builder.RegisterType<QueryHelper<ICard, CardParameters>>().As<IQueryHelper<ICard, CardParameters>>().InstancePerDependency();
             builder.RegisterType<QueryHelper<ISubstitution, SubstitutionParameters>>().As<IQueryHelper<ISubstitution, SubstitutionParameters>>().InstancePerDependency();
             builder.RegisterType<QueryHelper<IMatch, MatchQueryParameters>>().As<IQueryHelper<IMatch, MatchQueryParameters>>().InstancePerDependency();
+            builder.RegisterType<QueryHelper<IPosition, PositionParameters>>().As<IQueryHelper<IPosition, PositionParameters>>().InstancePerDependency();
 
             #endregion
         }

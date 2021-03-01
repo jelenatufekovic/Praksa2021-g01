@@ -24,6 +24,8 @@ namespace Results.Repository
         private IScoreRepository _score;
         private ICardRepository _card;
         private IStatisticsRepository _statistics;
+        private ITeamSeasonRepository _teamSeason;
+        private ITeamRegistrationRepository _teamRegistration;
 
         public UnitOfWork(SqlConnection connection)
         {
@@ -147,6 +149,30 @@ namespace Results.Repository
                     _statistics = new StatisticsRepository(Transaction);
                 }
                 return _statistics;
+            }
+        }
+
+        public ITeamRegistrationRepository TeamRegistration
+        {
+            get
+            {
+                if (_teamRegistration == null)
+                {
+                    _teamRegistration = new TeamRegistrationRepository(Transaction);
+                }
+                return _teamRegistration;
+            }
+        }
+
+        public ITeamSeasonRepository TeamSeason
+        {
+            get
+            {
+                if (_teamSeason == null)
+                {
+                    _teamSeason = new TeamSeasonRepository(Transaction);
+                }
+                return _teamSeason;
             }
         }
 

@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="CardRepository.cs" />
     <Compile Include="ClubRepository.cs" />
+    <Compile Include="PositionRepository.cs" />
     <Compile Include="ScoreRepository.cs" />
     <Compile Include="CoachRepository.cs" />
     <Compile Include="LeagueRepository.cs" />
@@ -118,6 +119,8 @@
     <Compile Include="StandingsRepository.cs" />
     <Compile Include="SubstitutionRepository.cs" />
     <Compile Include="StatisticsRepository.cs" />
+    <Compile Include="TeamRegistrationRepository.cs" />
+    <Compile Include="TeamSeasonRepository.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="UserRepository.cs" />
   </ItemGroup>

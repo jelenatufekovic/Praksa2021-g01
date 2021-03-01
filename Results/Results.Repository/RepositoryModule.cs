@@ -45,6 +45,9 @@ namespace Results.Repository
             builder.RegisterType<CardRepository>().As<ICardRepository>().InstancePerDependency();
             builder.RegisterType<SubstitutionRepository>().As<ISubstitutionRepository>().InstancePerDependency();
             builder.RegisterType<StatisticsRepository>().As<IStatisticsRepository>().InstancePerDependency();
+            builder.RegisterType<TeamRegistrationRepository>().As<ITeamRegistrationRepository>().InstancePerDependency();
+            builder.RegisterType<TeamSeasonRepository>().As<ITeamSeasonRepository>().InstancePerDependency();
+            builder.RegisterType<PositionRepository>().As<IPositionRepository>().InstancePerDependency();
         }
     }
 }
