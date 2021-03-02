@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMatchManagerService.cs" />
     <Compile Include="ICardService.cs" />
     <Compile Include="IMatchService.cs" />
     <Compile Include="IPositionService.cs" />

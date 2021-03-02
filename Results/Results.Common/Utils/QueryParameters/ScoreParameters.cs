@@ -12,9 +12,10 @@ namespace Results.Common.Utils.QueryParameters
         {
             OrderBy = "MatchMinute";
         }
-        Guid MatchID { get; set; }
-        Guid PlayerID { get; set; }
-        string MatchMinute { get; set; }
-        bool Autogoal { get; set; }
+        public Guid Id { get; set; }
+        public Guid MatchID { get; set; }
+        public Guid PlayerID { get; set; }
+        public string MatchMinute { get; set; }
+        public bool Autogoal { get; set; }
     }
 }

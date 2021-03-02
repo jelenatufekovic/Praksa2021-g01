@@ -182,6 +182,7 @@
     <Compile Include="Controllers\CoachController.cs" />
     <Compile Include="Controllers\LeagueController.cs" />
     <Compile Include="Controllers\MatchController.cs" />
+    <Compile Include="Controllers\MatchManagerController.cs" />
     <Compile Include="Controllers\PlayerController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\RefereeController.cs" />
@@ -211,6 +212,15 @@
     <Compile Include="Models\RestModels\Match\UpdateMatchRest.cs" />
     <Compile Include="Models\RestModels\Match\MatchViewModel.cs" />
     <Compile Include="Models\RestModels\Position\PositionRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\CreateCardRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\CreateScoreRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\CreateSubstitutionRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\GetAllCardsRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\GetAllScoresRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\GetAllSubstitutionsRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\UpdateCardRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\UpdateScoreRest.cs" />
+    <Compile Include="Models\RestModels\MatchManager\UpdateSubstitutionRest.cs" />
     <Compile Include="Models\RestModels\Season\CreateSeasonRest.cs" />
     <Compile Include="Models\RestModels\Season\SeasonViewModel.cs" />
     <Compile Include="Models\RestModels\Season\UpdateSeasonRest.cs" />

@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace Results.Common.Utils.QueryParameters
+namespace Results.WebAPI.Models.RestModels.MatchManager
 {
-    public class CardParameters : QueryParameters
+    public class UpdateCardRest
     {
-        public CardParameters()
-        {
-            OrderBy = "MatchMinute";
-        }
         public Guid Id { get; set; }
         public Guid MatchID { get; set; }
         public Guid PlayerID { get; set; }
         public bool YellowCard { get; set; }
         public bool RedCard { get; set; }
-        public string MatchMinute { get; set; }
+        public int MatchMinute { get; set; }
+        public Guid ByUser { get; set; }
     }
 }
