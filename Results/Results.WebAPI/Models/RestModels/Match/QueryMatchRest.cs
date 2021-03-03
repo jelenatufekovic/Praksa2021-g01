@@ -15,5 +15,8 @@ namespace Results.WebAPI.Models.RestModels.Match
         public DateTime? MatchDate { get; set; }
         public bool? IsPlayed { get; set; }
         public string OrderBy { get; set; }
+        public int PageNumber { get; set; }
+        public int HomeGoals { get; set; }
+        public int AwayGoals { get; set; }
     }
 }

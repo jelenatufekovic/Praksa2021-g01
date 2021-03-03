@@ -7,6 +7,7 @@ namespace Results.WebAPI.Models.RestModels.Match
 {
     public class MatchViewModel
     {
+        public Guid Id { get; set; }
         public string HomeTeam { get; set; }
         public string AwayTeam { get; set; }
         public string RefereeName { get; set; }
