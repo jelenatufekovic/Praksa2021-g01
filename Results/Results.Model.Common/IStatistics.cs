@@ -9,6 +9,8 @@ namespace Results.Model.Common
     public interface IStatistics: IModelBase
     {
         Guid MatchId { get; set; }
+        string HomeClubName { get; set; }
+        string AwayClubName { get; set; }
         int HomeGoals { get; set; }
         int AwayGoals { get; set; }
         int HomeYellowCards { get; set; }

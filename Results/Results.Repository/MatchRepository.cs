@@ -138,7 +138,7 @@ namespace Results.Repository
                                 LEFT JOIN Club homeclub ON hometeam.ClubID = homeclub.Id
                                 LEFT JOIN Club awayclub ON awayteam.ClubID = awayclub.Id
                                 LEFT JOIN Referee ref ON Match.RefereeID = ref.Id
-                                LEFT JOIN Person person ON ref.PersonId = person.Id
+                                LEFT JOIN Person person ON ref.Id = person.Id
                                 WHERE Match.Id = @Id";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -188,7 +188,7 @@ namespace Results.Repository
                                 LEFT JOIN Club homeclub ON hometeam.ClubID = homeclub.Id
                                 LEFT JOIN Club awayclub ON awayteam.ClubID = awayclub.Id
                                 LEFT JOIN Referee ref ON Match.RefereeID = ref.Id
-                                LEFT JOIN Person person ON ref.PersonId = person.Id ";
+                                LEFT JOIN Person person ON ref.Id = person.Id ";
 
                 IQueryHelper<IMatch, MatchQueryParameters> queryHelper = new QueryHelper<IMatch, MatchQueryParameters>();
 

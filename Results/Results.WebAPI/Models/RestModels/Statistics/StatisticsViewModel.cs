@@ -7,7 +7,8 @@ namespace Results.WebAPI.Models.RestModels.Statistics
 {
     public class StatisticsViewModel
     {
-        public Guid MatchId { get; set; }
+        public string HomeClubName { get; set; }
+        public string AwayClubName { get; set; }
         public int HomeGoals { get; set; }
         public int AwayGoals { get; set; }
         public int HomeYellowCards { get; set; }

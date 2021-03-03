@@ -14,19 +14,19 @@ using System.Threading.Tasks;
 
 namespace Results.Repository
 {
-    public class StatisticsRepository : IStatisticsRepository
+    public class StatisticsRepository : RepositoryBase, IStatisticsRepository
     {
         private SqlConnection _connection;
         private SqlCommand _command;
 
-        public StatisticsRepository(SqlConnection connection)
+        public StatisticsRepository(SqlConnection connection): base(connection)
         {
             _command = new SqlCommand(String.Empty, connection);
             _connection = connection;
             _connection.Open();
         }
 
-        public StatisticsRepository(SqlTransaction transaction)
+        public StatisticsRepository(SqlTransaction transaction): base(transaction.Connection)
         {
             _command = new SqlCommand(String.Empty, transaction.Connection, transaction);
         }
@@ -98,7 +98,52 @@ namespace Results.Repository
 
         public async Task<IStatistics> GetStatisticsAsync(Guid MatchId)
         {
-            _command.CommandText = "select * from MatchStatistics where MatchId = @MatchId";
+            _command.CommandText = @"select s.Id, 
+                                            s.MatchID, 
+                                            s.HomeGoals, 
+                                            s.AwayGoals, 
+                                            s.HomeYellowCards, 
+                                            s.AwayYellowCards, 
+                                            s.HomeRedCards, 
+                                            s.AwayRedCards, 
+                                            s.HomeShots, 
+                                            s.AwayShots, 
+                                            s.HomeShotsOnTarget, 
+                                            s.AwayShotsOnTarget,
+                                            s.HomePossession, 
+                                            s.AwayPossession, 
+                                            s.CreatedAt, 
+                                            s.UpdatedAt, 
+                                            s.IsDeleted, 
+                                            s.ByUser, 
+                                            c.Name from MatchStatistics as s
+                                            right join Match as m on s.MatchID = m.Id 
+                                            right join TeamSeason as ts on m.HomeTeamSeasonID = ts.Id  
+                                            right join Club as c on ts.ClubID = c.Id 
+                                            where s.MatchID = @MatchId;
+                                            select s.Id, 
+                                            s.MatchID, 
+                                            s.HomeGoals, 
+                                            s.AwayGoals, 
+                                            s.HomeYellowCards, 
+                                            s.AwayYellowCards, 
+                                            s.HomeRedCards, 
+                                            s.AwayRedCards, 
+                                            s.HomeShots, 
+                                            s.AwayShots, 
+                                            s.HomeShotsOnTarget, 
+                                            s.AwayShotsOnTarget,
+                                            s.HomePossession, 
+                                            s.AwayPossession, 
+                                            s.CreatedAt, 
+                                            s.UpdatedAt, 
+                                            s.IsDeleted, 
+                                            s.ByUser, 
+                                            c.Name from MatchStatistics as s
+                                            right join Match as m on s.MatchID = m.Id 
+                                            right join TeamSeason as ts on m.AwayTeamSeasonID = ts.Id 
+                                            right join Club as c on ts.ClubID = c.Id 
+                                            where s.MatchID = @MatchId;";
 
             _command.Parameters.AddWithValue("@MatchId", MatchId);
 
@@ -108,28 +153,42 @@ namespace Results.Repository
             {
                 if (reader.HasRows)
                 {
+                    int ct = 0;
                     while (await reader.ReadAsync())
-                    {
+                    {                        
                         if (Convert.ToBoolean(reader["IsDeleted"]) != true)
                         {
-                            statistics = new Statistics()
+                            if(ct == 0)
                             {
-                                Id = Guid.Parse(reader["Id"].ToString()),
-                                MatchId = Guid.Parse(reader["MatchID"].ToString()),
-                                HomeGoals = Convert.ToInt32(reader["HomeGoals"]),
-                                AwayGoals = Convert.ToInt32(reader["AwayGoals"]),
-                                HomeYellowCards = Convert.ToInt32(reader["HomeYellowCards"]),
-                                AwayYellowCards = Convert.ToInt32(reader["AwayYellowCards"]),
-                                HomeRedCards = Convert.ToInt32(reader["HomeRedCards"]),
-                                AwayRedCards = Convert.ToInt32(reader["AwayRedCards"]),
-                                HomeShots = Convert.ToInt32(reader["HomeShots"]),
-                                AwayShots = Convert.ToInt32(reader["AwayShots"]),
-                                HomeShotsOnTarget = Convert.ToInt32(reader["HomeShotsOnTarget"]),
-                                AwayShotsOnTarget = Convert.ToInt32(reader["AwayShotsOnTarget"]),
-                                HomePossession = Convert.ToInt32(reader["HomePossession"]),
-                                AwayPossession = Convert.ToInt32(reader["AwayPossession"])
-                            };
-                        }
+                                statistics = new Statistics()
+                                {
+                                    Id = Guid.Parse(reader["Id"].ToString()),
+                                    MatchId = Guid.Parse(reader["MatchID"].ToString()),
+                                    HomeGoals = Convert.ToInt32(reader["HomeGoals"]),
+                                    AwayGoals = Convert.ToInt32(reader["AwayGoals"]),
+                                    HomeYellowCards = Convert.ToInt32(reader["HomeYellowCards"]),
+                                    AwayYellowCards = Convert.ToInt32(reader["AwayYellowCards"]),
+                                    HomeRedCards = Convert.ToInt32(reader["HomeRedCards"]),
+                                    AwayRedCards = Convert.ToInt32(reader["AwayRedCards"]),
+                                    HomeShots = Convert.ToInt32(reader["HomeShots"]),
+                                    AwayShots = Convert.ToInt32(reader["AwayShots"]),
+                                    HomeShotsOnTarget = Convert.ToInt32(reader["HomeShotsOnTarget"]),
+                                    AwayShotsOnTarget = Convert.ToInt32(reader["AwayShotsOnTarget"]),
+                                    HomePossession = Convert.ToInt32(reader["HomePossession"]),
+                                    AwayPossession = Convert.ToInt32(reader["AwayPossession"]),
+                                    HomeClubName = reader["Name"].ToString(),
+                                    AwayClubName = ""
+                                };
+                            } 
+                            else if(ct == 1)
+                            {
+                                statistics.AwayClubName = reader["Name"].ToString();
+                            }
+                            ct++;
+                        } 
+
+                       await reader.NextResultAsync();
+                                             
                     }
                 }
 
