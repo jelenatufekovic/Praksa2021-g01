@@ -108,7 +108,7 @@ namespace Results.Repository
         public async Task<List<IStadium>> GetAllStadiumsAsync() 
         {
             
-            _command.CommandText = "SELECT Name, StadiumAddress, Capacity, YearOfConstruction, Description" +
+            _command.CommandText = "SELECT Id, Name, StadiumAddress, Capacity, YearOfConstruction, Description" +
                             " FROM Stadium WHERE IsDeleted = @IsDeleted;";
 
                 
@@ -126,10 +126,11 @@ namespace Results.Repository
                 {
                     IStadium stadium = new Stadium()
                     {
+                        Id = Guid.Parse(reader["Id"].ToString()),
                         Name = reader["Name"].ToString(),
                         StadiumAddress = reader["StadiumAddress"].ToString(),
                         Capacity = Convert.ToInt32(reader["Capacity"].ToString()),
-                        YearOfConstruction = DateTime.Parse(reader["YearOfConstruction"].ToString()),
+                        YearOfConstruction = Convert.ToInt32(reader["YearOfConstruction"].ToString()),
                         Description = reader["Description"].ToString()
                     };
                     stadiums.Add(stadium);
@@ -161,7 +162,7 @@ namespace Results.Repository
                         Name = reader["Name"].ToString(),
                         StadiumAddress = reader["StadiumAddress"].ToString(),
                         Capacity = int.Parse(reader["Capacity"].ToString()),
-                        YearOfConstruction = DateTime.Parse(reader["YearOfConstruction"].ToString()),
+                        YearOfConstruction = Convert.ToInt32(reader["YearOfConstruction"].ToString()),
                         Description = reader["Description"].ToString(),
                         IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
                         CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
@@ -215,7 +216,7 @@ namespace Results.Repository
                         Name = reader["Name"].ToString(),
                         StadiumAddress = reader["StadiumAddress"].ToString(),
                         Capacity = int.Parse(reader["Capacity"].ToString()),
-                        YearOfConstruction = DateTime.Parse(reader["YearOfConstruction"].ToString()),
+                        YearOfConstruction = Convert.ToInt32(reader["YearOfConstruction"].ToString()),
                         Description = reader["Description"].ToString(),
                         IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
                         CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),

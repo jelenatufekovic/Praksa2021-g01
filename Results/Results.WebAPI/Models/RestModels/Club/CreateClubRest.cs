@@ -11,7 +11,7 @@ namespace Results.WebAPI.Models.RestModels.Club
         public Guid StadiumID { get; set; }
         public string ClubAddress { get; set; }
         public string ShortName { get; set; }
-        public DateTime YearOfFoundation { get; set; }
+        public int YearOfFoundation { get; set; }
         public string Description { get; set; }
         public Guid ByUser { get; set; }
     }

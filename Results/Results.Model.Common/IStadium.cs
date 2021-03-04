@@ -11,7 +11,7 @@ namespace Results.Model.Common
         string Name { get; set; }
         string StadiumAddress { get; set; }
         int Capacity { get; set; }
-        DateTime YearOfConstruction { get; set; }
+        int YearOfConstruction { get; set; }
         string Description { get; set; }
     }
 }
