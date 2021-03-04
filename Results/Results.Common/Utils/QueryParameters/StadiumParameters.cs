@@ -13,10 +13,11 @@ namespace Results.Common.Utils.QueryParameters
             OrderBy = "Name";
         }
 
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string StadiumAddress { get; set; }
         public string Capacity { get; set; }
-        public DateTime? YearOfConstruction { get; set; }
+        public int YearOfConstruction { get; set; }
 
         public override bool IsValid()
         {

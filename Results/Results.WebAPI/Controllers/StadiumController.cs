@@ -97,6 +97,22 @@ namespace Results.WebAPI.Controllers
             return BadRequest("Something went wrong!");
         }
 
+        [Route("GetAllStadiums")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetAllStadiumsAsync()
+        {
+            List<IStadium> stadiums = await _stadiumService.GetAllStadiumsAsync();
+
+            if (stadiums.Count == 0)
+            {
+                return NotFound();
+            }
+
+            List<GetAllStadiumsRest> stadiumsRest = _mapper.Map<List<IStadium>, List<GetAllStadiumsRest>>(stadiums);
+
+            return Ok(stadiumsRest);
+        }
+
 
         [Route("FindStadiums")]
         [HttpGet]

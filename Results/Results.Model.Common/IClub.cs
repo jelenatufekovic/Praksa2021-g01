@@ -12,7 +12,8 @@ namespace Results.Model.Common
         string Name { get; set; }
         string ClubAddress { get; set; }
         string ShortName { get; set; }
-        DateTime YearOfFoundation { get; set; }
+        int YearOfFoundation { get; set; }
         string Description { get; set; }
+        IStadium Stadium { get; set; }
     }
 }

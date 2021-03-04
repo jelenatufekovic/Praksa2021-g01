@@ -109,8 +109,8 @@ namespace Results.Repository
         public async Task<List<IClub>> GetAllClubsAsync()
         {
             
-            _command.CommandText = "SELECT Name, ClubAddress, ShortName, YearOfFoundation, Description" +
-                            " FROM Club WHERE IsDeleted = @IsDeleted;";
+            _command.CommandText = "SELECT  Club.Id, Club.StadiumID, Club.Name, Club.ClubAddress, Club.ShortName, Club.YearOfFoundation, Club.Description, Stadium.Id, Stadium.Name, Stadium.StadiumAddress, Stadium.Capacity, Stadium.YearOfConstruction, Stadium.Description" +
+                            " FROM Club LEFT JOIN Stadium ON (Club.StadiumID=Stadium.Id) WHERE Club.IsDeleted = @IsDeleted;";
 
             if(_command.Transaction != null)
             {
@@ -129,9 +129,17 @@ namespace Results.Repository
                         Name = reader["Name"].ToString(),
                         ClubAddress = reader["ClubAddress"].ToString(),
                         ShortName = reader["ShortName"].ToString(),
-                        YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
-                        Description = reader["Description"].ToString()
-                    };
+                        YearOfFoundation = Convert.ToInt32(reader["YearOfFoundation"].ToString()),
+                        Description = reader["Description"].ToString(),
+                        Stadium = new Stadium()
+                        {
+                            Name = reader[8].ToString(),
+                            StadiumAddress = reader[9].ToString(),
+                            Capacity = int.Parse(reader[10].ToString()),
+                            YearOfConstruction = Convert.ToInt32(reader[11].ToString()),
+                            Description = reader[12].ToString(),
+                        }
+                };
                     clubs.Add(club);
                 }
                 return clubs;
@@ -163,7 +171,7 @@ namespace Results.Repository
                         Name = reader["Name"].ToString(),
                         ClubAddress = reader["ClubAddress"].ToString(),
                         ShortName = reader["ShortName"].ToString(),
-                        YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
+                        YearOfFoundation = Convert.ToInt32(reader["YearOfFoundation"].ToString()),
                         Description = reader["Description"].ToString(),
                         IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
                         CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
@@ -218,7 +226,7 @@ namespace Results.Repository
                         Name = reader["Name"].ToString(),
                         ClubAddress = reader["ClubAddress"].ToString(),
                         ShortName = reader["ShortName"].ToString(),
-                        YearOfFoundation = DateTime.Parse(reader["YearOfFoundation"].ToString()),
+                        YearOfFoundation = Convert.ToInt32(reader["YearOfFoundation"].ToString()),
                         Description = reader["Description"].ToString(),
                         IsDeleted = bool.Parse(reader["IsDeleted"].ToString()),
                         CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
