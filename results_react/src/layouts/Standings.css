@@ -1,0 +1,48 @@
+#title {
+  text-align: center;
+  font-family: arial, sans-serif;
+  color: white;
+  background-color: rgb(19, 44, 53);
+  margin: 0px;
+  padding: 40px;
+}
+
+#header2{
+  margin: 2px;
+}
+
+#select {
+  text-align: center;
+  font-family: monospace;
+  color: rgb(132, 163, 163);
+  background-color: rgb(27, 43, 43);
+  margin-top: 20px;
+  margin-right: 5px;
+  border: 1px solid;
+}
+
+#standings {
+  text-align: center;
+  font-family: monospace;
+  font-size: 20px;
+  border-collapse: collapse;
+  border: 1px solid rgb(132, 163, 163);
+  width: 95%;
+  margin-top: 15px;
+  margin-left: 2.5%;
+}
+
+#standings td, #standings th {
+  border: 1px solid rgb(0, 0, 0);
+  padding: 8px;
+  background-color: rgb(19, 31, 31);
+  color: rgb(109, 136, 136);
+}
+
+#standings th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: rgb(27, 43, 43);
+  color: rgb(116, 143, 143);
+}

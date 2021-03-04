@@ -1,0 +1,43 @@
+html{
+    background-color: rgba(49, 32, 32, 0.9);
+}
+
+img {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+}
+
+.col {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.card {
+    border-radius: 0px !important;
+    background-color: rgba(154, 147, 147, 0.3);
+    width: 100%;
+}
+
+.addClubStadium {
+        display:flex;
+        justify-content:center;
+}
+
+.line {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    width: 100%;
+    border-top: 1px solid rgba(100, 100, 100, 0.3);
+    padding-left: 20px
+}
+
+
+.text {
+    padding-left: 7px;
+    padding-top: 5px;
+    height: 180px;
+    border-radius: 2px;
+    background-color: rgba(154, 147, 147, 0.3);
+}

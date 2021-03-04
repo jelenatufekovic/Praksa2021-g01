@@ -16,6 +16,6 @@ namespace Results.Service.Common
         Task<bool> DeleteMatchAsync(Guid id, Guid ByUser);
         Task<bool> UpdateMatchAsync(IMatch match);
         Task<IMatch> GetMatchByIdAsync(Guid id);
-        Task<PagedList<IMatch>> GetMatchByQueryAsync(MatchQueryParameters parameters);
+        Task<List<IMatch>> GetMatchByQueryAsync(MatchQueryParameters parameters);
     }
 }

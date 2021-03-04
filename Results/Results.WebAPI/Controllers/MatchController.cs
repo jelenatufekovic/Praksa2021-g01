@@ -44,9 +44,9 @@ namespace Results.WebAPI.Controllers
 
         [Route("Get")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetMatchByQueryAsync(QueryMatchRest matchRest)
+        public async Task<IHttpActionResult> GetMatchByQueryAsync([FromUri]QueryMatchRest matchRest)
         {
-            PagedList<IMatch> match = await _matchService.GetMatchByQueryAsync(_mapper.Map<MatchQueryParameters>(matchRest));
+            List<IMatch> match = await _matchService.GetMatchByQueryAsync(_mapper.Map<MatchQueryParameters>(matchRest));
 
             if (match == null)
             {

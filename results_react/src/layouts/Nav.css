@@ -1,0 +1,27 @@
+nav {
+    display: flex;
+    flex: 100%;
+    min-height: 10vh;
+    background-color: rgb(19, 44, 53);
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    flex: 1;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.link-div {
+    display: flex;
+    flex-basis: 150px;
+    justify-content: center;
+    align-items: center;
+}
+
+.link-div:hover {
+    background-color: rgb(27, 28, 34);
+    cursor: pointer;
+    user-select: none;
+}

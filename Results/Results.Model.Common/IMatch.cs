@@ -18,5 +18,7 @@ namespace Results.Model.Common
         int MatchDay { get; set; }
         DateTime MatchDate { get; set; } 
         bool IsPlayed { get; set; }
+        int HomeGoals { get; set; }
+        int AwayGoals { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace Results.WebAPI.AutoMapper
     {
         public MatchProfile()
         {
-            CreateMap<PagedList<IMatch>, MatchViewModel>();
+            CreateMap<List<IMatch>, MatchViewModel>();
             CreateMap<IMatch, MatchViewModel>();
             CreateMap<UpdateMatchRest, IMatch>();
             CreateMap<CreateMatchRest, IMatch>();
