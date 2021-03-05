@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {Card, Container, Row, Col, Button} from "react-bootstrap";
 import axios from 'axios';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Input, FormGroup, Label } from "reactstrap";
 import '../layouts/ClubStadium.css'
 
 class ClubStadium extends Component {
@@ -195,6 +194,8 @@ class ClubStadium extends Component {
             </div>
         )
     }
+    
 }
+
 
 export default ClubStadium;
